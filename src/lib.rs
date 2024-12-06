@@ -8,6 +8,7 @@ pub mod enums;
 pub mod kzg_proof;
 pub mod pairings;
 pub mod trusted_setup;
+pub mod utils;
 
 pub use consts::*;
 pub use dtypes::*;
