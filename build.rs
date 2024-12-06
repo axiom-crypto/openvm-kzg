@@ -7,6 +7,9 @@ include!("src/pairings.rs");
 #[cfg(not(any(target_arch = "riscv32", doc)))]
 fn main() {
     use std::{env, fs, io::Write, path::Path};
+
+    use axvm_ecc_guest::algebra::IntMod;
+    use axvm_pairing_guest::affine_point::AffineCoords;
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct KzgSettingsOwned {
         pub roots_of_unity: [Scalar; NUM_ROOTS_OF_UNITY],
@@ -61,8 +64,14 @@ fn main() {
         }
 
         let roots_of_unity = compute_roots_of_unity(max_scale)?;
-        let mut g1_points: [G1Affine; NUM_G1_POINTS] = [G1Affine::identity(); NUM_G1_POINTS];
-        let mut g2_points: [G2Affine; NUM_G2_POINTS] = [G2Affine::identity(); NUM_G2_POINTS];
+        let mut g1_points: [G1Affine; NUM_G1_POINTS] = core::array::from_fn(|_| G1Affine {
+            x: Fp::ZERO,
+            y: Fp::ZERO,
+        });
+        let mut g2_points: [G2Affine; NUM_G2_POINTS] = core::array::from_fn(|_| G2Affine {
+            x: Fp2::ZERO,
+            y: Fp2::ZERO,
+        });
 
         _g1_points.iter().enumerate().for_each(|(i, bytes)| {
             g1_points[i] = G1Affine::from_compressed_unchecked(bytes)
@@ -88,17 +97,17 @@ fn main() {
 
     fn bit_reversal_permutation<T, const N: usize>(array: &[T]) -> Result<[T; N], KzgError>
     where
-        T: Default + Copy,
+        T: IntMod,
     {
         let n = array.len();
         assert!(n.is_power_of_two(), "n must be a power of 2");
 
-        let mut bit_reversed_permutation = [T::default(); N];
+        let mut bit_reversed_permutation = [T::ZERO; N];
         let unused_bit_len = array.len().leading_zeros();
 
         for (i, item) in array.iter().enumerate().take(n) {
             let r = i.reverse_bits() >> (unused_bit_len + 1);
-            bit_reversed_permutation[r] = *item;
+            bit_reversed_permutation[r] = item.clone();
         }
 
         Ok(bit_reversed_permutation)
@@ -115,10 +124,10 @@ fn main() {
             return Err(KzgError::BadArgs("invalid args".to_string()));
         }
 
-        let a1 = g1_points[1];
-        let a2 = g2_points[0];
-        let b1 = g1_points[0];
-        let b2 = g2_points[1];
+        let a1 = g1_points[1].clone();
+        let a2 = g2_points[0].clone();
+        let b1 = g1_points[0].clone();
+        let b2 = g2_points[1].clone();
 
         let is_monomial_form = pairings_verify(a1, a2, b1, b2);
         if !is_monomial_form {
@@ -135,8 +144,12 @@ fn main() {
                 SCALE2_ROOT_OF_UNITY.len()
             )));
         }
-
-        let root_of_unity = Scalar::from_raw(SCALE2_ROOT_OF_UNITY[max_scale]);
+        let root_of_unity = Scalar::from_le_bytes(
+            &SCALE2_ROOT_OF_UNITY[max_scale]
+                .into_iter()
+                .flat_map(|x| x.to_le_bytes())
+                .collect::<Vec<_>>(),
+        );
         let mut expanded_roots = expand_root_of_unity(root_of_unity, N)?;
         let _ = expanded_roots.pop();
 
@@ -150,17 +163,17 @@ fn main() {
             ));
         }
 
-        let mut expanded = vec![Scalar::one(), root];
+        let mut expanded = vec![Scalar::ONE, root.clone()];
 
         for _ in 2..=width {
-            let current = expanded.last().unwrap() * root;
-            expanded.push(current);
-            if current == Scalar::one() {
+            let current = expanded.last().unwrap() * &root;
+            expanded.push(current.clone());
+            if current == Scalar::ONE {
                 break;
             }
         }
 
-        if expanded.last().unwrap() != &Scalar::one() {
+        if expanded.last().unwrap() != &Scalar::ONE {
             return Err(KzgError::InvalidBytesLength(
                 "The last element value should be equal to 1".to_string(),
             ));
@@ -192,17 +205,19 @@ fn main() {
     let mut g1_bytes: Vec<u8> = Vec::new();
     let mut g2_bytes: Vec<u8> = Vec::new();
 
-    roots_of_unity.iter().for_each(|&v| {
+    roots_of_unity.iter().for_each(|v| {
         roots_of_unity_bytes
-            .extend_from_slice(unsafe { &std::mem::transmute::<Scalar, [u8; 32]>(v) });
+            .extend_from_slice(unsafe { &std::mem::transmute::<Scalar, [u8; 32]>(v.clone()) });
     });
 
-    g1_points.iter().for_each(|&v| {
-        g1_bytes.extend_from_slice(unsafe { &std::mem::transmute::<G1Affine, [u8; 104]>(v) });
+    g1_points.iter().for_each(|v| {
+        g1_bytes
+            .extend_from_slice(unsafe { &std::mem::transmute::<G1Affine, [u8; 96]>(v.clone()) });
     });
 
-    g2_points.iter().for_each(|&v| {
-        g2_bytes.extend_from_slice(unsafe { &std::mem::transmute::<G2Affine, [u8; 200]>(v) });
+    g2_points.iter().for_each(|v| {
+        g2_bytes
+            .extend_from_slice(unsafe { &std::mem::transmute::<G2Affine, [u8; 192]>(v.clone()) });
     });
 
     let mut roots_of_unity_file = fs::OpenOptions::new()

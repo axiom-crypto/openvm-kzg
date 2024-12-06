@@ -10,9 +10,17 @@ use crate::{
 };
 
 use alloc::{string::ToString, vec::Vec};
-use bls12_381::{G1Affine, G1Projective, G2Affine, G2Projective, Scalar};
+// use bls12_381::{G1Affine, G1Projective, G2Affine, G2Projective, Scalar};
+
+use axvm_ecc_guest::AffinePoint;
+use axvm_pairing_guest::bls12_381::{Bls12_381, Fp, Fp2, Scalar};
 use ff::derive::sbb;
 use sha2::{Digest, Sha256};
+
+axvm_algebra_moduli_setup::moduli_init!("0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab");
+
+type G1Affine = AffinePoint<Fp>;
+type G2Affine = AffinePoint<Fp2>;
 
 pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<G1Affine, KzgError> {
     let g1 = G1Affine::from_compressed(&(bytes.clone().into()));

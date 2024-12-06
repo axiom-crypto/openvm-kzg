@@ -8,12 +8,16 @@ version = "0.2.3"
 repository = "https://github.com/succinctlabs/kzg-rs"
 
 [dependencies]
-hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
-bls12_381 = { version = "0.8.0", package = "sp1_bls12_381", default-features = false, features = [
-    "groups",
-    "pairings",
-    "alloc",
+# axvm-ecc-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d578ccb9ecb49f17b0cb1a2eef8dc2f89a151236" }
+# axvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d578ccb9ecb49f17b0cb1a2eef8dc2f89a151236", features = [
+#     "bls12_381",
+# ] }
+axvm-ecc-guest = { path = "../afs-prototype/extensions/ecc/guest" }
+axvm-pairing-guest = { path = "../afs-prototype/extensions/pairing/guest", features = [
+    "bls12_381",
 ] }
+axvm-algebra-moduli-setup = { path = "../afs-prototype/extensions/algebra/moduli-setup" }
+hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 sha2 = { version = "0.10.8", default-features = false }
 ff = { version = "0.13.0", default-features = false, features = ["derive"] }
 spin = { version = "0.9.8", default-features = false, features = ["once"] }
@@ -25,9 +29,13 @@ serde_derive = "1.0"
 serde = { version = "^1.0", features = ["derive"] }
 
 [build-dependencies]
-bls12_381 = { version = "0.8.0", package = "sp1_bls12_381", default-features = false, features = [
-    "groups",
-    "pairings",
-    "alloc",
+# axvm-ecc-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d578ccb9ecb49f17b0cb1a2eef8dc2f89a151236" }
+# axvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d578ccb9ecb49f17b0cb1a2eef8dc2f89a151236", features = [
+#     "bls12_381",
+# ] }
+axvm-ecc-guest = { path = "../afs-prototype/extensions/ecc/guest" }
+axvm-pairing-guest = { path = "../afs-prototype/extensions/pairing/guest", features = [
+    "bls12_381",
 ] }
+axvm-algebra-moduli-setup = { path = "../afs-prototype/extensions/algebra/moduli-setup" }
 hex = "0.4.3"
