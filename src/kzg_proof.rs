@@ -17,8 +17,6 @@ use axvm_pairing_guest::bls12_381::{Bls12_381, Fp, Fp2, Scalar};
 use ff::derive::sbb;
 use sha2::{Digest, Sha256};
 
-axvm_algebra_moduli_setup::moduli_init!("0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab");
-
 type G1Affine = AffinePoint<Fp>;
 type G2Affine = AffinePoint<Fp2>;
 
