@@ -2,6 +2,7 @@
 #[macro_use]
 extern crate alloc;
 
+pub mod affine_point;
 pub mod consts;
 pub mod dtypes;
 pub mod enums;

@@ -13,85 +13,25 @@ use crate::{
 use alloc::{string::ToString, vec::Vec};
 // use bls12_381::{G1Affine, G1Projective, G2Affine, G2Projective, Scalar};
 
-use axvm_ecc_guest::algebra::{DivUnsafe, IntMod};
-use axvm_ecc_guest::AffinePoint;
-use axvm_pairing_guest::bls12_381::{Bls12_381, Fp, Fp2, Scalar};
+use axvm_ecc_guest::algebra::{DivUnsafe, ExpBytes, Field, IntMod};
+use axvm_pairing_guest::bls12_381::{Fp, Fp2, Scalar};
 use ff::derive::sbb;
 use sha2::{Digest, Sha256};
 
-type G1Affine = AffinePoint<Fp>;
-type G2Affine = AffinePoint<Fp2>;
+use crate::affine_point::{
+    g1_affine_from_compressed, g1_affine_generator, g1_affine_is_on_curve, g1_affine_scalar_mul,
+    g1_affine_sub, g1_affine_to_compressed, g2_affine_generator, g2_affine_scalar_mul,
+    g2_affine_scalar_sub, g2_affine_sub, G1Affine, G2Affine,
+};
 
 pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<G1Affine, KzgError> {
-    let g1 = G1Affine::from_compressed(&(bytes.clone().into()));
+    let g1 = g1_affine_from_compressed(bytes);
     if g1.is_none().into() {
         return Err(KzgError::BadArgs(
             "Failed to parse G1Affine from bytes".to_string(),
         ));
     }
     Ok(g1.unwrap())
-}
-
-pub fn g1_affine_generator() -> G1Affine {
-    G1Affine {
-        x: Fp::from_be_bytes(&convert_u64_le_arr_to_bytes_be(&[
-            0x5cb3_8790_fd53_0c16,
-            0x7817_fc67_9976_fff5,
-            0x154f_95c7_143b_a1c1,
-            0xf0ae_6acd_f3d0_e747,
-            0xedce_6ecc_21db_f440,
-            0x1201_7741_9e0b_fb75,
-        ])),
-        y: Fp::from_be_bytes(&convert_u64_le_arr_to_bytes_be(&[
-            0xbaac_93d5_0ce7_2271,
-            0x8c22_631a_7918_fd8e,
-            0xdd59_5f13_5707_25ce,
-            0x51ac_5829_5040_5194,
-            0x0e1c_8c3f_ad00_59c0,
-            0x0bbc_3efc_5008_a26a,
-        ])),
-    }
-}
-
-pub fn g2_affine_generator() -> G2Affine {
-    G2Affine {
-        x: Fp2 {
-            c0: Fp::from_be_bytes(&convert_u64_le_arr_to_bytes_be(&[
-                0xf5f2_8fa2_0294_0a10,
-                0xb3f5_fb26_87b4_961a,
-                0xa1a8_93b5_3e2a_e580,
-                0x9894_999d_1a3c_aee9,
-                0x6f67_b763_1863_366b,
-                0x0581_9192_4350_bcd7,
-            ])),
-            c1: Fp::from_be_bytes(&convert_u64_le_arr_to_bytes_be(&[
-                0xa5a9_c075_9e23_f606,
-                0xaaa0_c59d_bccd_60c3,
-                0x3bb1_7e18_e286_7806,
-                0x1b1a_b6cc_8541_b367,
-                0xc2b6_ed0e_f215_8547,
-                0x1192_2a09_7360_edf3,
-            ])),
-        },
-        y: Fp2 {
-            c0: Fp::from_be_bytes(&convert_u64_le_arr_to_bytes_be(&[
-                0x4c73_0af8_6049_4c4a,
-                0x597c_fa1f_5e36_9c5a,
-                0xe7e6_856c_aa0a_635a,
-                0xbbef_b5e9_6e0d_495f,
-                0x07d3_a975_f0ef_25a2,
-                0x0083_fd8e_7e80_dae5,
-            ])),
-            c1: Fp::from_be_bytes(&convert_u64_le_arr_to_bytes_be(&[
-                0xadc0_fc92_df64_b05d,
-                0x18aa_270a_2b14_61dc,
-                0x86ad_ac6a_3be4_eba0,
-                0x7949_5c4e_c93d_a33a,
-                0xe717_5850_a43c_caed,
-                0x0b2b_c2a1_63de_1bf2,
-            ])),
-        },
-    }
 }
 
 pub fn safe_scalar_affine_from_bytes(bytes: &Bytes32) -> Result<Scalar, KzgError> {
@@ -103,13 +43,8 @@ pub fn safe_scalar_affine_from_bytes(bytes: &Bytes32) -> Result<Scalar, KzgError
         .try_into()
         .unwrap();
 
-    let scalar = Scalar::from_bytes(&lendian);
-    if scalar.is_none().into() {
-        return Err(KzgError::BadArgs(
-            "Failed to parse G1Affine from bytes".to_string(),
-        ));
-    }
-    Ok(scalar.unwrap())
+    let scalar = Scalar::from_le_bytes(&lendian);
+    Ok(scalar)
 }
 
 /// Return the Fiat-Shamir challenge required to verify `blob` and `commitment`.
@@ -128,7 +63,8 @@ fn compute_challenge(blob: &Blob, commitment: &G1Affine) -> Result<Scalar, KzgEr
     bytes[offset..offset + BYTES_PER_BLOB].copy_from_slice(blob.as_slice());
     offset += BYTES_PER_BLOB;
     // Copy commitment
-    bytes[offset..offset + BYTES_PER_COMMITMENT].copy_from_slice(&commitment.to_compressed());
+    bytes[offset..offset + BYTES_PER_COMMITMENT]
+        .copy_from_slice(&g1_affine_to_compressed(commitment).as_slice());
     offset += BYTES_PER_COMMITMENT;
     /* Make sure we wrote the entire buffer */
     if offset != CHALLENGE_INPUT_SIZE {
@@ -157,7 +93,9 @@ pub fn scalar_from_u64_array_unchecked(array: [u64; 4]) -> Scalar {
     let (_, borrow) = sbb(array[2], MODULUS[2], borrow);
     let (_, _borrow) = sbb(array[3], MODULUS[3], borrow);
 
-    Scalar::from_raw([array[3], array[2], array[1], array[0]])
+    Scalar::from_be_bytes(&convert_u64_le_arr_to_bytes_be(&[
+        array[3], array[2], array[1], array[0],
+    ]))
 }
 
 /// Evaluates a polynomial in evaluation form at a given point
@@ -172,14 +110,14 @@ pub fn evaluate_polynomial_in_evaluation_form(
         ));
     }
 
-    let mut inverses_in = vec![Scalar::default(); NUM_FIELD_ELEMENTS_PER_BLOB];
-    let mut inverses = vec![Scalar::default(); NUM_FIELD_ELEMENTS_PER_BLOB];
+    let mut inverses_in = vec![<Scalar as IntMod>::ZERO; NUM_FIELD_ELEMENTS_PER_BLOB];
+    let mut inverses = vec![<Scalar as IntMod>::ZERO; NUM_FIELD_ELEMENTS_PER_BLOB];
     let roots_of_unity = kzg_settings.roots_of_unity;
     for i in 0..NUM_FIELD_ELEMENTS_PER_BLOB {
         if x == roots_of_unity[i] {
-            return Ok(polynomial[i]);
+            return Ok(polynomial[i].clone());
         }
-        inverses_in[i] = x - roots_of_unity[i];
+        inverses_in[i] = x.clone() - roots_of_unity[i].clone();
     }
 
     batch_inversion(
@@ -188,16 +126,17 @@ pub fn evaluate_polynomial_in_evaluation_form(
         NonZeroUsize::new(NUM_FIELD_ELEMENTS_PER_BLOB).unwrap(),
     )?;
 
-    let mut out = Scalar::ZERO;
+    let mut out = <Scalar as IntMod>::ZERO;
 
     for i in 0..NUM_FIELD_ELEMENTS_PER_BLOB {
-        out += (inverses[i] * roots_of_unity[i]) * polynomial[i];
+        out += (inverses[i].clone() * roots_of_unity[i].clone()) * polynomial[i].clone();
     }
 
-    out *= Scalar::from(NUM_FIELD_ELEMENTS_PER_BLOB as u64)
-        .invert()
-        .unwrap();
-    out *= x.pow(&[NUM_FIELD_ELEMENTS_PER_BLOB as u64, 0, 0, 0]) - Scalar::ONE;
+    out *= <Scalar as IntMod>::ONE.div_unsafe(Scalar::from_u64(NUM_FIELD_ELEMENTS_PER_BLOB as u64));
+    out *= x.exp_bytes(
+        true,
+        &convert_u64_le_arr_to_bytes_be(&[NUM_FIELD_ELEMENTS_PER_BLOB as u64, 0, 0, 0]),
+    ) - <Scalar as IntMod>::ONE;
 
     Ok(out)
 }
@@ -235,14 +174,14 @@ fn batch_inversion(out: &mut [Scalar], a: &[Scalar], len: NonZeroUsize) -> Resul
     // P = x_1 \times x_2 \times \dots \times x_n
     // \]
 
-    let mut accumulator = Scalar::ONE;
+    let mut accumulator = <Scalar as IntMod>::ONE;
 
     for i in 0..len.into() {
         out[i] = accumulator.clone();
         accumulator *= a[i].clone();
     }
 
-    if accumulator == Scalar::ZERO {
+    if accumulator == <Scalar as IntMod>::ZERO {
         return Err(KzgError::BadArgs("Zero input".to_string()));
     }
 
@@ -251,7 +190,7 @@ fn batch_inversion(out: &mut [Scalar], a: &[Scalar], len: NonZeroUsize) -> Resul
     // \[
     // P^{-1} = \text{inverse}(P)
     // \]
-    accumulator = Scalar::ONE.div_unsafe(accumulator.clone());
+    accumulator = <Scalar as IntMod>::ONE.div_unsafe(accumulator.clone());
 
     // Compute the inverse of each element \( x_i^{-1} \) by using the precomputed product and its inverse:
     //
@@ -274,12 +213,12 @@ fn verify_kzg_proof_impl(
     kzg_settings: &KzgSettings,
 ) -> Result<bool, KzgError> {
     // let x = G2Projective::generator() * z;
-    let x = g2_affine_generator() * z;
-    let x_minus_z = kzg_settings.g2_points[1] - x;
+    let x = g2_affine_scalar_mul(&g2_affine_generator(), z);
+    let x_minus_z = g2_affine_sub(&kzg_settings.g2_points[1], &x);
 
     // let y = G1Projective::generator() * y;
-    let y = g1_affine_generator() * y;
-    let p_minus_y = commitment - y;
+    let y = g1_affine_scalar_mul(&g1_affine_generator(), y);
+    let p_minus_y = g1_affine_sub(&commitment, &y);
 
     // Verify: P - y = Q * (X - z)
     Ok(pairings_verify(
@@ -294,13 +233,13 @@ fn verify_kzg_proof_impl(
 fn validate_batched_input(commitment: &[G1Affine], proofs: &[G1Affine]) -> Result<(), KzgError> {
     // Check if any commitment is invalid (not on curve or identity)
     let invalid_commitment = commitment.iter().any(|commitment| {
-        !bool::from(commitment.is_identity()) && !bool::from(commitment.is_on_curve())
+        !bool::from(commitment.is_infinity()) && !bool::from(g1_affine_is_on_curve(commitment))
     });
 
     // Check if any proof is invalid (not on curve or identity)
     let invalid_proof = proofs
         .iter()
-        .any(|proof| !bool::from(proof.is_identity()) && !bool::from(proof.is_on_curve()));
+        .any(|proof| !bool::from(proof.is_infinity()) && !bool::from(g1_affine_is_on_curve(proof)));
 
     // Return error if any invalid commitment is found
     if invalid_commitment {
@@ -343,13 +282,13 @@ fn compute_challenges_and_evaluate_polynomial(
 }
 
 pub fn compute_powers(base: &Scalar, num_powers: usize) -> Vec<Scalar> {
-    let mut powers = vec![Scalar::default(); num_powers];
+    let mut powers = vec![<Scalar as IntMod>::ZERO; num_powers];
     if num_powers == 0 {
         return powers;
     }
-    powers[0] = Scalar::ONE;
+    powers[0] = <Scalar as IntMod>::ONE;
     for i in 1..num_powers {
-        powers[i] = powers[i - 1].mul(base);
+        powers[i] = powers[i - 1].clone() * base;
     }
     powers
 }
@@ -379,22 +318,24 @@ fn compute_r_powers(
 
     for i in 0..n {
         // Copy commitment
-        let v = commitment[i].to_compressed();
+        let v = g1_affine_to_compressed(&commitment[i]);
+        let v = v.as_slice();
         bytes[offset..(v.len() + offset)].copy_from_slice(&v[..]);
         offset += BYTES_PER_COMMITMENT;
 
         // Copy evaluation challenge
-        let v = zs[i].to_bytes();
+        let v = zs[i].as_be_bytes();
         bytes[offset..(v.len() + offset)].copy_from_slice(&v[..]);
         offset += BYTES_PER_FIELD_ELEMENT;
 
         // Copy polynomial's evaluation value
-        let v = ys[i].to_bytes();
+        let v = ys[i].as_be_bytes();
         bytes[offset..(v.len() + offset)].copy_from_slice(&v[..]);
         offset += BYTES_PER_FIELD_ELEMENT;
 
         // Copy proof
-        let v = proofs[i].to_compressed();
+        let v = g1_affine_to_compressed(&proofs[i]);
+        let v = v.as_slice();
         bytes[offset..(v.len() + offset)].copy_from_slice(&v[..]);
         offset += BYTES_PER_PROOF;
     }
@@ -486,8 +427,8 @@ impl KzgProof {
 
         // Compute c_minus_y and r_times_z
         for i in 0..n {
-            let ys_encrypted = G1Affine::generator() * ys[i];
-            c_minus_y.push(commitments[i] - ys_encrypted);
+            let ys_encrypted = g1_affine_scalar_mul(&g1_affine_generator(), ys[i]);
+            c_minus_y.push(g1_affine_sub(&commitments[i], &ys_encrypted));
             r_times_z.push(r_powers[i] * zs[i]);
         }
 
@@ -503,7 +444,7 @@ impl KzgProof {
             proof_lincomb.into(),
             kzg_settings.g2_points[1],
             rhs_g1.into(),
-            G2Affine::generator(),
+            g2_affine_generator(),
         );
 
         Ok(result)
@@ -813,7 +754,7 @@ pub mod tests {
         let evaluation_challenge = compute_challenge(&blob, &commitment).unwrap();
 
         assert_eq!(
-            format!("{evaluation_challenge}"),
+            format!("{:?}", evaluation_challenge),
             "0x4f00eef944a21cb9f3ac3390702621e4bbf1198767c43c0fb9c8e9923bfbb31a"
         )
     }
@@ -838,7 +779,7 @@ pub mod tests {
                 .unwrap();
 
         assert_eq!(
-            format!("{y}"),
+            format!("{:?}", y),
             "0x1bdfc5da40334b9c51220e8cbea1679c20a7f32dd3d7f3c463149bb4b41a7d18"
         );
     }

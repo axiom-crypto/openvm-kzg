@@ -1,13 +1,15 @@
 use crate::{enums::KzgError, NUM_G1_POINTS, NUM_ROOTS_OF_UNITY};
 
 use alloc::sync::Arc;
-use bls12_381::{G1Affine, G2Affine, Scalar};
+use axvm_pairing_guest::bls12_381::Scalar;
 use core::{
     hash::{Hash, Hasher},
     mem::transmute,
     slice,
 };
 use spin::Once;
+
+use crate::affine_point::{G1Affine, G2Affine};
 
 pub fn get_roots_of_unity() -> &'static [Scalar] {
     static ROOTS_OF_UNITY: Once<&'static [Scalar]> = Once::new();
