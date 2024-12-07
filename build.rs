@@ -6,6 +6,7 @@ include!("src/pairings.rs");
 
 #[cfg(not(any(target_arch = "riscv32", doc)))]
 fn main() {
+    use bls12_381::Scalar;
     use std::{env, fs, io::Write, path::Path};
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct KzgSettingsOwned {
