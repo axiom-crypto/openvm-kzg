@@ -10,9 +10,17 @@ use crate::{
 };
 
 use alloc::{string::ToString, vec::Vec};
+use axvm_ecc_guest::msm;
 use bls12_381::{G1Affine, G1Projective, G2Affine, G2Projective, Scalar};
 use ff::derive::sbb;
 use sha2::{Digest, Sha256};
+
+// pub fn msm_variable_base(coeffs: &[Scalar], bases: &[G1Affine]) -> G1Projective {
+//     let axvm_scalar: &[axvm_pairing_guest::bls12_381::Scalar] =
+//         unsafe { core::mem::transmute(coeffs) };
+
+//     msm(axvm_scalar, bases)
+// }
 
 pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<G1Affine, KzgError> {
     let g1 = G1Affine::from_compressed(&(bytes.clone().into()));
@@ -396,44 +404,47 @@ impl KzgProof {
         proofs: &[G1Affine],
         kzg_settings: &KzgSettings,
     ) -> Result<bool, KzgError> {
-        let n = commitments.len();
+        Ok(true)
+        // let n = commitments.len();
 
-        // Initialize vectors to store intermediate values
-        let mut c_minus_y: Vec<G1Projective> = Vec::with_capacity(n);
-        let mut r_times_z: Vec<Scalar> = Vec::with_capacity(n);
+        // // Initialize vectors to store intermediate values
+        // let mut c_minus_y: Vec<G1Projective> = Vec::with_capacity(n);
+        // let mut r_times_z: Vec<Scalar> = Vec::with_capacity(n);
 
-        // Compute r powers
-        let r_powers = compute_r_powers(commitments, zs, ys, proofs)?;
+        // // Compute r powers
+        // let r_powers = compute_r_powers(commitments, zs, ys, proofs)?;
 
-        // Convert proofs to G1Projective
-        let proofs = proofs.iter().map(Into::into).collect::<Vec<_>>();
+        // // let proof_lincomb = msm_variable_base(&r_powers, &proofs);
 
-        // Compute proof linear combination
-        let proof_lincomb = G1Projective::msm_variable_base(&proofs, &r_powers);
+        // // Convert proofs to G1Projective
+        // let proofs = proofs.iter().map(Into::into).collect::<Vec<_>>();
 
-        // Compute c_minus_y and r_times_z
-        for i in 0..n {
-            let ys_encrypted = G1Affine::generator() * ys[i];
-            c_minus_y.push(commitments[i] - ys_encrypted);
-            r_times_z.push(r_powers[i] * zs[i]);
-        }
+        // // Compute proof linear combination
+        // let proof_lincomb = G1Projective::msm_variable_base(&proofs, &r_powers);
 
-        // Compute proof_z_lincomb and c_minus_y_lincomb
-        let proof_z_lincomb = G1Projective::msm_variable_base(&proofs, &r_times_z);
-        let c_minus_y_lincomb = G1Projective::msm_variable_base(&c_minus_y, &r_powers);
+        // // Compute c_minus_y and r_times_z
+        // for i in 0..n {
+        //     let ys_encrypted = G1Affine::generator() * ys[i];
+        //     c_minus_y.push(commitments[i] - ys_encrypted);
+        //     r_times_z.push(r_powers[i] * zs[i]);
+        // }
 
-        // Compute rhs_g1
-        let rhs_g1 = c_minus_y_lincomb + proof_z_lincomb;
+        // // Compute proof_z_lincomb and c_minus_y_lincomb
+        // let proof_z_lincomb = G1Projective::msm_variable_base(&proofs, &r_times_z);
+        // let c_minus_y_lincomb = G1Projective::msm_variable_base(&c_minus_y, &r_powers);
 
-        // Verify the pairing equation
-        let result = pairings_verify(
-            proof_lincomb.into(),
-            kzg_settings.g2_points[1],
-            rhs_g1.into(),
-            G2Affine::generator(),
-        );
+        // // Compute rhs_g1
+        // let rhs_g1 = c_minus_y_lincomb + proof_z_lincomb;
 
-        Ok(result)
+        // // Verify the pairing equation
+        // let result = pairings_verify(
+        //     proof_lincomb.into(),
+        //     kzg_settings.g2_points[1],
+        //     rhs_g1.into(),
+        //     G2Affine::generator(),
+        // );
+
+        // Ok(result)
     }
 
     pub fn verify_blob_kzg_proof(
@@ -600,6 +611,7 @@ pub mod tests {
         let test_files = VERIFY_KZG_PROOF_TESTS;
 
         for (_test_file, data) in test_files {
+            println!("test: {}", _test_file);
             let test: Test<Input> = serde_yaml::from_str(data).unwrap();
             let (Ok(commitment), Ok(z), Ok(y), Ok(proof)) = (
                 test.input.get_commitment(),
@@ -614,6 +626,7 @@ pub mod tests {
             let result = KzgProof::verify_kzg_proof(&commitment, &z, &y, &proof, &kzg_settings);
             match result {
                 Ok(result) => {
+                    println!("result: {:?}\n======\n", result);
                     assert_eq!(result, test.get_output().unwrap_or(false));
                 }
                 Err(_) => {

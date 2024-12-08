@@ -1,4 +1,4 @@
-#![cfg_attr(not(test), no_std)]
+// #![cfg_attr(not(test), no_std)]
 #[macro_use]
 extern crate alloc;
 
@@ -8,6 +8,7 @@ pub mod enums;
 pub mod kzg_proof;
 pub mod pairings;
 pub mod trusted_setup;
+pub mod wrappers;
 
 pub use consts::*;
 pub use dtypes::*;

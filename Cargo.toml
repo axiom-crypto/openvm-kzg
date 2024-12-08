@@ -13,11 +13,16 @@ axvm-pairing-guest = { path = "../afs-prototype/extensions/pairing/guest", featu
     "bls12_381",
 ] }
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
-bls12_381 = { version = "0.8.0", package = "sp1_bls12_381", default-features = false, features = [
+bls12_381 = { path = "../tmp/bls12_381", default-features = false, features = [
     "groups",
     "pairings",
     "alloc",
 ] }
+# bls12_381 = { version = "0.8.0", default-features = false, features = [
+#     "groups",
+#     "pairings",
+#     "alloc",
+# ] }
 sha2 = { version = "0.10.8", default-features = false }
 ff = { version = "0.13.0", default-features = false, features = ["derive"] }
 spin = { version = "0.9.8", default-features = false, features = ["once"] }
@@ -33,9 +38,14 @@ axvm-ecc-guest = { path = "../afs-prototype/extensions/ecc/guest" }
 axvm-pairing-guest = { path = "../afs-prototype/extensions/pairing/guest", features = [
     "bls12_381",
 ] }
-bls12_381 = { version = "0.8.0", default-features = false, features = [
+bls12_381 = { path = "../tmp/bls12_381", default-features = false, features = [
     "groups",
     "pairings",
     "alloc",
 ] }
+# bls12_381 = { version = "0.8.0", default-features = false, features = [
+#     "groups",
+#     "pairings",
+#     "alloc",
+# ] }
 hex = "0.4.3"
