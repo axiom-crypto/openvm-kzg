@@ -20,7 +20,8 @@ fn test_verify_kzg_proof() {
         // .with_options(vec!["--release"]);
         // .with_features(vec!["zkvm"])
         ;
-    let pkg_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).to_path_buf();
+    let mut pkg_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).to_path_buf();
+    pkg_dir.push("examples");
     let verify_kzg = sdk.build(guest_opts.clone(), &pkg_dir).unwrap();
     let transpiler = Transpiler::<F>::default()
         .with_extension(Rv32ITranspilerExtension)
