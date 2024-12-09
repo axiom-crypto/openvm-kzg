@@ -3,8 +3,7 @@
 
 extern crate alloc;
 
-use spin::Once;
-
+use alloc::vec::Vec;
 use axvm::io::read;
 use bls12_381::{G1Affine, G2Affine, Scalar};
 use kzg_rs::{Bytes32, Bytes48, KzgProof, KzgSettings};
@@ -22,19 +21,40 @@ struct KzgInputs {
     y_bytes: Bytes32,
     #[serde(deserialize_with = "deserialize_u8_48")]
     proof_bytes: Bytes48,
-    #[serde(deserialize_with = "deserialize_kzg_settings")]
-    kzg_settings: KzgSettings,
+    // #[serde(deserialize_with = "deserialize_kzg_settings")]
+    // kzg_settings: KzgSettings,
+}
+
+// Add this struct above main
+struct KzgSettingsData {
+    roots: Vec<Scalar>,
+    g1s: Vec<G1Affine>,
+    g2s: Vec<G2Affine>,
 }
 
 pub fn main() {
     let io: KzgInputs = read();
+
+    // SAFETY: We know these values will be valid for the duration of their use,
+    // even though they're not actually 'static
+    let kzg_settings = unsafe {
+        KzgSettings {
+            roots_of_unity: core::mem::transmute::<&[Scalar], &'static [Scalar]>(&[Scalar::one()]),
+            g1_points: core::mem::transmute::<&[G1Affine], &'static [G1Affine]>(&[
+                G1Affine::generator(),
+            ]),
+            g2_points: core::mem::transmute::<&[G2Affine], &'static [G2Affine]>(&[
+                G2Affine::generator(),
+            ]),
+        }
+    };
 
     let res = KzgProof::verify_kzg_proof(
         &io.commitment_bytes,
         &io.z_bytes,
         &io.y_bytes,
         &io.proof_bytes,
-        &io.kzg_settings,
+        &kzg_settings,
     );
 
     assert!(res.is_ok());
@@ -106,17 +126,17 @@ where
 }
 
 // Temp deserializer to get things working
-fn deserialize_kzg_settings<'de, D>(deserializer: D) -> Result<KzgSettings, D::Error>
-where
-    D: serde::Deserializer<'de>,
-{
-    static ROOTS: Once<[Scalar; 1]> = Once::new();
-    static G1: Once<[G1Affine; 1]> = Once::new();
-    static G2: Once<[G2Affine; 1]> = Once::new();
+// fn deserialize_kzg_settings<'de, D>(deserializer: D) -> Result<KzgSettings, D::Error>
+// where
+//     D: serde::Deserializer<'de>,
+// {
+//     let s = [Scalar::one()];
+//     let g1 = [G1Affine::generator()];
+//     let g2 = [G2Affine::generator()];
 
-    Ok(KzgSettings {
-        roots_of_unity: ROOTS.call_once(|| [Scalar::one()]),
-        g1_points: G1.call_once(|| [G1Affine::generator()]),
-        g2_points: G2.call_once(|| [G2Affine::generator()]),
-    })
-}
+//     Ok(KzgSettings {
+//         roots_of_unity: &s.clone(),
+//         g1_points: &g1.clone(),
+//         g2_points: &g2.clone(),
+//     })
+// }
