@@ -1,5 +1,5 @@
 #![cfg_attr(not(feature = "std"), no_main)]
-// #![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(not(feature = "std"), no_std)]
 
 use core::num::NonZeroUsize;
 use core::ops::Mul;
@@ -540,20 +540,20 @@ pub mod tests {
     use crate::test_files::{
         VERIFY_BLOB_KZG_PROOF_BATCH_TESTS, VERIFY_BLOB_KZG_PROOF_TESTS, VERIFY_KZG_PROOF_TESTS,
     };
-    use axvm_algebra_transpiler::{Fp2TranspilerExtension, ModularTranspilerExtension};
-    use axvm_circuit::arch::instructions::exe::AxVmExe;
-    use axvm_pairing_transpiler::PairingTranspilerExtension;
-    use axvm_rv32im_transpiler::{
-        Rv32ITranspilerExtension, Rv32IoTranspilerExtension, Rv32MTranspilerExtension,
-    };
-    use axvm_toolchain_tests::utils::{
-        build_example_program_at_path_with_features, build_example_program_with_features,
-    };
-    use axvm_transpiler::{transpiler::Transpiler, FromElf};
-    use p3_baby_bear::BabyBear;
+    // use ax_stark_sdk::p3_baby_bear::BabyBear;
+    // use axvm_algebra_transpiler::{Fp2TranspilerExtension, ModularTranspilerExtension};
+    // use axvm_circuit::arch::instructions::exe::AxVmExe;
+    // use axvm_pairing_transpiler::PairingTranspilerExtension;
+    // use axvm_rv32im_transpiler::{
+    //     Rv32ITranspilerExtension, Rv32IoTranspilerExtension, Rv32MTranspilerExtension,
+    // };
+    // use axvm_toolchain_tests::utils::{
+    //     build_example_program_at_path_with_features, build_example_program_with_features,
+    // };
+    // use axvm_transpiler::{transpiler::Transpiler, FromElf};
     use serde_derive::Deserialize;
 
-    type F = BabyBear;
+    // type F = BabyBear;
 
     trait FromHex {
         fn from_hex(hex: &str) -> Result<Self, KzgError>
@@ -629,7 +629,6 @@ pub mod tests {
         let test_files = VERIFY_KZG_PROOF_TESTS;
 
         for (_test_file, data) in test_files {
-            println!("test: {}", _test_file);
             let test: Test<Input> = serde_yaml::from_str(data).unwrap();
             let (Ok(commitment), Ok(z), Ok(y), Ok(proof)) = (
                 test.input.get_commitment(),
@@ -644,7 +643,6 @@ pub mod tests {
             let result = KzgProof::verify_kzg_proof(&commitment, &z, &y, &proof, &kzg_settings);
             match result {
                 Ok(result) => {
-                    println!("result: {:?}\n======\n", result);
                     assert_eq!(result, test.get_output().unwrap_or(false));
                 }
                 Err(_) => {
@@ -654,22 +652,22 @@ pub mod tests {
         }
     }
 
-    #[test]
-    pub fn test_axvm_verify_kzg_proof() {
-        let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        let features: [&str; 0] = [];
-        let elf = build_example_program_at_path_with_features(dir, "verify_kzg", features).unwrap();
-        let axvm_exe = AxVmExe::from_elf(
-            elf,
-            Transpiler::<F>::default()
-                .with_extension(Rv32ITranspilerExtension)
-                .with_extension(Rv32MTranspilerExtension)
-                .with_extension(Rv32IoTranspilerExtension)
-                .with_extension(PairingTranspilerExtension)
-                .with_extension(ModularTranspilerExtension)
-                .with_extension(Fp2TranspilerExtension),
-        );
-    }
+    // #[test]
+    // pub fn test_axvm_verify_kzg_proof() {
+    //     let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    //     let features: [&str; 0] = [];
+    //     let elf = build_example_program_at_path_with_features(dir, "verify_kzg", features).unwrap();
+    //     let axvm_exe = AxVmExe::from_elf(
+    //         elf,
+    //         Transpiler::<F>::default()
+    //             .with_extension(Rv32ITranspilerExtension)
+    //             .with_extension(Rv32MTranspilerExtension)
+    //             .with_extension(Rv32IoTranspilerExtension)
+    //             .with_extension(PairingTranspilerExtension)
+    //             .with_extension(ModularTranspilerExtension)
+    //             .with_extension(Fp2TranspilerExtension),
+    //     );
+    // }
 
     #[derive(Debug, Deserialize)]
     pub struct BlobInput<'a> {

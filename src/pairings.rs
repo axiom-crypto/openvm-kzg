@@ -7,30 +7,11 @@ use bls12_381::{G1Affine, G2Affine};
 
 /// Verifies the pairing of two G1 and two G2 points are equivalent using the multi-miller loop
 pub fn pairings_verify(a1: G1Affine, a2: G2Affine, b1: G1Affine, b2: G2Affine) -> bool {
-    println!("a1: {:?}", a1);
-    println!("a2: {:?}", a2);
-    // println!("b1: {:?}", b1);
-    // println!("b2: {:?}", b2);
-    let a2_x_3 = a2.x.square() * a2.x;
-    let a2_y_2 = a2.y.square();
-    println!("a2.x^3: {:?}", a2_x_3);
-    println!("a2.y^2: {:?}", a2_y_2);
-    println!("a2.y^2 - a2.x^3: {:?}", a2_y_2 - a2_x_3);
-    println!("----");
     // Convert to AffinePoint
     let p0 = g1_affine_to_affine_point(a1);
     let p1 = g2_affine_to_affine_point(a2);
     let q0 = g1_affine_to_affine_point(b1);
     let q1 = g2_affine_to_affine_point(b2);
-    println!("p0: {:?}", p0);
-    println!("p1: {:?}", p1.clone());
-    let p1_x_3 = p1.clone().x * p1.clone().x * p1.clone().x;
-    let p1_y_2 = p1.clone().y * p1.clone().y;
-    println!("p1.x^3: {:?}", p1_x_3);
-    println!("p1.y^2: {:?}", p1_y_2);
-    println!("p1.y^2 - p1.x^3: {:?}", p1_y_2 - p1_x_3);
-    // println!("p1: {:?}", p1);
-    // println!("q1: {:?}", q1);
 
     // // Check that input points are on the curve
     assert!(g1_affine_is_on_curve(&p0));
@@ -67,11 +48,7 @@ pub fn g2_affine_to_affine_point(a: G2Affine) -> AffinePoint<Fp2> {
     AffinePoint::<Fp2>::new(x, y)
 }
 
-pub fn g1_affine_is_on_curve(p: &AffinePoint<Fp>) -> bool
-// where
-//     F: Field + core::ops::Mul<Output = Fp>,
-//     for<'a> &'a F: core::ops::Mul<&'a F, Output = F>,
-{
+pub fn g1_affine_is_on_curve(p: &AffinePoint<Fp>) -> bool {
     if p.is_infinity() {
         return true;
     }
@@ -84,11 +61,7 @@ pub fn g1_affine_is_on_curve(p: &AffinePoint<Fp>) -> bool
     y_2 - x_3 == four
 }
 
-pub fn g2_affine_is_on_curve(p: &AffinePoint<Fp2>) -> bool
-// where
-//     F: Field + core::ops::Mul<Output = Fp>,
-//     for<'a> &'a F: core::ops::Mul<&'a F, Output = F>,
-{
+pub fn g2_affine_is_on_curve(p: &AffinePoint<Fp2>) -> bool {
     if p.is_infinity() {
         return true;
     }
