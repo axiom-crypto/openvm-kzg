@@ -5,4 +5,5 @@ edition = "2021"
 
 [dependencies]
 axvm = { path = "../../afs-prototype/crates/toolchain/axvm", default-features = false }
+kzg-rs = { path = "..", default-features = false }
 serde = { version = "1.0.200", default-features = false, features = ["derive"] }
