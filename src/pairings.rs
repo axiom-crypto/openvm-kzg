@@ -1,7 +1,4 @@
-use axvm_ecc_guest::{
-    algebra::{Field, IntMod},
-    AffinePoint,
-};
+use axvm_ecc_guest::{algebra::IntMod, AffinePoint};
 use axvm_pairing_guest::{
     bls12_381::{Bls12_381, Fp, Fp2},
     pairing::PairingCheck,
@@ -41,7 +38,7 @@ pub fn pairings_verify(a1: G1Affine, a2: G2Affine, b1: G1Affine, b2: G2Affine) -
     assert!(g1_affine_is_on_curve(&q0));
     assert!(g2_affine_is_on_curve(&q1));
 
-    Bls12_381::pairing_check(&[p0, q0], &[-p1, q1]).is_ok()
+    Bls12_381::pairing_check(&[p0.neg_borrow(), q0], &[p1, q1]).is_ok()
 }
 
 pub fn g1_affine_to_affine_point(a: G1Affine) -> AffinePoint<Fp> {

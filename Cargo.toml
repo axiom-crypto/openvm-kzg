@@ -8,10 +8,19 @@ version = "0.2.3"
 repository = "https://github.com/succinctlabs/kzg-rs"
 
 [dependencies]
+axvm-circuit = { path = "../afs-prototype/crates/vm" }
 axvm-ecc-guest = { path = "../afs-prototype/extensions/ecc/guest" }
 axvm-pairing-guest = { path = "../afs-prototype/extensions/pairing/guest", features = [
     "bls12_381",
 ] }
+axvm-transpiler = { path = "../afs-prototype/crates/toolchain/transpiler" }
+axvm-toolchain-tests = { path = "../afs-prototype/crates/toolchain/tests" }
+axvm-algebra-transpiler = { path = "../afs-prototype/extensions/algebra/transpiler" }
+axvm-pairing-transpiler = { path = "../afs-prototype/extensions/pairing/transpiler" }
+axvm-rv32im-transpiler = { path = "../afs-prototype/extensions/rv32im/transpiler" }
+p3-baby-bear = { git = "https://github.com/Plonky3/Plonky3.git", features = [
+    "nightly-features",
+], rev = "9b267c4" }
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 bls12_381 = { path = "../tmp/bls12_381", default-features = false, features = [
     "groups",
@@ -26,6 +35,7 @@ bls12_381 = { path = "../tmp/bls12_381", default-features = false, features = [
 sha2 = { version = "0.10.8", default-features = false }
 ff = { version = "0.13.0", default-features = false, features = ["derive"] }
 spin = { version = "0.9.8", default-features = false, features = ["once"] }
+mimalloc = "0.1.43"
 
 [dev-dependencies]
 hex = "0.4.3"
@@ -34,6 +44,7 @@ serde_derive = "1.0"
 serde = { version = "^1.0", features = ["derive"] }
 
 [build-dependencies]
+axvm-circuit = { path = "../afs-prototype/crates/vm" }
 axvm-ecc-guest = { path = "../afs-prototype/extensions/ecc/guest" }
 axvm-pairing-guest = { path = "../afs-prototype/extensions/pairing/guest", features = [
     "bls12_381",
@@ -43,6 +54,11 @@ bls12_381 = { path = "../tmp/bls12_381", default-features = false, features = [
     "pairings",
     "alloc",
 ] }
+axvm-transpiler = { path = "../afs-prototype/crates/toolchain/transpiler" }
+axvm-toolchain-tests = { path = "../afs-prototype/crates/toolchain/tests" }
+p3-baby-bear = { git = "https://github.com/Plonky3/Plonky3.git", features = [
+    "nightly-features",
+], rev = "9b267c4" }
 # bls12_381 = { version = "0.8.0", default-features = false, features = [
 #     "groups",
 #     "pairings",
