@@ -1,5 +1,7 @@
-#![cfg_attr(not(feature = "std"), no_main)]
-#![cfg_attr(not(feature = "std"), no_std)]
+// #![cfg_attr(not(feature = "std"), no_main)]
+// #![cfg_attr(not(feature = "std"), no_std)]
+#![no_main]
+#![no_std]
 
 extern crate alloc;
 
@@ -11,7 +13,7 @@ use kzg_rs::{Bytes32, Bytes48, KzgProof, KzgSettings};
 axvm::entry!(main);
 
 /// Inputs to the KZG proof verification
-#[derive(serde_derive::Deserialize)]
+#[derive(serde::Deserialize)]
 struct KzgInputs {
     #[serde(deserialize_with = "deserialize_u8_48")]
     commitment_bytes: Bytes48,
@@ -23,13 +25,6 @@ struct KzgInputs {
     proof_bytes: Bytes48,
     // #[serde(deserialize_with = "deserialize_kzg_settings")]
     // kzg_settings: KzgSettings,
-}
-
-// Add this struct above main
-struct KzgSettingsData {
-    roots: Vec<Scalar>,
-    g1s: Vec<G1Affine>,
-    g2s: Vec<G2Affine>,
 }
 
 pub fn main() {

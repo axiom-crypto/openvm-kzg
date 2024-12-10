@@ -1,6 +1,3 @@
-#![cfg_attr(not(feature = "std"), no_main)]
-#![cfg_attr(not(feature = "std"), no_std)]
-
 use core::num::NonZeroUsize;
 use core::ops::Mul;
 
@@ -13,7 +10,7 @@ use crate::{
 };
 
 use alloc::{string::ToString, vec::Vec};
-use axvm_ecc_guest::msm;
+// use axvm_ecc_guest::msm;
 use bls12_381::{G1Affine, G1Projective, G2Affine, G2Projective, Scalar};
 use ff::derive::sbb;
 use sha2::{Digest, Sha256};

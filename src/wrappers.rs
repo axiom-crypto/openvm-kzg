@@ -1,9 +1,9 @@
 use core::ops::SubAssign;
 
-use axvm_ecc_guest::Group;
-use bls12_381::G1Affine;
+// use axvm_ecc_guest::Group;
+// use bls12_381::G1Affine;
 
-pub struct G1AffineGroup(pub G1Affine);
+// pub struct G1AffineGroup(pub G1Affine);
 
 // impl Group for G1AffineGroup {
 //     type SelfRef<'a>

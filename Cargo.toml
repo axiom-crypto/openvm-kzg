@@ -16,14 +16,10 @@ repository = "https://github.com/succinctlabs/kzg-rs"
 #     "bls12_381",
 # ], default-features = false }
 # ax-stark-sdk = { path = "../afs-prototype/crates/stark-sdk", default-features = false }
-axvm = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-sdk = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-build = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 axvm-ecc-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 axvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false, features = [
     "bls12_381",
 ] }
-ax-stark-sdk = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 # bls12_381 = { path = "../tmp/bls12_381", default-features = false, features = [
@@ -49,10 +45,14 @@ serde = { version = "^1.0", default-features = false, features = ["derive"] }
 # axvm-algebra-transpiler = { path = "../afs-prototype/extensions/algebra/transpiler", default-features = false }
 # axvm-pairing-transpiler = { path = "../afs-prototype/extensions/pairing/transpiler", default-features = false }
 # axvm-rv32im-transpiler = { path = "../afs-prototype/extensions/rv32im/transpiler", default-features = false }
+axvm = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
+axvm-sdk = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
+axvm-build = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 axvm-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 axvm-algebra-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 axvm-pairing-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 axvm-rv32im-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
+ax-stark-sdk = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 
 [build-dependencies]
 # axvm-circuit = { path = "../afs-prototype/crates/vm", default-features = false }
