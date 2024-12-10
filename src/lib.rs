@@ -12,6 +12,7 @@ pub mod enums;
 pub mod kzg_proof;
 pub mod pairings;
 pub mod program_inputs;
+#[cfg(not(feature = "program-test"))]
 pub mod trusted_setup;
 pub mod wrappers;
 
@@ -19,14 +20,16 @@ pub use consts::*;
 pub use dtypes::*;
 pub use kzg_proof::KzgProof;
 pub use pairings::pairings_verify;
+pub use program_inputs::*;
+#[cfg(not(feature = "program-test"))]
 pub use trusted_setup::*;
 
 pub use enums::KzgError;
 
-#[cfg(any(test, feature = "program-test"))]
+#[cfg(not(feature = "program-test"))]
 pub mod test_utils;
 
-#[cfg(any(test, feature = "program-test"))]
+#[cfg(not(feature = "program-test"))]
 pub mod test_files {
     // Tests
     pub const VERIFY_KZG_PROOF_TESTS: [(&str, &str); 122] = [

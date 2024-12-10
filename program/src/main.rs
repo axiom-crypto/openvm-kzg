@@ -26,6 +26,26 @@ pub fn main() {
 
     // SAFETY: We know these values will be valid for the duration of their use,
     // even though they're not actually 'static
+    // let kzg_settings = unsafe {
+    //     KzgSettings {
+    //         roots_of_unity: core::mem::transmute::<&[Scalar], &'static [Scalar]>(
+    //             &io.kzg_settings.roots_of_unity,
+    //         ),
+    //         g1_points: core::mem::transmute::<&[G1Affine], &'static [G1Affine]>(
+    //             &io.kzg_settings.g1_points,
+    //         ),
+    //         g2_points: core::mem::transmute::<&[G2Affine], &'static [G2Affine]>(
+    //             &io.kzg_settings.g2_points,
+    //         ),
+    //     }
+    // };
+
+    // let kzg_settings = KzgSettings {
+    //     roots_of_unity: Box::leak(io.kzg_settings.roots_of_unity.into_boxed_slice()),
+    //     g1_points: Box::leak(io.kzg_settings.g1_points.into_boxed_slice()),
+    //     g2_points: Box::leak(io.kzg_settings.g2_points.into_boxed_slice()),
+    // };
+
     let kzg_settings = unsafe {
         KzgSettings {
             roots_of_unity: core::mem::transmute::<&[Scalar], &'static [Scalar]>(&[Scalar::one()]),

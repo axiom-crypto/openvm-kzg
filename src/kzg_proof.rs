@@ -2,7 +2,7 @@ use core::num::NonZeroUsize;
 use core::ops::Mul;
 
 use crate::enums::KzgError;
-use crate::trusted_setup::KzgSettings;
+use crate::program_inputs::KzgSettings;
 use crate::{
     dtypes::*, pairings_verify, BYTES_PER_BLOB, BYTES_PER_COMMITMENT, BYTES_PER_FIELD_ELEMENT,
     BYTES_PER_PROOF, CHALLENGE_INPUT_SIZE, DOMAIN_STR_LENGTH, FIAT_SHAMIR_PROTOCOL_DOMAIN, MODULUS,
