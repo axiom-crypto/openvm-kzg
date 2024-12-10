@@ -2334,11 +2334,13 @@ version = "0.2.3"
 dependencies = [
  "ax-stark-sdk",
  "axvm",
+ "axvm-algebra-circuit",
  "axvm-algebra-guest",
  "axvm-algebra-transpiler",
  "axvm-build",
  "axvm-circuit",
  "axvm-ecc-guest",
+ "axvm-pairing-circuit",
  "axvm-pairing-guest",
  "axvm-pairing-transpiler",
  "axvm-rv32im-circuit",

@@ -2,14 +2,19 @@ use std::path::PathBuf;
 
 use ax_stark_sdk::ax_stark_backend::p3_field::AbstractField;
 use ax_stark_sdk::p3_baby_bear::BabyBear;
+use axvm_algebra_circuit::{Fp2Extension, ModularExtension};
 use axvm_algebra_transpiler::{Fp2TranspilerExtension, ModularTranspilerExtension};
 use axvm_build::GuestOptions;
+use axvm_circuit::arch::SystemConfig;
 use axvm_circuit::utils::new_air_test_with_min_segments;
+use axvm_pairing_circuit::{PairingCurve, PairingExtension};
+use axvm_pairing_guest::bls12_381::BLS12_381_MODULUS;
 use axvm_pairing_transpiler::PairingTranspilerExtension;
 use axvm_rv32im_circuit::Rv32IConfig;
 use axvm_rv32im_transpiler::{
     Rv32ITranspilerExtension, Rv32IoTranspilerExtension, Rv32MTranspilerExtension,
 };
+use axvm_sdk::config::SdkVmConfig;
 use axvm_sdk::Sdk;
 use axvm_transpiler::transpiler::Transpiler;
 use kzg_rs::test_files::{
@@ -41,7 +46,22 @@ fn test_verify_kzg_proof() {
     let exe = sdk.transpile(verify_kzg, transpiler).unwrap();
 
     // Config
-    let config = Rv32IConfig::default();
+    // let config = Rv32IConfig::default();
+    let config = SdkVmConfig::builder()
+        .system(
+            SystemConfig::default()
+                .with_max_segment_len(200)
+                .with_continuations()
+                .with_public_values(16),
+        )
+        .native(Default::default())
+        .rv32i(Default::default())
+        .io(Default::default())
+        .pairing(PairingExtension::new(vec![PairingCurve::Bls12_381]))
+        .modular(ModularExtension::new(vec![BLS12_381_MODULUS.clone()]))
+        .fp2(Fp2Extension::new(vec![BLS12_381_MODULUS.clone()]))
+        // .weierstrass(WeierstrassExtension::new(vec![]))
+        .build();
 
     // Get inputs from disk
     let kzg_settings = KzgSettings::load_trusted_setup_file().unwrap();

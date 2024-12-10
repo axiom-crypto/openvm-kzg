@@ -1,14 +1,12 @@
 use axvm_ecc_guest::{algebra::IntMod, AffinePoint};
-use axvm_pairing_guest::{
-    bls12_381::{Bls12_381, Fp, Fp2},
-    pairing::PairingCheck,
-};
+use axvm_pairing_guest::bls12_381::{Fp, Fp2};
 use bls12_381::{G1Affine, G2Affine};
 
 /// Verifies the pairing of two G1 and two G2 points are equivalent using the multi-miller loop
 pub fn pairings_verify(a1: G1Affine, a2: G2Affine, b1: G1Affine, b2: G2Affine) -> bool {
     #[cfg(feature = "program-test")]
     {
+        use axvm_pairing_guest::{bls12_381::Bls12_381, pairing::PairingCheck};
         // Convert to AffinePoint
         let p0 = g1_affine_to_affine_point(a1);
         let p1 = g2_affine_to_affine_point(a2);
@@ -21,10 +19,11 @@ pub fn pairings_verify(a1: G1Affine, a2: G2Affine, b1: G1Affine, b2: G2Affine) -
         assert!(g1_affine_is_on_curve(&q0));
         assert!(g2_affine_is_on_curve(&q1));
 
-        Bls12_381::pairing_check(&[p0.neg_borrow(), q0], &[p1, q1]).is_ok()
+        Bls12_381::pairing_check(&[-p0, q0], &[p1, q1]).is_ok()
     }
     #[cfg(not(feature = "program-test"))]
     {
+        // This is run during the build process
         use bls12_381::{multi_miller_loop, G2Prepared, Gt};
         multi_miller_loop(&[(&-a1, &G2Prepared::from(a2)), (&b1, &G2Prepared::from(b2))])
             .final_exponentiation()

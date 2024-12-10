@@ -40,7 +40,9 @@ axvm-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", re
     "test-utils",
 ] }
 axvm-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
+axvm-algebra-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 axvm-algebra-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
+axvm-pairing-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 axvm-pairing-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 axvm-rv32im-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 axvm-rv32im-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
