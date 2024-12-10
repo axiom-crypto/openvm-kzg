@@ -1,13 +1,7 @@
-use crate::{enums::KzgError, program_inputs::KzgSettings, NUM_G1_POINTS, NUM_ROOTS_OF_UNITY};
+use crate::{types::KzgSettings, NUM_G1_POINTS, NUM_G2_POINTS, NUM_ROOTS_OF_UNITY};
 
-use alloc::sync::Arc;
 use bls12_381::{G1Affine, G2Affine, Scalar};
-use core::{
-    hash::{Hash, Hasher},
-    mem::transmute,
-    slice,
-};
-use serde::{Deserialize, Serialize};
+use core::{mem::transmute, slice};
 use spin::Once;
 
 pub fn get_roots_of_unity() -> &'static [Scalar] {
@@ -30,7 +24,7 @@ pub fn get_g2_points() -> &'static [G2Affine] {
     static G2_POINTS: Once<&'static [G2Affine]> = Once::new();
     G2_POINTS.call_once(|| {
         let bytes = include_bytes!(concat!(env!("OUT_DIR"), "/g2.bin"));
-        unsafe { transmute(slice::from_raw_parts(bytes.as_ptr(), NUM_G1_POINTS)) }
+        unsafe { transmute(slice::from_raw_parts(bytes.as_ptr(), NUM_G2_POINTS)) }
     })
 }
 

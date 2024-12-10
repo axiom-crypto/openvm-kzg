@@ -17,20 +17,20 @@ pub struct KzgInputs {
     pub z_bytes: Bytes32,
     pub y_bytes: Bytes32,
     pub proof_bytes: Bytes48,
-    // #[serde(
-    //     serialize_with = "serialize_kzg_settings",
-    //     deserialize_with = "deserialize_kzg_settings"
-    // )]
-    // pub kzg_settings: KzgSettingsOwned,
+    #[serde(
+        serialize_with = "serialize_kzg_settings",
+        deserialize_with = "deserialize_kzg_settings"
+    )]
+    pub kzg_settings: KzgSettingsInput,
 }
 
-/// Copy of KzgSettings struct without static lifetimes
-// #[derive(Debug, Clone)]
-// pub struct KzgSettingsInput {
-//     pub roots_of_unity: Vec<Scalar>,
-//     pub g1_points: Vec<G1Affine>,
-//     pub g2_points: Vec<G2Affine>,
-// }
+/// Copy of KzgSettings struct as Vecs
+#[derive(Debug, Clone)]
+pub struct KzgSettingsInput {
+    pub roots_of_unity: Vec<Scalar>,
+    pub g1_points: Vec<G1Affine>,
+    pub g2_points: Vec<G2Affine>,
+}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[repr(C, align(4))]
@@ -137,8 +137,9 @@ impl<'de> Deserialize<'de> for Bytes32 {
     }
 }
 
+// # KzgSettingsInput
 fn serialize_kzg_settings<S>(
-    kzg_settings: &KzgSettingsOwned,
+    kzg_settings: &KzgSettingsInput,
     serializer: S,
 ) -> Result<S::Ok, S::Error>
 where
@@ -146,7 +147,7 @@ where
 {
     let mut seq = serializer.serialize_seq(Some(3))?;
 
-    // Serialize each scalar individually to avoid large array serialization
+    // Serialize each scalar individually
     let roots_bytes: Vec<[u8; 32]> = kzg_settings
         .roots_of_unity
         .iter()
@@ -154,30 +155,82 @@ where
         .collect();
     seq.serialize_element(&roots_bytes)?;
 
-    // Same for G1/G2 points
+    // Serialize G1/G2 points with infinity flags
     let g1_bytes = kzg_settings
         .g1_points
         .iter()
-        .flat_map(|x| {
-            let mut v = x.to_uncompressed().to_vec();
-            v.push(x.is_identity().unwrap_u8());
-            v
-        })
+        .map(|x| x.to_uncompressed())
+        .flat_map(|arr| arr.into_iter())
         .collect::<Vec<_>>();
     seq.serialize_element(&g1_bytes)?;
 
     let g2_bytes = kzg_settings
         .g2_points
         .iter()
-        .flat_map(|x| {
-            let mut v = x.to_uncompressed().to_vec();
-            v.push(x.is_identity().unwrap_u8());
-            v
-        })
+        .map(|x| x.to_uncompressed())
+        .flat_map(|arr| arr.into_iter())
         .collect::<Vec<_>>();
     seq.serialize_element(&g2_bytes)?;
 
     seq.end()
+}
+
+fn deserialize_kzg_settings<'de, D>(deserializer: D) -> Result<KzgSettingsInput, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    use core::convert::TryInto;
+    struct KzgVisitor;
+
+    impl<'de> serde::de::Visitor<'de> for KzgVisitor {
+        type Value = KzgSettingsInput;
+
+        fn expecting(&self, formatter: &mut core::fmt::Formatter) -> core::fmt::Result {
+            formatter.write_str("sequence of 3 elements for KzgSettings")
+        }
+
+        fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+        where
+            A: serde::de::SeqAccess<'de>,
+        {
+            use serde::de::Error;
+
+            // Deserialize roots_of_unity
+            let roots: Vec<[u8; 32]> = seq
+                .next_element()?
+                .ok_or_else(|| Error::invalid_length(0, &self))?;
+            let roots_of_unity = roots
+                .iter()
+                .map(|bytes| Scalar::from_bytes(bytes).unwrap())
+                .collect();
+
+            // Deserialize g1_points with infinity flag
+            let g1_bytes: Vec<u8> = seq
+                .next_element()?
+                .ok_or_else(|| Error::invalid_length(1, &self))?;
+            let g1_points = g1_bytes
+                .chunks(96) // 96 bytes for point + 1 byte for infinity flag
+                .map(|chunk| G1Affine::from_uncompressed(chunk.try_into().unwrap()).unwrap())
+                .collect();
+
+            // Deserialize g2_points with infinity flag
+            let g2_bytes: Vec<u8> = seq
+                .next_element()?
+                .ok_or_else(|| Error::invalid_length(2, &self))?;
+            let g2_points = g2_bytes
+                .chunks(192) // 192 bytes for point + 1 byte for infinity flag
+                .map(|chunk| G2Affine::from_uncompressed(chunk.try_into().unwrap()).unwrap())
+                .collect();
+
+            Ok(KzgSettingsInput {
+                roots_of_unity,
+                g1_points,
+                g2_points,
+            })
+        }
+    }
+
+    deserializer.deserialize_seq(KzgVisitor)
 }
 
 // fn serialize_kzg_settings<S>(
@@ -216,81 +269,125 @@ where
 //     seq.end()
 // }
 
-fn deserialize_kzg_settings<'de, D>(deserializer: D) -> Result<KzgSettingsOwned, D::Error>
-where
-    D: serde::Deserializer<'de>,
-{
-    use core::convert::TryInto;
-    struct KzgVisitor;
+// # KzgSettingsOwned
+// fn serialize_kzg_settings<S>(
+//     kzg_settings: &KzgSettingsOwned,
+//     serializer: S,
+// ) -> Result<S::Ok, S::Error>
+// where
+//     S: serde::Serializer,
+// {
+//     let mut seq = serializer.serialize_seq(Some(3))?;
 
-    impl<'de> serde::de::Visitor<'de> for KzgVisitor {
-        type Value = KzgSettingsOwned;
+//     // Serialize each scalar individually to avoid large array serialization
+//     let roots_bytes: Vec<[u8; 32]> = kzg_settings
+//         .roots_of_unity
+//         .iter()
+//         .map(|x| x.to_bytes())
+//         .collect();
+//     seq.serialize_element(&roots_bytes)?;
 
-        fn expecting(&self, formatter: &mut core::fmt::Formatter) -> core::fmt::Result {
-            formatter.write_str("sequence of 3 elements for KzgSettings")
-        }
+//     // Same for G1/G2 points
+//     let g1_bytes = kzg_settings
+//         .g1_points
+//         .iter()
+//         .flat_map(|x| {
+//             let mut v = x.to_uncompressed().to_vec();
+//             v.push(x.is_identity().unwrap_u8());
+//             v
+//         })
+//         .collect::<Vec<_>>();
+//     seq.serialize_element(&g1_bytes)?;
 
-        fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
-        where
-            A: serde::de::SeqAccess<'de>,
-        {
-            use serde::de::Error;
+//     let g2_bytes = kzg_settings
+//         .g2_points
+//         .iter()
+//         .flat_map(|x| {
+//             let mut v = x.to_uncompressed().to_vec();
+//             v.push(x.is_identity().unwrap_u8());
+//             v
+//         })
+//         .collect::<Vec<_>>();
+//     seq.serialize_element(&g2_bytes)?;
 
-            // Deserialize roots_of_unity (unchanged)
-            let roots: Vec<[u8; 32]> = seq
-                .next_element()?
-                .ok_or_else(|| Error::invalid_length(0, &self))?;
-            let roots_of_unity = roots
-                .iter()
-                .map(|bytes| Scalar::from_bytes(bytes).unwrap())
-                .collect::<Vec<_>>();
+//     seq.end()
+// }
 
-            // Deserialize g1_points with infinity flag
-            let g1_bytes: Vec<u8> = seq
-                .next_element()?
-                .ok_or_else(|| Error::invalid_length(1, &self))?;
-            let g1_points = g1_bytes
-                .chunks(97) // 96 bytes for point + 1 byte for infinity flag
-                .map(|chunk| {
-                    let (point_bytes, infinity_flag) = chunk.split_at(96);
-                    let point =
-                        G1Affine::from_uncompressed(point_bytes.try_into().unwrap()).unwrap();
-                    if infinity_flag[0] == 1 {
-                        G1Affine::identity()
-                    } else {
-                        point
-                    }
-                })
-                .collect::<Vec<_>>();
+// fn deserialize_kzg_settings<'de, D>(deserializer: D) -> Result<KzgSettingsOwned, D::Error>
+// where
+//     D: serde::Deserializer<'de>,
+// {
+//     use core::convert::TryInto;
+//     struct KzgVisitor;
 
-            // Deserialize g2_points with infinity flag
-            let g2_bytes: Vec<u8> = seq
-                .next_element()?
-                .ok_or_else(|| Error::invalid_length(2, &self))?;
-            let g2_points = g2_bytes
-                .chunks(193) // 192 bytes for point + 1 byte for infinity flag
-                .map(|chunk| {
-                    let (point_bytes, infinity_flag) = chunk.split_at(192);
-                    let point =
-                        G2Affine::from_uncompressed(point_bytes.try_into().unwrap()).unwrap();
-                    if infinity_flag[0] == 1 {
-                        G2Affine::identity()
-                    } else {
-                        point
-                    }
-                })
-                .collect::<Vec<_>>();
+//     impl<'de> serde::de::Visitor<'de> for KzgVisitor {
+//         type Value = KzgSettingsOwned;
 
-            Ok(KzgSettingsOwned {
-                roots_of_unity: roots_of_unity.try_into().unwrap(),
-                g1_points: g1_points.try_into().unwrap(),
-                g2_points: g2_points.try_into().unwrap(),
-            })
-        }
-    }
+//         fn expecting(&self, formatter: &mut core::fmt::Formatter) -> core::fmt::Result {
+//             formatter.write_str("sequence of 3 elements for KzgSettings")
+//         }
 
-    deserializer.deserialize_seq(KzgVisitor)
-}
+//         fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+//         where
+//             A: serde::de::SeqAccess<'de>,
+//         {
+//             use serde::de::Error;
+
+//             // Deserialize roots_of_unity (unchanged)
+//             let roots: Vec<[u8; 32]> = seq
+//                 .next_element()?
+//                 .ok_or_else(|| Error::invalid_length(0, &self))?;
+//             let roots_of_unity = roots
+//                 .iter()
+//                 .map(|bytes| Scalar::from_bytes(bytes).unwrap())
+//                 .collect::<Vec<_>>();
+
+//             // Deserialize g1_points with infinity flag
+//             let g1_bytes: Vec<u8> = seq
+//                 .next_element()?
+//                 .ok_or_else(|| Error::invalid_length(1, &self))?;
+//             let g1_points = g1_bytes
+//                 .chunks(97) // 96 bytes for point + 1 byte for infinity flag
+//                 .map(|chunk| {
+//                     let (point_bytes, infinity_flag) = chunk.split_at(96);
+//                     let point =
+//                         G1Affine::from_uncompressed(point_bytes.try_into().unwrap()).unwrap();
+//                     if infinity_flag[0] == 1 {
+//                         G1Affine::identity()
+//                     } else {
+//                         point
+//                     }
+//                 })
+//                 .collect::<Vec<_>>();
+
+//             // Deserialize g2_points with infinity flag
+//             let g2_bytes: Vec<u8> = seq
+//                 .next_element()?
+//                 .ok_or_else(|| Error::invalid_length(2, &self))?;
+//             let g2_points = g2_bytes
+//                 .chunks(193) // 192 bytes for point + 1 byte for infinity flag
+//                 .map(|chunk| {
+//                     let (point_bytes, infinity_flag) = chunk.split_at(192);
+//                     let point =
+//                         G2Affine::from_uncompressed(point_bytes.try_into().unwrap()).unwrap();
+//                     if infinity_flag[0] == 1 {
+//                         G2Affine::identity()
+//                     } else {
+//                         point
+//                     }
+//                 })
+//                 .collect::<Vec<_>>();
+
+//             Ok(KzgSettingsOwned {
+//                 roots_of_unity: roots_of_unity.try_into().unwrap(),
+//                 g1_points: g1_points.try_into().unwrap(),
+//                 g2_points: g2_points.try_into().unwrap(),
+//             })
+//         }
+//     }
+
+//     deserializer.deserialize_seq(KzgVisitor)
+// }
 
 // fn deserialize_kzg_settings<'de, D>(deserializer: D) -> Result<KzgSettingsOwned, D::Error>
 // where

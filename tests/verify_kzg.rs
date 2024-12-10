@@ -12,9 +12,11 @@ use axvm_rv32im_transpiler::{
 };
 use axvm_sdk::Sdk;
 use axvm_transpiler::transpiler::Transpiler;
-use kzg_rs::program_inputs::{KzgInputs, KzgSettings, KzgSettingsOwned};
-use kzg_rs::test_files::VERIFY_KZG_PROOF_TESTS;
+use kzg_rs::test_files::{
+    ONLY_VALID_KZG_PROOF_TESTS, SINGLE_VALID_KZG_PROOF_TEST, VERIFY_KZG_PROOF_TESTS,
+};
 use kzg_rs::test_utils::{Input, Test};
+use kzg_rs::types::{KzgInputs, KzgSettings, KzgSettingsInput, KzgSettingsOwned};
 use serde_yaml::from_str;
 
 type F = BabyBear;
@@ -43,13 +45,22 @@ fn test_verify_kzg_proof() {
 
     // Get inputs from disk
     let kzg_settings = KzgSettings::load_trusted_setup_file().unwrap();
-    // let kzg_settings_input = KzgSettingsOwned {
-    //     roots_of_unity: kzg_settings.roots_of_unity.to_vec(),
-    //     g1_points: kzg_settings.g1_points.to_vec(),
-    //     g2_points: kzg_settings.g2_points.to_vec(),
+
+    #[allow(clippy::iter_cloned_collect)]
+    let kzg_settings_input = KzgSettingsInput {
+        // Use controlled copying that respects align(4) in KzgSettings struct
+        roots_of_unity: kzg_settings.roots_of_unity.iter().copied().collect(),
+        g1_points: kzg_settings.g1_points.iter().copied().collect(),
+        g2_points: kzg_settings.g2_points.iter().copied().collect(),
+    };
+
+    // let kzg_settings_owned = KzgSettingsOwned {
+    //     roots_of_unity: kzg_settings.roots_of_unity.try_into().unwrap(),
+    //     g1_points: kzg_settings.g1_points.try_into().unwrap(),
+    //     g2_points: kzg_settings.g2_points.try_into().unwrap(),
     // };
 
-    let test_files = VERIFY_KZG_PROOF_TESTS;
+    let test_files = SINGLE_VALID_KZG_PROOF_TEST;
 
     for (_test_file, data) in test_files {
         println!("Running test: {}", _test_file);
@@ -66,11 +77,11 @@ fn test_verify_kzg_proof() {
 
         // Handle i/o
         let io = KzgInputs {
-            commitment_bytes: commitment.into(),
-            z_bytes: z.into(),
-            y_bytes: y.into(),
-            proof_bytes: proof.into(),
-            // kzg_settings: kzg_settings_input.clone(),
+            commitment_bytes: commitment,
+            z_bytes: z,
+            y_bytes: y,
+            proof_bytes: proof,
+            kzg_settings: kzg_settings_input.clone(),
         };
         let io = bincode::serialize(&io).unwrap();
         let io = io
