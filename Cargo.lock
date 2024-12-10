@@ -2341,6 +2341,7 @@ dependencies = [
  "axvm-ecc-guest",
  "axvm-pairing-guest",
  "axvm-pairing-transpiler",
+ "axvm-rv32im-circuit",
  "axvm-rv32im-transpiler",
  "axvm-sdk",
  "axvm-toolchain-tests",

@@ -19,8 +19,11 @@ pub use trusted_setup::*;
 
 pub use enums::KzgError;
 
-#[cfg(test)]
-mod test_files {
+#[cfg(any(test, feature = "test-utils"))]
+pub mod test_utils;
+
+#[cfg(any(test, feature = "test-utils"))]
+pub mod test_files {
     // Tests
     pub const VERIFY_KZG_PROOF_TESTS: [(&str, &str); 122] = [
         (
