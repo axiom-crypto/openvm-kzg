@@ -7,6 +7,7 @@ use core::{
     mem::transmute,
     slice,
 };
+use serde::{Deserialize, Serialize};
 use spin::Once;
 
 // pub fn get_roots_of_unity() -> &'static [Scalar] {

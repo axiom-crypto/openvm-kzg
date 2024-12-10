@@ -1,5 +1,6 @@
 use std::path::PathBuf;
 
+use ax_stark_sdk::ax_stark_backend::p3_field::AbstractField;
 use ax_stark_sdk::p3_baby_bear::BabyBear;
 use axvm_algebra_transpiler::{Fp2TranspilerExtension, ModularTranspilerExtension};
 use axvm_build::GuestOptions;
@@ -13,11 +14,14 @@ use axvm_rv32im_transpiler::{
 };
 use axvm_sdk::Sdk;
 use axvm_transpiler::transpiler::Transpiler;
-#[cfg(feature = "test-utils")]
+use kzg_rs::program_inputs::KzgInputs;
+#[cfg(feature = "program-test")]
 use kzg_rs::test_files::VERIFY_KZG_PROOF_TESTS;
-#[cfg(feature = "test-utils")]
+#[cfg(feature = "program-test")]
 use kzg_rs::test_utils::{Input, Test};
 use kzg_rs::KzgSettings;
+#[cfg(feature = "program-test")]
+use serde_yaml::from_str;
 
 type F = BabyBear;
 
@@ -29,7 +33,7 @@ fn test_verify_kzg_proof() {
         // .with_features(vec!["zkvm"])
         ;
     let mut pkg_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).to_path_buf();
-    pkg_dir.push("examples");
+    pkg_dir.push("program");
     let verify_kzg = sdk.build(guest_opts.clone(), &pkg_dir).unwrap();
     let transpiler = Transpiler::<F>::default()
         .with_extension(Rv32ITranspilerExtension)
@@ -41,18 +45,6 @@ fn test_verify_kzg_proof() {
     let exe = sdk.transpile(verify_kzg, transpiler).unwrap();
 
     // Config
-
-    // let primes = [BLS12_381_MODULUS.clone()];
-    // let config = Rv32PairingConfig {
-    //     system: SystemConfig::default().with_continuations(),
-    //     base: Default::default(),
-    //     mul: Default::default(),
-    //     io: Default::default(),
-    //     modular: ModularExtension::new(primes.to_vec()),
-    //     fp2: Fp2Extension::new(primes.to_vec()),
-    //     weierstrass: WeierstrassExtension::new(vec![]),
-    //     pairing: PairingExtension::new(vec![PairingCurve::Bls12_381]),
-    // };
     let config = Rv32IConfig::default();
 
     // Get inputs from disk
@@ -61,7 +53,7 @@ fn test_verify_kzg_proof() {
 
     for (_test_file, data) in test_files {
         println!("Running test: {}", _test_file);
-        let test: Test<Input> = serde_yaml::from_str(data).unwrap();
+        let test: Test<Input> = from_str(data).unwrap();
         let (Ok(commitment), Ok(z), Ok(y), Ok(proof)) = (
             test.input.get_commitment(),
             test.input.get_z(),
@@ -72,6 +64,19 @@ fn test_verify_kzg_proof() {
             continue;
         };
 
-        new_air_test_with_min_segments(config.clone(), exe.clone(), vec![], 1, false);
+        // Handle i/o
+        let io = KzgInputs {
+            commitment_bytes: commitment.into(),
+            z_bytes: z.into(),
+            y_bytes: y.into(),
+            proof_bytes: proof.into(),
+        };
+        let io = bincode::serialize(&io).unwrap();
+        let io = io
+            .iter()
+            .map(|&x| AbstractField::from_canonical_u8(x))
+            .collect::<Vec<_>>();
+
+        new_air_test_with_min_segments(config.clone(), exe.clone(), vec![io], 1, false);
     }
 }

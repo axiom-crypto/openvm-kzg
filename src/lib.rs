@@ -3,11 +3,15 @@
 #[macro_use]
 extern crate alloc;
 
+#[macro_use]
+extern crate serde_big_array;
+
 pub mod consts;
 pub mod dtypes;
 pub mod enums;
 pub mod kzg_proof;
 pub mod pairings;
+pub mod program_inputs;
 pub mod trusted_setup;
 pub mod wrappers;
 
@@ -19,10 +23,10 @@ pub use trusted_setup::*;
 
 pub use enums::KzgError;
 
-#[cfg(any(test, feature = "test-utils"))]
+#[cfg(any(test, feature = "program-test"))]
 pub mod test_utils;
 
-#[cfg(any(test, feature = "test-utils"))]
+#[cfg(any(test, feature = "program-test"))]
 pub mod test_files {
     // Tests
     pub const VERIFY_KZG_PROOF_TESTS: [(&str, &str); 122] = [

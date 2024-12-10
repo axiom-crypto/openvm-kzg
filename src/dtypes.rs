@@ -8,7 +8,7 @@ use bls12_381::Scalar;
 macro_rules! define_bytes_type {
     ($name:ident, $size:expr) => {
         #[derive(Debug, Clone)]
-        pub struct $name([u8; $size]);
+        pub struct $name(pub(crate) [u8; $size]);
 
         impl $name {
             pub fn from_slice(slice: &[u8]) -> Result<Self, KzgError> {
