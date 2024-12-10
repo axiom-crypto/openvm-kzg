@@ -1,16 +1,22 @@
-// #![cfg_attr(not(feature = "std"), no_main)]
-// #![cfg_attr(not(feature = "std"), no_std)]
-#![no_main]
 #![no_std]
+#![no_main]
 
 extern crate alloc;
 
-use alloc::vec::Vec;
 use axvm::io::read;
 use bls12_381::{G1Affine, G2Affine, Scalar};
 use kzg_rs::{Bytes32, Bytes48, KzgProof, KzgSettings};
 
 axvm::entry!(main);
+
+axvm_algebra_moduli_setup::moduli_init! {
+    "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab",
+    "0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001"
+}
+
+axvm_algebra_complex_macros::complex_init! {
+    Fp2 { mod_idx = 0 },
+}
 
 /// Inputs to the KZG proof verification
 #[derive(serde::Deserialize)]
@@ -28,6 +34,9 @@ struct KzgInputs {
 }
 
 pub fn main() {
+    setup_0();
+    setup_all_complex_extensions();
+
     let io: KzgInputs = read();
 
     // SAFETY: We know these values will be valid for the duration of their use,

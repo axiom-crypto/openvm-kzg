@@ -272,22 +272,10 @@ dependencies = [
 [[package]]
 name = "axvm"
 version = "0.1.0"
-dependencies = [
- "axvm-platform 0.1.0",
- "axvm-rv32im-guest 0.1.0",
- "hex-literal",
- "num-bigint-dig",
- "num-traits",
- "serde",
-]
-
-[[package]]
-name = "axvm"
-version = "0.1.0"
 source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98#a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98"
 dependencies = [
- "axvm-platform 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
- "axvm-rv32im-guest 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm-platform",
+ "axvm-rv32im-guest",
  "hex-literal",
  "num-bigint-dig",
  "num-traits",
@@ -337,9 +325,9 @@ name = "axvm-algebra-guest"
 version = "0.1.0"
 source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98#a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98"
 dependencies = [
- "axvm 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm",
  "axvm-algebra-moduli-setup",
- "axvm-platform 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm-platform",
  "halo2curves-axiom",
  "num-bigint-dig",
  "serde",
@@ -402,8 +390,8 @@ name = "axvm-bigint-guest"
 version = "0.1.0"
 source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98#a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98"
 dependencies = [
- "axvm 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
- "axvm-platform 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm",
+ "axvm-platform",
  "num-bigint-dig",
  "num-traits",
  "serde",
@@ -430,7 +418,7 @@ name = "axvm-build"
 version = "0.1.0"
 source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98#a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98"
 dependencies = [
- "axvm-platform 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm-platform",
  "cargo_metadata",
  "dirs",
  "eyre",
@@ -516,12 +504,12 @@ name = "axvm-ecc-guest"
 version = "0.1.0"
 source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98#a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98"
 dependencies = [
- "axvm 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm",
  "axvm-algebra-guest",
  "axvm-algebra-moduli-setup",
  "axvm-ecc-sw-setup",
- "axvm-platform 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
- "axvm-rv32im-guest 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm-platform",
+ "axvm-rv32im-guest",
  "ecdsa",
  "elliptic-curve",
  "group 0.13.0",
@@ -620,7 +608,7 @@ name = "axvm-keccak256-guest"
 version = "0.1.0"
 source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98#a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98"
 dependencies = [
- "axvm-platform 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm-platform",
  "serde",
  "tiny-keccak",
 ]
@@ -682,13 +670,13 @@ name = "axvm-pairing-guest"
 version = "0.1.0"
 source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98#a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98"
 dependencies = [
- "axvm 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm",
  "axvm-algebra-complex-macros",
  "axvm-algebra-guest",
  "axvm-algebra-moduli-setup",
  "axvm-ecc-guest",
- "axvm-platform 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
- "axvm-rv32im-guest 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm-platform",
+ "axvm-rv32im-guest",
  "group 0.13.0",
  "halo2curves-axiom",
  "hex-literal",
@@ -714,17 +702,6 @@ dependencies = [
  "axvm-transpiler",
  "rrs-lib",
  "strum",
-]
-
-[[package]]
-name = "axvm-platform"
-version = "0.1.0"
-dependencies = [
- "bincode",
- "getrandom",
- "libm",
- "stability",
- "strum_macros",
 ]
 
 [[package]]
@@ -784,17 +761,9 @@ dependencies = [
 [[package]]
 name = "axvm-rv32im-guest"
 version = "0.1.0"
-dependencies = [
- "axvm-platform 0.1.0",
- "strum_macros",
-]
-
-[[package]]
-name = "axvm-rv32im-guest"
-version = "0.1.0"
 source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98#a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98"
 dependencies = [
- "axvm-platform 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm-platform",
  "strum_macros",
 ]
 
@@ -806,7 +775,7 @@ dependencies = [
  "ax-stark-backend",
  "axvm-instructions",
  "axvm-instructions-derive",
- "axvm-rv32im-guest 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm-rv32im-guest",
  "axvm-transpiler",
  "rrs-lib",
  "strum",
@@ -836,7 +805,7 @@ dependencies = [
  "axvm-pairing-circuit",
  "axvm-pairing-guest",
  "axvm-pairing-transpiler",
- "axvm-platform 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm-platform",
  "axvm-rv32im-circuit",
  "axvm-rv32im-transpiler",
  "axvm-transpiler",
@@ -856,7 +825,7 @@ source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d
 dependencies = [
  "ax-stark-backend",
  "axvm-instructions",
- "axvm-platform 0.1.0 (git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98)",
+ "axvm-platform",
  "derive_more 1.0.0",
  "elf",
  "eyre",
@@ -1654,6 +1623,7 @@ dependencies = [
 name = "kzg-rs"
 version = "0.2.3"
 dependencies = [
+ "axvm-algebra-guest",
  "axvm-circuit",
  "axvm-ecc-guest",
  "axvm-pairing-guest",
@@ -3062,7 +3032,11 @@ checksum = "830b7e5d4d90034032940e4ace0d9a9a057e7a45cd94e6c007832e39edb82f6d"
 name = "verify-kzg-example"
 version = "0.1.0"
 dependencies = [
- "axvm 0.1.0",
+ "axvm",
+ "axvm-algebra-complex-macros",
+ "axvm-algebra-guest",
+ "axvm-algebra-moduli-setup",
+ "axvm-platform",
  "bls12_381 0.8.0",
  "kzg-rs",
  "serde",

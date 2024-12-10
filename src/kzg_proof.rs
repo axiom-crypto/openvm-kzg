@@ -548,7 +548,7 @@ pub mod tests {
     //     build_example_program_at_path_with_features, build_example_program_with_features,
     // };
     // use axvm_transpiler::{transpiler::Transpiler, FromElf};
-    use serde_derive::Deserialize;
+    use serde::Deserialize;
 
     // type F = BabyBear;
 

@@ -1,4 +1,5 @@
-#![cfg_attr(not(test), no_std)]
+// #![cfg_attr(not(test), no_std)]
+#![no_std]
 #[macro_use]
 extern crate alloc;
 

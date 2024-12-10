@@ -2334,6 +2334,7 @@ version = "0.2.3"
 dependencies = [
  "ax-stark-sdk",
  "axvm",
+ "axvm-algebra-guest",
  "axvm-algebra-transpiler",
  "axvm-build",
  "axvm-circuit",
@@ -2349,7 +2350,6 @@ dependencies = [
  "hex",
  "p3-baby-bear",
  "serde",
- "serde_derive",
  "serde_yaml",
  "sha2",
  "spin",
@@ -2366,9 +2366,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.167"
+version = "0.2.168"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "09d6582e104315a817dff97f75133544b2e094ee22447d2acf4a74e189ba06fc"
+checksum = "5aaeb2981e0606ca11d79718f8bb01164f1d6ed75080182d3abf017e6d244b6d"
 
 [[package]]
 name = "libm"

@@ -4,9 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-axvm = { path = "../../afs-prototype/crates/toolchain/axvm", default-features = false }
-# axvm-platform = { path = "../../afs-prototype/crates/toolchain/platform", default-features = false }
-ax-stark-backend = { path = "../../afs-prototype/crates/stark-backend", default-features = false }
+axvm = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
+axvm-platform = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
+axvm-algebra-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
+axvm-algebra-moduli-setup = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
+axvm-algebra-complex-macros = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 kzg-rs = { path = "..", default-features = false }
 serde = { version = "1.0.200", default-features = false, features = [
     "alloc",

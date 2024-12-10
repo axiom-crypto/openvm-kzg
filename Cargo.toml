@@ -16,6 +16,7 @@ repository = "https://github.com/succinctlabs/kzg-rs"
 #     "bls12_381",
 # ], default-features = false }
 # ax-stark-sdk = { path = "../afs-prototype/crates/stark-sdk", default-features = false }
+axvm-algebra-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 axvm-ecc-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
 axvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false, features = [
     "bls12_381",
@@ -38,8 +39,10 @@ spin = { version = "0.9.8", default-features = false, features = ["once"] }
 
 [dev-dependencies]
 serde_yaml = { version = "0.9", default-features = false }
-serde_derive = { version = "1.0", default-features = false }
-serde = { version = "^1.0", default-features = false, features = ["derive"] }
+serde = { version = "^1.0", default-features = false, features = [
+    "alloc",
+    "derive",
+] }
 # mimalloc = { version = "0.1.39" }
 # axvm-transpiler = { path = "../afs-prototype/crates/toolchain/transpiler", default-features = false }
 # axvm-algebra-transpiler = { path = "../afs-prototype/extensions/algebra/transpiler", default-features = false }

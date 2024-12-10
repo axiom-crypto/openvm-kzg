@@ -16,7 +16,6 @@ type F = BabyBear;
 fn test_verify_kzg_proof() {
     let sdk = Sdk;
     let guest_opts = GuestOptions::default()
-        // .with_options(["--example", "verify_kzg"])
         // .with_options(vec!["--release"]);
         // .with_features(vec!["zkvm"])
         ;
