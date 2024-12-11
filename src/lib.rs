@@ -3,9 +3,6 @@
 #[macro_use]
 extern crate alloc;
 
-#[macro_use]
-extern crate serde_big_array;
-
 pub mod consts;
 pub mod dtypes;
 pub mod enums;

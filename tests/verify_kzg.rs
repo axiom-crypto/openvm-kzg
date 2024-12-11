@@ -11,11 +11,9 @@ use axvm_ecc_circuit::WeierstrassExtension;
 use axvm_pairing_circuit::{PairingCurve, PairingExtension, Rv32PairingConfig};
 use axvm_pairing_guest::bls12_381::BLS12_381_MODULUS;
 use axvm_pairing_transpiler::PairingTranspilerExtension;
-use axvm_rv32im_circuit::Rv32IConfig;
 use axvm_rv32im_transpiler::{
     Rv32ITranspilerExtension, Rv32IoTranspilerExtension, Rv32MTranspilerExtension,
 };
-use axvm_sdk::config::SdkVmConfig;
 use axvm_sdk::Sdk;
 use axvm_transpiler::transpiler::Transpiler;
 use kzg_rs::pairings::{
@@ -26,7 +24,7 @@ use kzg_rs::test_files::{
     ONLY_VALID_KZG_PROOF_TESTS, SINGLE_VALID_KZG_PROOF_TEST, VERIFY_KZG_PROOF_TESTS,
 };
 use kzg_rs::test_utils::{Input, Test};
-use kzg_rs::types::{KzgInputs, KzgSettings, KzgSettingsInput, KzgSettingsOwned};
+use kzg_rs::types::KzgSettings;
 use kzg_rs::{KzgProof, PairingInputs};
 use serde_yaml::from_str;
 
@@ -35,10 +33,7 @@ type F = BabyBear;
 #[test]
 fn test_verify_kzg_proof() {
     let sdk = Sdk;
-    let guest_opts = GuestOptions::default()
-        // .with_options(vec!["--release"]);
-        // .with_features(vec!["zkvm"])
-        ;
+    let guest_opts = GuestOptions::default();
     let mut pkg_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).to_path_buf();
     pkg_dir.push("program");
     let verify_kzg = sdk
@@ -64,39 +59,9 @@ fn test_verify_kzg_proof() {
         weierstrass: WeierstrassExtension::new(vec![]),
         pairing: PairingExtension::new(vec![PairingCurve::Bls12_381]),
     };
-    // let config = SdkVmConfig::builder()
-    //     .system(
-    //         SystemConfig::default()
-    //             .with_max_segment_len(200)
-    //             .with_continuations()
-    //             .with_public_values(16),
-    //     )
-    //     .native(Default::default())
-    //     .rv32i(Default::default())
-    //     .io(Default::default())
-    //     .pairing(PairingExtension::new(vec![PairingCurve::Bls12_381]))
-    //     .modular(ModularExtension::new(vec![BLS12_381_MODULUS.clone()]))
-    //     .fp2(Fp2Extension::new(vec![BLS12_381_MODULUS.clone()]))
-    //     // .weierstrass(WeierstrassExtension::new(vec![]))
-    //     .build();
 
     // Get inputs from disk
     let kzg_settings = KzgSettings::load_trusted_setup_file().unwrap();
-
-    #[allow(clippy::iter_cloned_collect)]
-    let kzg_settings_input = KzgSettingsInput {
-        // Use controlled copying that respects align(4) in KzgSettings struct
-        roots_of_unity: kzg_settings.roots_of_unity.iter().copied().collect(),
-        g1_points: kzg_settings.g1_points.iter().copied().collect(),
-        g2_points: kzg_settings.g2_points.iter().copied().collect(),
-    };
-
-    // let kzg_settings_owned = KzgSettingsOwned {
-    //     roots_of_unity: kzg_settings.roots_of_unity.try_into().unwrap(),
-    //     g1_points: kzg_settings.g1_points.try_into().unwrap(),
-    //     g2_points: kzg_settings.g2_points.try_into().unwrap(),
-    // };
-
     let test_files = SINGLE_VALID_KZG_PROOF_TEST;
 
     for (_test_file, data) in test_files {
@@ -128,15 +93,6 @@ fn test_verify_kzg_proof() {
         assert!(g2_affine_is_on_curve(&q1));
 
         let io = bincode::serialize(&PairingInputs { p0, p1, q0, q1 }).unwrap();
-
-        // let io = KzgInputs {
-        //     commitment_bytes: commitment,
-        //     z_bytes: z,
-        //     y_bytes: y,
-        //     proof_bytes: proof,
-        //     kzg_settings: kzg_settings_input.clone(),
-        // };
-        // let io = bincode::serialize(&io).unwrap();
         let io = io
             .iter()
             .map(|&x| AbstractField::from_canonical_u8(x))

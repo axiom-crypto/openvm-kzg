@@ -4,12 +4,8 @@
 extern crate alloc;
 
 use axvm::io::read;
-use axvm_pairing_guest::{
-    bls12_381::{Bls12_381, Fp, Fp2},
-    pairing::PairingCheck,
-};
-use bls12_381::{G1Affine, G2Affine, Scalar};
-use kzg_rs::{KzgInputs, KzgProof, KzgSettings, PairingInputs};
+use axvm_pairing_guest::{bls12_381::Bls12_381, pairing::PairingCheck};
+use kzg_rs::PairingInputs;
 
 axvm::entry!(main);
 
@@ -30,55 +26,3 @@ pub fn main() {
 
     assert!(Bls12_381::pairing_check(&[-io.p0, io.q0], &[io.p1, io.q1]).is_ok())
 }
-
-// pub fn main() {
-//     setup_0();
-//     setup_all_complex_extensions();
-
-//     let io: KzgInputs = read();
-
-//     // SAFETY: We know these values will be valid for the duration of their use,
-//     // even though they're not actually 'static
-//     let kzg_settings = unsafe {
-//         KzgSettings {
-//             roots_of_unity: core::mem::transmute::<&[Scalar], &'static [Scalar]>(
-//                 &io.kzg_settings.roots_of_unity,
-//             ),
-//             g1_points: core::mem::transmute::<&[G1Affine], &'static [G1Affine]>(
-//                 &io.kzg_settings.g1_points,
-//             ),
-//             g2_points: core::mem::transmute::<&[G2Affine], &'static [G2Affine]>(
-//                 &io.kzg_settings.g2_points,
-//             ),
-//         }
-//     };
-
-//     // let kzg_settings = KzgSettings {
-//     //     roots_of_unity: Box::leak(io.kzg_settings.roots_of_unity.into_boxed_slice()),
-//     //     g1_points: Box::leak(io.kzg_settings.g1_points.into_boxed_slice()),
-//     //     g2_points: Box::leak(io.kzg_settings.g2_points.into_boxed_slice()),
-//     // };
-
-//     // let kzg_settings = unsafe {
-//     //     KzgSettings {
-//     //         roots_of_unity: core::mem::transmute::<&[Scalar], &'static [Scalar]>(&[Scalar::one()]),
-//     //         g1_points: core::mem::transmute::<&[G1Affine], &'static [G1Affine]>(&[
-//     //             G1Affine::generator(),
-//     //         ]),
-//     //         g2_points: core::mem::transmute::<&[G2Affine], &'static [G2Affine]>(&[
-//     //             G2Affine::generator(),
-//     //         ]),
-//     //     }
-//     // };
-
-//     let res = KzgProof::verify_kzg_proof(
-//         &io.commitment_bytes,
-//         &io.z_bytes,
-//         &io.y_bytes,
-//         &io.proof_bytes,
-//         &kzg_settings,
-//     );
-
-//     assert!(res.is_ok());
-//     assert!(res.unwrap());
-// }
