@@ -10,10 +10,14 @@ use crate::{
 };
 
 use alloc::{string::ToString, vec::Vec};
+use axvm_algebra_guest::field::FieldExtension;
+use axvm_ecc_guest::weierstrass::{IntrinsicCurve, WeierstrassPoint};
 // use axvm_ecc_guest::msm;
 use bls12_381::{G1Affine, G1Projective, G2Affine, G2Projective, Scalar};
 use ff::derive::sbb;
 use sha2::{Digest, Sha256};
+
+pub type Coordinate<C> = <<C as IntrinsicCurve>::Point as WeierstrassPoint>::Coordinate;
 
 // pub fn msm_variable_base(coeffs: &[Scalar], bases: &[G1Affine]) -> G1Projective {
 //     let axvm_scalar: &[axvm_pairing_guest::bls12_381::Scalar] =
@@ -23,6 +27,10 @@ use sha2::{Digest, Sha256};
 // }
 
 pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<G1Affine, KzgError> {
+    // let rec_id = (bytes.0[0] >> 7) & 1;
+    // let x = Coordinate::from_bytes(&bytes.0);
+    // let g1 = WeierstrassPoint::decompress(x, &rec_id);
+    // Ok(unsafe { core::mem::transmute(g1) })
     let g1 = G1Affine::from_compressed(&(bytes.clone().into()));
     if g1.is_none().into() {
         return Err(KzgError::BadArgs(
@@ -556,19 +564,8 @@ pub mod tests {
         test_files::{
             VERIFY_BLOB_KZG_PROOF_BATCH_TESTS, VERIFY_BLOB_KZG_PROOF_TESTS, VERIFY_KZG_PROOF_TESTS,
         },
-        test_utils::{Input, Test},
+        test_utils::{FromHex, Input, Test},
     };
-    // use ax_stark_sdk::p3_baby_bear::BabyBear;
-    // use axvm_algebra_transpiler::{Fp2TranspilerExtension, ModularTranspilerExtension};
-    // use axvm_circuit::arch::instructions::exe::AxVmExe;
-    // use axvm_pairing_transpiler::PairingTranspilerExtension;
-    // use axvm_rv32im_transpiler::{
-    //     Rv32ITranspilerExtension, Rv32IoTranspilerExtension, Rv32MTranspilerExtension,
-    // };
-    // use axvm_toolchain_tests::utils::{
-    //     build_example_program_at_path_with_features, build_example_program_with_features,
-    // };
-    // use axvm_transpiler::{transpiler::Transpiler, FromElf};
     use serde::Deserialize;
 
     // type F = BabyBear;
@@ -601,23 +598,6 @@ pub mod tests {
             }
         }
     }
-
-    // #[test]
-    // pub fn test_axvm_verify_kzg_proof() {
-    //     let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    //     let features: [&str; 0] = [];
-    //     let elf = build_example_program_at_path_with_features(dir, "verify_kzg", features).unwrap();
-    //     let axvm_exe = AxVmExe::from_elf(
-    //         elf,
-    //         Transpiler::<F>::default()
-    //             .with_extension(Rv32ITranspilerExtension)
-    //             .with_extension(Rv32MTranspilerExtension)
-    //             .with_extension(Rv32IoTranspilerExtension)
-    //             .with_extension(PairingTranspilerExtension)
-    //             .with_extension(ModularTranspilerExtension)
-    //             .with_extension(Fp2TranspilerExtension),
-    //     );
-    // }
 
     #[derive(Debug, Deserialize)]
     pub struct BlobInput<'a> {

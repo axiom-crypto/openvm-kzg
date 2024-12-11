@@ -4,8 +4,8 @@
 extern crate alloc;
 
 use axvm::io::read;
-use axvm_pairing_guest::{bls12_381::Bls12_381, pairing::PairingCheck};
-use kzg_rs::{get_kzg_settings, PairingInputs};
+use bls12_381::{G1Affine, G2Affine, Scalar};
+use kzg_rs::{get_kzg_settings, KzgInputs, KzgProof, KzgSettings};
 
 axvm::entry!(main);
 
@@ -24,7 +24,27 @@ pub fn main() {
 
     let kzg_settings = get_kzg_settings();
 
-    let io: PairingInputs = read();
+    // let kzg_settings = unsafe {
+    //     KzgSettings {
+    //         roots_of_unity: core::mem::transmute::<&[Scalar], &'static [Scalar]>(&[Scalar::one()]),
+    //         g1_points: core::mem::transmute::<&[G1Affine], &'static [G1Affine]>(&[
+    //             G1Affine::generator(),
+    //         ]),
+    //         g2_points: core::mem::transmute::<&[G2Affine], &'static [G2Affine]>(&[
+    //             G2Affine::generator(),
+    //         ]),
+    //     }
+    // };
 
-    assert!(Bls12_381::pairing_check(&[-io.p0, io.q0], &[io.p1, io.q1]).is_ok())
+    let io: KzgInputs = read();
+
+    let res = KzgProof::verify_kzg_proof(
+        &io.commitment_bytes,
+        &io.z_bytes,
+        &io.y_bytes,
+        &io.proof_bytes,
+        &kzg_settings,
+    )
+    .unwrap();
+    assert!(res);
 }

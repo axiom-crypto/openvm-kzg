@@ -1196,6 +1196,7 @@ dependencies = [
  "hex",
  "p3-baby-bear",
  "serde",
+ "serde-big-array",
  "sha2",
  "spin",
 ]

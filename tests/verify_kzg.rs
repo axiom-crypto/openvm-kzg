@@ -25,7 +25,7 @@ use kzg_rs::test_files::{
 };
 use kzg_rs::test_utils::{Input, Test};
 use kzg_rs::types::KzgSettings;
-use kzg_rs::{KzgProof, PairingInputs};
+use kzg_rs::{KzgInputs, KzgProof, PairingInputs};
 use serde_yaml::from_str;
 
 type F = BabyBear;
@@ -61,7 +61,7 @@ fn test_verify_kzg_proof() {
     };
 
     // Get inputs from disk
-    let kzg_settings = KzgSettings::load_trusted_setup_file().unwrap();
+    // let kzg_settings = KzgSettings::load_trusted_setup_file().unwrap();
     let test_files = SINGLE_VALID_KZG_PROOF_TEST;
 
     for (_test_file, data) in test_files {
@@ -78,21 +78,30 @@ fn test_verify_kzg_proof() {
         };
 
         // Handle i/o
-        let (a1, a2, b1, b2) =
-            KzgProof::calculate_pairing_points(&commitment, &z, &y, &proof, &kzg_settings).unwrap();
+        // let (a1, a2, b1, b2) =
+        //     KzgProof::calculate_pairing_points(&commitment, &z, &y, &proof, &kzg_settings).unwrap();
 
-        let p0 = g1_affine_to_affine_point(a1);
-        let p1 = g2_affine_to_affine_point(a2);
-        let q0 = g1_affine_to_affine_point(b1);
-        let q1 = g2_affine_to_affine_point(b2);
+        // let p0 = g1_affine_to_affine_point(a1);
+        // let p1 = g2_affine_to_affine_point(a2);
+        // let q0 = g1_affine_to_affine_point(b1);
+        // let q1 = g2_affine_to_affine_point(b2);
 
-        // Check that input points are on the curve
-        assert!(g1_affine_is_on_curve(&p0));
-        assert!(g2_affine_is_on_curve(&p1));
-        assert!(g1_affine_is_on_curve(&q0));
-        assert!(g2_affine_is_on_curve(&q1));
+        // // Check that input points are on the curve
+        // assert!(g1_affine_is_on_curve(&p0));
+        // assert!(g2_affine_is_on_curve(&p1));
+        // assert!(g1_affine_is_on_curve(&q0));
+        // assert!(g2_affine_is_on_curve(&q1));
 
-        let io = bincode::serialize(&PairingInputs { p0, p1, q0, q1 }).unwrap();
+        // let io = bincode::serialize(&PairingInputs { p0, p1, q0, q1 }).unwrap();
+
+        let io = KzgInputs {
+            commitment_bytes: commitment,
+            z_bytes: z,
+            y_bytes: y,
+            proof_bytes: proof,
+        };
+        let io = bincode::serialize(&io).unwrap();
+
         let io = io
             .iter()
             .map(|&x| AbstractField::from_canonical_u8(x))

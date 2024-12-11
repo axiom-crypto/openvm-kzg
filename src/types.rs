@@ -1,14 +1,13 @@
 use core::hash::{Hash, Hasher};
 
+use crate::get_kzg_settings;
+use crate::{Bytes32, Bytes48, KzgError, NUM_G1_POINTS, NUM_G2_POINTS, NUM_ROOTS_OF_UNITY};
 use alloc::sync::Arc;
 use axvm_ecc_guest::AffinePoint;
 use axvm_pairing_guest::bls12_381::{Fp, Fp2};
 use bls12_381::{G1Affine, G2Affine, Scalar};
 use serde::{Deserialize, Serialize};
-
-#[cfg(not(feature = "program-test"))]
-use crate::get_kzg_settings;
-use crate::{Bytes32, Bytes48, KzgError, NUM_G1_POINTS, NUM_G2_POINTS, NUM_ROOTS_OF_UNITY};
+use serde_big_array::BigArray;
 use spin::Once;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -17,6 +16,55 @@ pub struct PairingInputs {
     pub p1: AffinePoint<Fp2>,
     pub q0: AffinePoint<Fp>,
     pub q1: AffinePoint<Fp2>,
+}
+
+/// Inputs to the KZG proof verification
+#[derive(Clone, Deserialize, Serialize)]
+pub struct KzgInputs {
+    pub commitment_bytes: Bytes48,
+    pub z_bytes: Bytes32,
+    pub y_bytes: Bytes32,
+    pub proof_bytes: Bytes48,
+}
+
+impl Serialize for Bytes48 {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        // Get the underlying array and serialize it
+        BigArray::serialize(&self.0, serializer)
+    }
+}
+
+impl<'de> Deserialize<'de> for Bytes48 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        // Deserialize into a temporary array
+        let arr = <[u8; 48] as BigArray<u8>>::deserialize(deserializer)?;
+        // Convert the array to Bytes48
+        Ok(Bytes48::from_slice(&arr).unwrap())
+    }
+}
+
+impl Serialize for Bytes32 {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        Serialize::serialize(&self.0, serializer)
+    }
+}
+
+impl<'de> Deserialize<'de> for Bytes32 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        Ok(Bytes32::from_slice(&<[u8; 32] as BigArray<u8>>::deserialize(deserializer)?).unwrap())
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

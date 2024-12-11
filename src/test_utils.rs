@@ -3,7 +3,7 @@ use serde::Deserialize;
 
 use crate::{Blob, Bytes32, Bytes48, KzgError};
 
-trait FromHex {
+pub trait FromHex {
     fn from_hex(hex: &str) -> Result<Self, KzgError>
     where
         Self: Sized;
