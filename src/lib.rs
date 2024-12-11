@@ -8,7 +8,6 @@ pub mod dtypes;
 pub mod enums;
 pub mod kzg_proof;
 pub mod pairings;
-#[cfg(not(feature = "program-test"))]
 pub mod trusted_setup;
 pub mod types;
 pub mod wrappers;
@@ -17,7 +16,6 @@ pub use consts::*;
 pub use dtypes::*;
 pub use kzg_proof::KzgProof;
 pub use pairings::pairings_verify;
-#[cfg(not(feature = "program-test"))]
 pub use trusted_setup::*;
 pub use types::*;
 

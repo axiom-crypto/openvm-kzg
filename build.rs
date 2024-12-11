@@ -175,7 +175,7 @@ fn main() {
         Ok(expanded)
     }
 
-    let out_dir = env::var("OUT_DIR").unwrap();
+    let out_dir = String::from("./tmp");
     let g1_path = Path::new(&out_dir).join("g1.bin");
     let g2_path = Path::new(&out_dir).join("g2.bin");
     let roots_of_unity_path = Path::new(&out_dir).join("roots_of_unity.bin");

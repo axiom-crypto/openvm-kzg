@@ -5,7 +5,7 @@ extern crate alloc;
 
 use axvm::io::read;
 use axvm_pairing_guest::{bls12_381::Bls12_381, pairing::PairingCheck};
-use kzg_rs::PairingInputs;
+use kzg_rs::{get_kzg_settings, PairingInputs};
 
 axvm::entry!(main);
 
@@ -21,6 +21,8 @@ axvm_algebra_complex_macros::complex_init! {
 pub fn main() {
     setup_0();
     setup_all_complex_extensions();
+
+    let kzg_settings = get_kzg_settings();
 
     let io: PairingInputs = read();
 
