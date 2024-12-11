@@ -8,9 +8,9 @@ version = "0.2.3"
 repository = "https://github.com/succinctlabs/kzg-rs"
 
 [dependencies]
-axvm-algebra-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-ecc-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false, features = [
+axvm-algebra-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-ecc-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false, features = [
     "bls12_381",
 ] }
 
@@ -33,26 +33,27 @@ serde_yaml = { version = "0.9", default-features = false, optional = true }
 bincode = { version = "1.3.3", default-features = false, optional = true }
 
 [dev-dependencies]
-axvm = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-sdk = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-build = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false, features = [
+axvm = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-sdk = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-build = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false, features = [
     "test-utils",
 ] }
-axvm-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-algebra-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-algebra-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-pairing-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-pairing-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-rv32im-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-rv32im-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-ax-stark-sdk = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
+axvm-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-algebra-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-algebra-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-ecc-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-pairing-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-pairing-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-rv32im-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-rv32im-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+ax-stark-sdk = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
 
 [build-dependencies]
 
-axvm-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-ecc-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false, features = [
+axvm-circuit = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-ecc-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false, features = [
     "bls12_381",
 ] }
 bls12_381 = { version = "0.8.0", default-features = false, features = [
@@ -60,8 +61,8 @@ bls12_381 = { version = "0.8.0", default-features = false, features = [
     "pairings",
     "alloc",
 ] }
-axvm-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-toolchain-tests = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
+axvm-transpiler = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-toolchain-tests = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
 
 p3-baby-bear = { git = "https://github.com/Plonky3/Plonky3.git", features = [
     "nightly-features",

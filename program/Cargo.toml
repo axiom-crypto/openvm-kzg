@@ -4,12 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-axvm = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-platform = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-algebra-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-algebra-moduli-setup = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
-axvm-algebra-complex-macros = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "a63aea7a3d9f5aeb0da30bfc00d8bc78e6099b98", default-features = false }
+axvm = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-platform = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-algebra-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-algebra-moduli-setup = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-algebra-complex-macros = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
 kzg-rs = { path = "..", default-features = false, features = ["program-test"] }
 serde = { version = "1.0.200", default-features = false, features = [
     "alloc",
