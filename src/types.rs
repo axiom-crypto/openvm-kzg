@@ -1,6 +1,8 @@
 use core::hash::{Hash, Hasher};
 
 use alloc::{boxed::Box, sync::Arc, vec::Vec};
+use axvm_ecc_guest::AffinePoint;
+use axvm_pairing_guest::bls12_381::{Fp, Fp2};
 use bls12_381::{G1Affine, G2Affine, Scalar};
 use serde::{ser::SerializeSeq, Deserialize, Serialize};
 
@@ -9,6 +11,14 @@ use crate::get_kzg_settings;
 use crate::{Bytes32, Bytes48, KzgError, NUM_G1_POINTS, NUM_G2_POINTS, NUM_ROOTS_OF_UNITY};
 use serde_big_array::BigArray;
 use spin::Once;
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PairingInputs {
+    pub p0: AffinePoint<Fp>,
+    pub p1: AffinePoint<Fp2>,
+    pub q0: AffinePoint<Fp>,
+    pub q1: AffinePoint<Fp2>,
+}
 
 /// Inputs to the KZG proof verification
 #[derive(Clone, Deserialize, Serialize)]

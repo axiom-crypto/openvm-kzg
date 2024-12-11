@@ -3038,6 +3038,7 @@ dependencies = [
  "axvm-algebra-complex-macros",
  "axvm-algebra-guest",
  "axvm-algebra-moduli-setup",
+ "axvm-pairing-guest",
  "axvm-platform",
  "bls12_381 0.8.0",
  "kzg-rs",

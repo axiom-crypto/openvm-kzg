@@ -358,6 +358,24 @@ impl KzgProof {
         proof_bytes: &Bytes48,
         kzg_settings: &KzgSettings,
     ) -> Result<bool, KzgError> {
+        let (a1, a2, b1, b2) = Self::calculate_pairing_points(
+            commitment_bytes,
+            z_bytes,
+            y_bytes,
+            proof_bytes,
+            kzg_settings,
+        )?;
+
+        Ok(pairings_verify(a1, a2, b1, b2))
+    }
+
+    pub fn calculate_pairing_points(
+        commitment_bytes: &Bytes48,
+        z_bytes: &Bytes32,
+        y_bytes: &Bytes32,
+        proof_bytes: &Bytes48,
+        kzg_settings: &KzgSettings,
+    ) -> Result<(G1Affine, G2Affine, G1Affine, G2Affine), KzgError> {
         let z = match safe_scalar_affine_from_bytes(z_bytes) {
             Ok(z) => z,
             Err(e) => {
@@ -389,7 +407,7 @@ impl KzgProof {
         let g1_y = G1Affine::generator() * y;
         let p_minus_y = commitment - g1_y;
 
-        Ok(pairings_verify(
+        Ok((
             p_minus_y.into(),
             G2Affine::generator(),
             proof,
