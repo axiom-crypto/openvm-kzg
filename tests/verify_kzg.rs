@@ -7,9 +7,9 @@ use axvm_algebra_transpiler::{Fp2TranspilerExtension, ModularTranspilerExtension
 use axvm_build::{GuestOptions, TargetFilter};
 use axvm_circuit::arch::SystemConfig;
 use axvm_circuit::utils::new_air_test_with_min_segments;
-use axvm_ecc_circuit::WeierstrassExtension;
+use axvm_ecc_circuit::{CurveConfig, WeierstrassExtension};
 use axvm_pairing_circuit::{PairingCurve, PairingExtension, Rv32PairingConfig};
-use axvm_pairing_guest::bls12_381::BLS12_381_MODULUS;
+use axvm_pairing_guest::bls12_381::{BLS12_381_MODULUS, BLS12_381_ORDER};
 use axvm_pairing_transpiler::PairingTranspilerExtension;
 use axvm_rv32im_transpiler::{
     Rv32ITranspilerExtension, Rv32IoTranspilerExtension, Rv32MTranspilerExtension,
@@ -21,6 +21,8 @@ use kzg_rs::test_files::{
 };
 use kzg_rs::test_utils::{Input, Test};
 use kzg_rs::KzgInputs;
+use num_bigint_dig::BigUint;
+use num_traits::{FromPrimitive, Zero};
 use serde_yaml::from_str;
 
 type F = BabyBear;
@@ -51,7 +53,12 @@ fn test_verify_kzg_proof() {
         io: Default::default(),
         modular: ModularExtension::new(vec![BLS12_381_MODULUS.clone()]),
         fp2: Fp2Extension::new(vec![BLS12_381_MODULUS.clone()]),
-        weierstrass: WeierstrassExtension::new(vec![]),
+        weierstrass: WeierstrassExtension::new(vec![CurveConfig {
+            modulus: BLS12_381_MODULUS.clone(),
+            scalar: BLS12_381_ORDER.clone(),
+            a: BigUint::zero(),
+            b: BigUint::from_u8(4u8).unwrap(),
+        }]),
         pairing: PairingExtension::new(vec![PairingCurve::Bls12_381]),
     };
 

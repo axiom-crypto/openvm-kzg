@@ -1,6 +1,5 @@
 use core::num::NonZeroUsize;
 use core::ops::Mul;
-use core::ops::{Add, AddAssign, Neg};
 
 use crate::enums::KzgError;
 use crate::types::KzgSettings;
@@ -11,12 +10,9 @@ use crate::{
 };
 
 use alloc::{string::ToString, vec::Vec};
-use axvm_algebra_guest::field::FieldExtension;
 use axvm_algebra_guest::{DivUnsafe, IntMod};
-use axvm_ecc_guest::halo2curves::group::GroupEncoding;
-use axvm_ecc_guest::weierstrass::{IntrinsicCurve, WeierstrassPoint};
-use axvm_ecc_guest::Group;
-use axvm_pairing_guest::bls12_381::{Fp, Scalar as Bls12_381Scalar};
+use axvm_ecc_guest::weierstrass::WeierstrassPoint;
+use axvm_pairing_guest::bls12_381::{Fp, G1Affine as Bls12_381G1Affine, Scalar as Bls12_381Scalar};
 // use axvm_ecc_guest::msm;
 use bls12_381::{G1Affine, G1Projective, G2Affine, G2Projective, Scalar};
 use ff::derive::sbb;
@@ -41,17 +37,19 @@ pub fn is_lex_largest(y: Fp) -> bool {
 }
 
 pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<G1Affine, KzgError> {
-    let mut byte0 = bytes.0[0];
+    let mut bytes = bytes.clone();
+
+    // let compression_flag_set = ((byte0 >> 7) & 1) != 0;
+    // let infinity_flag_set = ((byte0 >> 6) & 1) != 0;
+    let sort_flag_set = ((bytes.0[0] >> 5) & 1) != 0;
 
     // Mask away the flag bits
-    byte0 &= 0b0001_1111;
-
-    let compression_flag_set = ((byte0 >> 7) & 1) != 0;
-    let infinity_flag_set = ((byte0 >> 6) & 1) != 0;
-    let sort_flag_set = ((byte0 >> 5) & 1) != 0;
+    bytes.0[0] &= 0b0001_1111;
 
     let x = Fp::from_le_bytes(&bytes.0);
-    let y: Fp = Bls12_381Point::hint_decompress(&x, &0u8);
+    // Note that we are hinting decompress and getting the y-coord pos/neg using lexicographical ordering, so
+    // the value for rec_id does not matter and we can pass in either 0 or 1.
+    let y: Fp = Bls12_381G1Affine::hint_decompress(&x, &0u8);
     let is_lex_largest = is_lex_largest(y.clone());
     let y = if is_lex_largest ^ sort_flag_set {
         -y
@@ -70,6 +68,7 @@ pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<G1Affine, KzgError> 
     }
     g1_bytes.extend(infinity_flag);
     let g1_bytes: [u8; 104] = g1_bytes.try_into().unwrap();
+
     let g1: G1Affine = unsafe { core::mem::transmute(g1_bytes) };
     Ok(g1)
 }

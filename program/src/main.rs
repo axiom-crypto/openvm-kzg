@@ -4,6 +4,7 @@
 extern crate alloc;
 
 use axvm::io::read;
+use axvm_pairing_guest::bls12_381::Fp;
 use bls12_381::{G1Affine, G2Affine, Scalar};
 use kzg_rs::{get_kzg_settings, KzgInputs, KzgProof, KzgSettings};
 
@@ -16,6 +17,10 @@ axvm_algebra_moduli_setup::moduli_init! {
 
 axvm_algebra_complex_macros::complex_init! {
     Fp2 { mod_idx = 0 },
+}
+
+axvm_ecc_sw_setup::sw_init! {
+    Fp,
 }
 
 pub fn main() {

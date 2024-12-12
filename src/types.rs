@@ -18,7 +18,8 @@ pub struct PairingInputs {
     pub q1: AffinePoint<Fp2>,
 }
 
-/// Inputs to the KZG proof verification
+/// Inputs to pass to the VM for KZG proof verification
+/// Excludes `KzgSettings`, which is read from disk by the VM
 #[derive(Clone, Deserialize, Serialize)]
 pub struct KzgInputs {
     pub commitment_bytes: Bytes48,
