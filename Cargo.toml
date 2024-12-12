@@ -32,6 +32,9 @@ serde-big-array = { version = "0.5.1", default-features = false }
 serde_yaml = { version = "0.9", default-features = false, optional = true }
 bincode = { version = "1.3.3", default-features = false, optional = true }
 
+axvm-algebra-moduli-setup = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+axvm-ecc-sw-setup = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
+
 [dev-dependencies]
 axvm = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false }
 axvm-sdk = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "d9967c54b1ac528c794882feaf7919a085acd739", default-features = false, features = [

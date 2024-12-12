@@ -1,5 +1,6 @@
 use core::num::NonZeroUsize;
 use core::ops::Mul;
+use core::ops::{Add, AddAssign, Neg};
 
 use crate::enums::KzgError;
 use crate::types::KzgSettings;
@@ -11,13 +12,15 @@ use crate::{
 
 use alloc::{string::ToString, vec::Vec};
 use axvm_algebra_guest::field::FieldExtension;
+use axvm_algebra_guest::{DivUnsafe, IntMod};
+use axvm_ecc_guest::halo2curves::group::GroupEncoding;
 use axvm_ecc_guest::weierstrass::{IntrinsicCurve, WeierstrassPoint};
+use axvm_ecc_guest::Group;
+use axvm_pairing_guest::bls12_381::{Fp, Scalar as Bls12_381Scalar};
 // use axvm_ecc_guest::msm;
 use bls12_381::{G1Affine, G1Projective, G2Affine, G2Projective, Scalar};
 use ff::derive::sbb;
 use sha2::{Digest, Sha256};
-
-pub type Coordinate<C> = <<C as IntrinsicCurve>::Point as WeierstrassPoint>::Coordinate;
 
 // pub fn msm_variable_base(coeffs: &[Scalar], bases: &[G1Affine]) -> G1Projective {
 //     let axvm_scalar: &[axvm_pairing_guest::bls12_381::Scalar] =
@@ -26,18 +29,49 @@ pub type Coordinate<C> = <<C as IntrinsicCurve>::Point as WeierstrassPoint>::Coo
 //     msm(axvm_scalar, bases)
 // }
 
+/// Returns true if the field element is lexicographically larger than its negation
+pub fn is_lex_largest(y: Fp) -> bool {
+    let modulus = Fp::from_le_bytes(&Fp::MODULUS);
+    let half_modulus = modulus.div_unsafe(Fp::from_u32(2));
+    // Use subtraction and sign check instead of direct comparison
+    let diff = y - half_modulus;
+    // Check if difference is positive by checking if negation would be smaller
+    let neg_diff = -diff.clone();
+    diff.to_be_bytes() > neg_diff.to_be_bytes()
+}
+
 pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<G1Affine, KzgError> {
-    // let rec_id = (bytes.0[0] >> 7) & 1;
-    // let x = Coordinate::from_bytes(&bytes.0);
-    // let g1 = WeierstrassPoint::decompress(x, &rec_id);
-    // Ok(unsafe { core::mem::transmute(g1) })
-    let g1 = G1Affine::from_compressed(&(bytes.clone().into()));
-    if g1.is_none().into() {
-        return Err(KzgError::BadArgs(
-            "Failed to parse G1Affine from bytes".to_string(),
-        ));
+    let mut byte0 = bytes.0[0];
+
+    // Mask away the flag bits
+    byte0 &= 0b0001_1111;
+
+    let compression_flag_set = ((byte0 >> 7) & 1) != 0;
+    let infinity_flag_set = ((byte0 >> 6) & 1) != 0;
+    let sort_flag_set = ((byte0 >> 5) & 1) != 0;
+
+    let x = Fp::from_le_bytes(&bytes.0);
+    let y: Fp = Bls12_381Point::hint_decompress(&x, &0u8);
+    let is_lex_largest = is_lex_largest(y.clone());
+    let y = if is_lex_largest ^ sort_flag_set {
+        -y
+    } else {
+        y
+    };
+
+    let mut g1_bytes = x.to_be_bytes().to_vec();
+    g1_bytes.extend(y.to_be_bytes().to_vec());
+    // Use 8 bytes for infinity flag for rust 8-byte alignment
+    let mut infinity_flag = [0u8; 8];
+    if x == Fp::ZERO && y == Fp::ZERO {
+        infinity_flag[7] = 1;
+    } else {
+        infinity_flag[7] = 0;
     }
-    Ok(g1.unwrap())
+    g1_bytes.extend(infinity_flag);
+    let g1_bytes: [u8; 104] = g1_bytes.try_into().unwrap();
+    let g1: G1Affine = unsafe { core::mem::transmute(g1_bytes) };
+    Ok(g1)
 }
 
 pub fn safe_scalar_affine_from_bytes(bytes: &Bytes32) -> Result<Scalar, KzgError> {

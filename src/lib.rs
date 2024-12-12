@@ -13,7 +13,6 @@ pub mod kzg_proof;
 pub mod pairings;
 pub mod trusted_setup;
 pub mod types;
-pub mod wrappers;
 
 pub use consts::*;
 pub use dtypes::*;
