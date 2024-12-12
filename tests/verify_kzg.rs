@@ -8,6 +8,7 @@ use axvm_build::{GuestOptions, TargetFilter};
 use axvm_circuit::arch::SystemConfig;
 use axvm_circuit::utils::new_air_test_with_min_segments;
 use axvm_ecc_circuit::{CurveConfig, WeierstrassExtension};
+use axvm_ecc_transpiler::EccTranspilerExtension;
 use axvm_pairing_circuit::{PairingCurve, PairingExtension, Rv32PairingConfig};
 use axvm_pairing_guest::bls12_381::{BLS12_381_MODULUS, BLS12_381_ORDER};
 use axvm_pairing_transpiler::PairingTranspilerExtension;
@@ -42,6 +43,7 @@ fn test_verify_kzg_proof() {
         .with_extension(Rv32IoTranspilerExtension)
         .with_extension(PairingTranspilerExtension)
         .with_extension(ModularTranspilerExtension)
+        .with_extension(EccTranspilerExtension)
         .with_extension(Fp2TranspilerExtension);
     let exe = sdk.transpile(verify_kzg, transpiler).unwrap();
 
@@ -78,19 +80,33 @@ fn test_verify_kzg_proof() {
             continue;
         };
 
-        let io = KzgInputs {
+        let input = KzgInputs {
             commitment_bytes: commitment,
             z_bytes: z,
             y_bytes: y,
             proof_bytes: proof,
         };
-        let io = bincode::serialize(&io).unwrap();
 
+        let io = axvm::serde::to_vec(&input.clone()).unwrap();
         let io = io
-            .iter()
-            .map(|&x| AbstractField::from_canonical_u8(x))
-            .collect::<Vec<_>>();
+            .into_iter()
+            .flat_map(|w| w.to_le_bytes())
+            .map(F::from_canonical_u8)
+            .collect();
+        println!("axvm::serde: {:?}", io);
 
         new_air_test_with_min_segments(config.clone(), exe.clone(), vec![io], 1, false);
+
+        // let io = bincode::serialize(&input.clone()).unwrap();
+        // let io = io
+        //     .iter()
+        //     .map(|&x| F::from_canonical_u8(x))
+        //     .collect::<Vec<_>>();
+
+        // println!("bincode: {:?}", io);
+
+        // if false {
+        //     new_air_test_with_min_segments(config.clone(), exe.clone(), vec![io], 1, false);
+        // }
     }
 }

@@ -25,6 +25,12 @@ macro_rules! define_bytes_type {
             pub fn as_slice(&self) -> &[u8] {
                 &self.0
             }
+
+            pub fn reverse_bytes(&self) -> Self {
+                let mut bytes = self.0;
+                bytes.reverse();
+                Self(bytes)
+            }
         }
 
         impl From<$name> for [u8; $size] {

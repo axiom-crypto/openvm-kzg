@@ -4,9 +4,8 @@
 extern crate alloc;
 
 use axvm::io::read;
-use axvm_pairing_guest::bls12_381::Fp;
-use bls12_381::{G1Affine, G2Affine, Scalar};
-use kzg_rs::{get_kzg_settings, KzgInputs, KzgProof, KzgSettings};
+use axvm_pairing_guest::bls12_381::Fp as Bls12_381Fp;
+use kzg_rs::{get_kzg_settings, KzgInputs, KzgProof};
 
 axvm::entry!(main);
 
@@ -20,26 +19,16 @@ axvm_algebra_complex_macros::complex_init! {
 }
 
 axvm_ecc_sw_setup::sw_init! {
-    Fp,
+    Bls12_381Fp,
 }
 
 pub fn main() {
     setup_0();
     setup_all_complex_extensions();
+    setup_all_curves();
 
+    // Get const trusted setup from disk
     let kzg_settings = get_kzg_settings();
-
-    // let kzg_settings = unsafe {
-    //     KzgSettings {
-    //         roots_of_unity: core::mem::transmute::<&[Scalar], &'static [Scalar]>(&[Scalar::one()]),
-    //         g1_points: core::mem::transmute::<&[G1Affine], &'static [G1Affine]>(&[
-    //             G1Affine::generator(),
-    //         ]),
-    //         g2_points: core::mem::transmute::<&[G2Affine], &'static [G2Affine]>(&[
-    //             G2Affine::generator(),
-    //         ]),
-    //     }
-    // };
 
     let io: KzgInputs = read();
 

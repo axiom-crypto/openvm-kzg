@@ -2346,6 +2346,7 @@ dependencies = [
  "axvm-ecc-circuit",
  "axvm-ecc-guest",
  "axvm-ecc-sw-setup",
+ "axvm-ecc-transpiler",
  "axvm-pairing-circuit",
  "axvm-pairing-guest",
  "axvm-pairing-transpiler",

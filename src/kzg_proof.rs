@@ -36,7 +36,7 @@ pub fn is_lex_largest(y: Fp) -> bool {
     diff.to_be_bytes() > neg_diff.to_be_bytes()
 }
 
-pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<G1Affine, KzgError> {
+pub fn unsafe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<G1Affine, KzgError> {
     let mut bytes = bytes.clone();
 
     // let compression_flag_set = ((byte0 >> 7) & 1) != 0;
@@ -59,17 +59,17 @@ pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<G1Affine, KzgError> 
 
     let mut g1_bytes = x.to_be_bytes().to_vec();
     g1_bytes.extend(y.to_be_bytes().to_vec());
-    // Use 8 bytes for infinity flag for rust 8-byte alignment
     let mut infinity_flag = [0u8; 8];
     if x == Fp::ZERO && y == Fp::ZERO {
-        infinity_flag[7] = 1;
+        infinity_flag[0] = 1;
     } else {
-        infinity_flag[7] = 0;
+        infinity_flag[0] = 0;
     }
     g1_bytes.extend(infinity_flag);
     let g1_bytes: [u8; 104] = g1_bytes.try_into().unwrap();
 
     let g1: G1Affine = unsafe { core::mem::transmute(g1_bytes) };
+    // let g1 = G1Affine::generator();
     Ok(g1)
 }
 
@@ -399,24 +399,6 @@ impl KzgProof {
         proof_bytes: &Bytes48,
         kzg_settings: &KzgSettings,
     ) -> Result<bool, KzgError> {
-        let (a1, a2, b1, b2) = Self::calculate_pairing_points(
-            commitment_bytes,
-            z_bytes,
-            y_bytes,
-            proof_bytes,
-            kzg_settings,
-        )?;
-
-        Ok(pairings_verify(a1, a2, b1, b2))
-    }
-
-    pub fn calculate_pairing_points(
-        commitment_bytes: &Bytes48,
-        z_bytes: &Bytes32,
-        y_bytes: &Bytes32,
-        proof_bytes: &Bytes48,
-        kzg_settings: &KzgSettings,
-    ) -> Result<(G1Affine, G2Affine, G1Affine, G2Affine), KzgError> {
         let z = match safe_scalar_affine_from_bytes(z_bytes) {
             Ok(z) => z,
             Err(e) => {
@@ -429,13 +411,13 @@ impl KzgProof {
                 return Err(e);
             }
         };
-        let commitment = match safe_g1_affine_from_bytes(commitment_bytes) {
+        let commitment = match unsafe_g1_affine_from_bytes(commitment_bytes) {
             Ok(g1) => g1,
             Err(e) => {
                 return Err(e);
             }
         };
-        let proof = match safe_g1_affine_from_bytes(proof_bytes) {
+        let proof = match unsafe_g1_affine_from_bytes(proof_bytes) {
             Ok(g1) => g1,
             Err(e) => {
                 return Err(e);
@@ -448,7 +430,7 @@ impl KzgProof {
         let g1_y = G1Affine::generator() * y;
         let p_minus_y = commitment - g1_y;
 
-        Ok((
+        Ok(pairings_verify(
             p_minus_y.into(),
             G2Affine::generator(),
             proof,
@@ -513,13 +495,13 @@ impl KzgProof {
         kzg_settings: &KzgSettings,
     ) -> Result<bool, KzgError> {
         // Convert commitment bytes to G1Affine
-        let commitment = safe_g1_affine_from_bytes(commitment_bytes)?;
+        let commitment = unsafe_g1_affine_from_bytes(commitment_bytes)?;
 
         // Convert blob to polynomial
         let polynomial = blob.as_polynomial()?;
 
         // Convert proof bytes to G1Affine
-        let proof = safe_g1_affine_from_bytes(proof_bytes)?;
+        let proof = unsafe_g1_affine_from_bytes(proof_bytes)?;
 
         // Compute the evaluation challenge for the blob and commitment
         let evaluation_challenge = compute_challenge(&blob, &commitment)?;
@@ -565,12 +547,12 @@ impl KzgProof {
 
         let commitments = commitments_bytes
             .iter()
-            .map(safe_g1_affine_from_bytes)
+            .map(unsafe_g1_affine_from_bytes)
             .collect::<Result<Vec<_>, _>>()?;
 
         let proofs = proofs_bytes
             .iter()
-            .map(safe_g1_affine_from_bytes)
+            .map(unsafe_g1_affine_from_bytes)
             .collect::<Result<Vec<_>, _>>()?;
 
         validate_batched_input(&commitments, &proofs)?;
@@ -744,7 +726,8 @@ pub mod tests {
 
         let test: Test<BlobInput> = serde_yaml::from_str(data).unwrap();
         let blob = test.input.get_blob().unwrap();
-        let commitment = safe_g1_affine_from_bytes(&test.input.get_commitment().unwrap()).unwrap();
+        let commitment =
+            unsafe_g1_affine_from_bytes(&test.input.get_commitment().unwrap()).unwrap();
 
         let evaluation_challenge = compute_challenge(&blob, &commitment).unwrap();
 
