@@ -1,22 +1,5 @@
 use std::path::PathBuf;
 
-use ax_stark_sdk::ax_stark_backend::p3_field::AbstractField;
-use ax_stark_sdk::p3_baby_bear::BabyBear;
-use axvm_algebra_circuit::{Fp2Extension, ModularExtension};
-use axvm_algebra_transpiler::{Fp2TranspilerExtension, ModularTranspilerExtension};
-use axvm_build::{GuestOptions, TargetFilter};
-use axvm_circuit::arch::SystemConfig;
-use axvm_circuit::utils::new_air_test_with_min_segments;
-use axvm_ecc_circuit::{CurveConfig, WeierstrassExtension};
-use axvm_ecc_transpiler::EccTranspilerExtension;
-use axvm_pairing_circuit::{PairingCurve, PairingExtension, Rv32PairingConfig};
-use axvm_pairing_guest::bls12_381::{BLS12_381_MODULUS, BLS12_381_ORDER};
-use axvm_pairing_transpiler::PairingTranspilerExtension;
-use axvm_rv32im_transpiler::{
-    Rv32ITranspilerExtension, Rv32IoTranspilerExtension, Rv32MTranspilerExtension,
-};
-use axvm_sdk::Sdk;
-use axvm_transpiler::transpiler::Transpiler;
 use kzg_rs::test_files::{
     ONLY_VALID_KZG_PROOF_TESTS, SINGLE_VALID_KZG_PROOF_TEST, VERIFY_KZG_PROOF_TESTS,
 };
@@ -24,6 +7,23 @@ use kzg_rs::test_utils::{Input, Test};
 use kzg_rs::KzgInputs;
 use num_bigint_dig::BigUint;
 use num_traits::{FromPrimitive, Zero};
+use openvm_algebra_circuit::{Fp2Extension, ModularExtension};
+use openvm_algebra_transpiler::{Fp2TranspilerExtension, ModularTranspilerExtension};
+use openvm_build::{GuestOptions, TargetFilter};
+use openvm_circuit::arch::SystemConfig;
+use openvm_circuit::utils::new_air_test_with_min_segments;
+use openvm_ecc_circuit::{CurveConfig, WeierstrassExtension};
+use openvm_ecc_transpiler::EccTranspilerExtension;
+use openvm_pairing_circuit::{PairingCurve, PairingExtension, Rv32PairingConfig};
+use openvm_pairing_guest::bls12_381::{BLS12_381_MODULUS, BLS12_381_ORDER};
+use openvm_pairing_transpiler::PairingTranspilerExtension;
+use openvm_rv32im_transpiler::{
+    Rv32ITranspilerExtension, Rv32IoTranspilerExtension, Rv32MTranspilerExtension,
+};
+use openvm_sdk::Sdk;
+use openvm_stark_sdk::openvm_stark_backend::p3_field::AbstractField;
+use openvm_stark_sdk::p3_baby_bear::BabyBear;
+use openvm_transpiler::transpiler::Transpiler;
 use serde_yaml::from_str;
 
 type F = BabyBear;
@@ -87,13 +87,12 @@ fn test_verify_kzg_proof() {
             proof_bytes: proof,
         };
 
-        let io = axvm::serde::to_vec(&io).unwrap();
+        let io = openvm::serde::to_vec(&io).unwrap();
         let io = io
             .into_iter()
             .flat_map(|w| w.to_le_bytes())
             .map(F::from_canonical_u8)
             .collect();
-        println!("axvm::serde: {:?}", io);
 
         new_air_test_with_min_segments(config.clone(), exe.clone(), vec![io], 1, false);
     }

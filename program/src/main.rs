@@ -3,22 +3,22 @@
 
 extern crate alloc;
 
-use axvm::io::read;
-use axvm_pairing_guest::bls12_381::Fp as Bls12_381Fp;
 use kzg_rs::{get_kzg_settings, KzgInputs, KzgProof};
+use openvm::io::read;
+use openvm_pairing_guest::bls12_381::Fp as Bls12_381Fp;
 
-axvm::entry!(main);
+openvm::entry!(main);
 
-axvm_algebra_moduli_setup::moduli_init! {
+openvm_algebra_moduli_setup::moduli_init! {
     "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab",
     "0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001"
 }
 
-axvm_algebra_complex_macros::complex_init! {
+openvm_algebra_complex_macros::complex_init! {
     Fp2 { mod_idx = 0 },
 }
 
-axvm_ecc_sw_setup::sw_init! {
+openvm_ecc_sw_setup::sw_init! {
     Bls12_381Fp,
 }
 

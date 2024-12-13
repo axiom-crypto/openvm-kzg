@@ -4,14 +4,14 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-axvm = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "9d14c1714f84e1b139c6e2818542d70cdaaaefaf", default-features = false }
-axvm-platform = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "9d14c1714f84e1b139c6e2818542d70cdaaaefaf", default-features = false }
-axvm-ecc-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "9d14c1714f84e1b139c6e2818542d70cdaaaefaf", default-features = false }
-axvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "9d14c1714f84e1b139c6e2818542d70cdaaaefaf", default-features = false }
-axvm-algebra-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "9d14c1714f84e1b139c6e2818542d70cdaaaefaf", default-features = false }
-axvm-ecc-sw-setup = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "9d14c1714f84e1b139c6e2818542d70cdaaaefaf", default-features = false }
-axvm-algebra-moduli-setup = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "9d14c1714f84e1b139c6e2818542d70cdaaaefaf", default-features = false }
-axvm-algebra-complex-macros = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "9d14c1714f84e1b139c6e2818542d70cdaaaefaf", default-features = false }
+openvm = { git = "https://github.com/openvm-org/openvm.git", rev = "180d34b411ccd5f36feeeb01c94d920553e87b6b", default-features = false }
+openvm-platform = { git = "https://github.com/openvm-org/openvm.git", rev = "180d34b411ccd5f36feeeb01c94d920553e87b6b", default-features = false }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "180d34b411ccd5f36feeeb01c94d920553e87b6b", default-features = false }
+openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "180d34b411ccd5f36feeeb01c94d920553e87b6b", default-features = false }
+openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "180d34b411ccd5f36feeeb01c94d920553e87b6b", default-features = false }
+openvm-ecc-sw-setup = { git = "https://github.com/openvm-org/openvm.git", rev = "180d34b411ccd5f36feeeb01c94d920553e87b6b", default-features = false }
+openvm-algebra-moduli-setup = { git = "https://github.com/openvm-org/openvm.git", rev = "180d34b411ccd5f36feeeb01c94d920553e87b6b", default-features = false }
+openvm-algebra-complex-macros = { git = "https://github.com/openvm-org/openvm.git", rev = "180d34b411ccd5f36feeeb01c94d920553e87b6b", default-features = false }
 kzg-rs = { path = "..", default-features = false, features = ["program-test"] }
 serde = { version = "1.0.200", default-features = false, features = [
     "alloc",

@@ -309,789 +309,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ace50bade8e6234aa140d9a2f552bbee1db4d353f69b8217bc503490fc1a9f26"
 
 [[package]]
-name = "ax-circuit-derive"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "itertools 0.13.0",
- "proc-macro2",
- "quote",
- "syn 2.0.90",
-]
-
-[[package]]
-name = "ax-circuit-primitives"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-circuit-derive",
- "ax-stark-backend",
- "derive-new",
- "itertools 0.13.0",
- "lazy_static",
- "num-bigint-dig",
- "num-traits",
- "rand",
- "tracing",
-]
-
-[[package]]
-name = "ax-mod-circuit-builder"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-circuit-primitives",
- "ax-stark-backend",
- "ax-stark-sdk",
- "axvm-circuit",
- "axvm-instructions",
- "itertools 0.13.0",
- "num-bigint-dig",
- "num-traits",
- "rand",
- "tracing",
-]
-
-[[package]]
-name = "ax-poseidon2-air"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-circuit-primitives",
- "ax-stark-backend",
- "ax-stark-sdk",
- "itertools 0.13.0",
- "lazy_static",
- "p3-monty-31",
- "p3-poseidon2",
- "p3-symmetric",
- "rand",
- "zkhash",
-]
-
-[[package]]
-name = "ax-stark-backend"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "async-trait",
- "cfg-if",
- "derivative",
- "itertools 0.13.0",
- "mimalloc",
- "p3-air",
- "p3-challenger",
- "p3-commit",
- "p3-field",
- "p3-matrix",
- "p3-maybe-rayon",
- "p3-uni-stark",
- "p3-util",
- "rayon",
- "serde",
- "thiserror 1.0.69",
- "tracing",
-]
-
-[[package]]
-name = "ax-stark-sdk"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-circuit-derive",
- "ax-stark-backend",
- "derive_more 0.99.18",
- "ff 0.13.0",
- "itertools 0.13.0",
- "metrics",
- "metrics-tracing-context",
- "metrics-util",
- "p3-baby-bear",
- "p3-blake3",
- "p3-bn254-fr",
- "p3-dft",
- "p3-fri",
- "p3-goldilocks",
- "p3-keccak",
- "p3-merkle-tree",
- "p3-poseidon",
- "p3-poseidon2",
- "p3-symmetric",
- "rand",
- "serde",
- "serde_json",
- "static_assertions",
- "toml",
- "tracing",
- "tracing-forest",
- "tracing-subscriber",
- "zkhash",
-]
-
-[[package]]
-name = "axvm"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "axvm-platform",
- "axvm-rv32im-guest",
- "bytemuck",
- "hex-literal",
- "num-bigint-dig",
- "num-traits",
- "serde",
-]
-
-[[package]]
-name = "axvm-algebra-circuit"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-circuit-derive",
- "ax-circuit-primitives",
- "ax-mod-circuit-builder",
- "ax-stark-backend",
- "ax-stark-sdk",
- "axvm-algebra-transpiler",
- "axvm-circuit",
- "axvm-circuit-derive",
- "axvm-instructions",
- "axvm-rv32-adapters",
- "axvm-rv32im-circuit",
- "derive-new",
- "derive_more 1.0.0",
- "itertools 0.13.0",
- "num-bigint-dig",
- "num-traits",
- "rand",
- "serde",
- "strum",
- "tracing",
-]
-
-[[package]]
-name = "axvm-algebra-complex-macros"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "axvm-macros-common",
- "quote",
- "syn 2.0.90",
-]
-
-[[package]]
-name = "axvm-algebra-guest"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "axvm",
- "axvm-algebra-moduli-setup",
- "axvm-platform",
- "halo2curves-axiom 0.7.0",
- "num-bigint-dig",
- "serde",
- "serde-big-array",
- "strum_macros",
-]
-
-[[package]]
-name = "axvm-algebra-moduli-setup"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "axvm-macros-common",
- "quote",
- "syn 2.0.90",
-]
-
-[[package]]
-name = "axvm-algebra-transpiler"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-stark-backend",
- "axvm-algebra-guest",
- "axvm-instructions",
- "axvm-instructions-derive",
- "axvm-transpiler",
- "rrs-lib",
- "strum",
- "strum_macros",
-]
-
-[[package]]
-name = "axvm-bigint-circuit"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-circuit-derive",
- "ax-circuit-primitives",
- "ax-stark-backend",
- "ax-stark-sdk",
- "axvm-bigint-transpiler",
- "axvm-circuit",
- "axvm-circuit-derive",
- "axvm-instructions",
- "axvm-rv32-adapters",
- "axvm-rv32im-circuit",
- "axvm-rv32im-transpiler",
- "derive-new",
- "derive_more 1.0.0",
- "rand",
- "serde",
-]
-
-[[package]]
-name = "axvm-bigint-guest"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "axvm",
- "axvm-platform",
- "num-bigint-dig",
- "num-traits",
- "serde",
- "strum_macros",
-]
-
-[[package]]
-name = "axvm-bigint-transpiler"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-stark-backend",
- "axvm-bigint-guest",
- "axvm-instructions",
- "axvm-instructions-derive",
- "axvm-rv32im-transpiler",
- "axvm-transpiler",
- "rrs-lib",
- "strum",
-]
-
-[[package]]
-name = "axvm-build"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "axvm-platform",
- "cargo_metadata",
- "dirs",
- "eyre",
- "hex",
- "serde",
- "serde_json",
- "tempfile",
-]
-
-[[package]]
-name = "axvm-circuit"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "async-trait",
- "ax-circuit-derive",
- "ax-circuit-primitives",
- "ax-poseidon2-air",
- "ax-stark-backend",
- "ax-stark-sdk",
- "axvm-circuit-derive",
- "axvm-instructions",
- "backtrace",
- "cfg-if",
- "derivative",
- "derive-new",
- "derive_more 1.0.0",
- "eyre",
- "getset",
- "itertools 0.13.0",
- "once_cell",
- "p3-baby-bear",
- "p3-symmetric",
- "parking_lot",
- "rand",
- "rustc-hash 2.1.0",
- "serde",
- "static_assertions",
- "thiserror 1.0.69",
- "toml",
- "tracing",
-]
-
-[[package]]
-name = "axvm-circuit-derive"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "itertools 0.13.0",
- "proc-macro2",
- "quote",
- "syn 2.0.90",
-]
-
-[[package]]
-name = "axvm-ecc-circuit"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-circuit-derive",
- "ax-circuit-primitives",
- "ax-mod-circuit-builder",
- "ax-stark-backend",
- "axvm-algebra-circuit",
- "axvm-circuit",
- "axvm-circuit-derive",
- "axvm-ecc-guest",
- "axvm-ecc-transpiler",
- "axvm-instructions",
- "axvm-rv32-adapters",
- "axvm-rv32im-circuit",
- "derive-new",
- "derive_more 1.0.0",
- "eyre",
- "num-bigint-dig",
- "num-integer",
- "num-traits",
- "once_cell",
- "serde",
- "strum",
-]
-
-[[package]]
-name = "axvm-ecc-guest"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "axvm",
- "axvm-algebra-guest",
- "axvm-algebra-moduli-setup",
- "axvm-ecc-sw-setup",
- "axvm-platform",
- "axvm-rv32im-guest",
- "ecdsa",
- "elliptic-curve",
- "group 0.13.0",
- "halo2curves-axiom 0.7.0",
- "hex-literal",
- "itertools 0.13.0",
- "k256",
- "lazy_static",
- "num-bigint 0.4.6",
- "num-bigint-dig",
- "num-traits",
- "rand",
- "serde",
- "strum_macros",
-]
-
-[[package]]
-name = "axvm-ecc-sw-setup"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "axvm-macros-common",
- "quote",
- "syn 2.0.90",
-]
-
-[[package]]
-name = "axvm-ecc-transpiler"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-stark-backend",
- "axvm-ecc-guest",
- "axvm-instructions",
- "axvm-instructions-derive",
- "axvm-transpiler",
- "rrs-lib",
- "strum",
-]
-
-[[package]]
-name = "axvm-instructions"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-stark-backend",
- "axvm-instructions-derive",
- "backtrace",
- "derive-new",
- "itertools 0.13.0",
- "num-bigint-dig",
- "num-traits",
- "serde",
- "strum",
- "strum_macros",
-]
-
-[[package]]
-name = "axvm-instructions-derive"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.90",
-]
-
-[[package]]
-name = "axvm-keccak256-circuit"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-circuit-derive",
- "ax-circuit-primitives",
- "ax-stark-backend",
- "ax-stark-sdk",
- "axvm-circuit",
- "axvm-circuit-derive",
- "axvm-instructions",
- "axvm-keccak256-transpiler",
- "axvm-rv32im-circuit",
- "derive-new",
- "derive_more 1.0.0",
- "eyre",
- "hex-literal",
- "itertools 0.13.0",
- "p3-keccak-air",
- "rand",
- "serde",
- "strum",
- "tiny-keccak",
- "tracing",
-]
-
-[[package]]
-name = "axvm-keccak256-guest"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "axvm-platform",
- "serde",
- "tiny-keccak",
-]
-
-[[package]]
-name = "axvm-keccak256-transpiler"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-stark-backend",
- "axvm-instructions",
- "axvm-instructions-derive",
- "axvm-keccak256-guest",
- "axvm-transpiler",
- "rrs-lib",
- "strum",
-]
-
-[[package]]
-name = "axvm-macros-common"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "syn 2.0.90",
-]
-
-[[package]]
-name = "axvm-native-circuit"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-circuit-derive",
- "ax-circuit-primitives",
- "ax-poseidon2-air",
- "ax-stark-backend",
- "ax-stark-sdk",
- "axvm-circuit",
- "axvm-circuit-derive",
- "axvm-instructions",
- "axvm-native-compiler",
- "axvm-rv32im-circuit",
- "derive-new",
- "derive_more 1.0.0",
- "eyre",
- "itertools 0.13.0",
- "parking_lot",
- "rand",
- "serde",
- "strum",
- "tracing",
-]
-
-[[package]]
-name = "axvm-native-compiler"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-circuit-primitives",
- "ax-stark-backend",
- "ax-stark-sdk",
- "axvm-circuit",
- "axvm-instructions",
- "axvm-instructions-derive",
- "axvm-native-compiler-derive",
- "axvm-rv32im-transpiler",
- "backtrace",
- "cfg-if",
- "itertools 0.13.0",
- "num-bigint 0.4.6",
- "num-bigint-dig",
- "num-integer",
- "num-traits",
- "serde",
- "serde_json",
- "snark-verifier-sdk",
- "strum",
- "strum_macros",
- "tracing",
- "zkhash",
-]
-
-[[package]]
-name = "axvm-native-compiler-derive"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.90",
-]
-
-[[package]]
-name = "axvm-native-recursion"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-stark-backend",
- "ax-stark-sdk",
- "axvm-circuit",
- "axvm-native-circuit",
- "axvm-native-compiler",
- "cfg-if",
- "itertools 0.13.0",
- "lazy_static",
- "once_cell",
- "p3-dft",
- "p3-fri",
- "p3-merkle-tree",
- "p3-symmetric",
- "rand",
- "serde",
- "serde_json",
- "snark-verifier-sdk",
- "tracing",
-]
-
-[[package]]
-name = "axvm-pairing-circuit"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-circuit-derive",
- "ax-circuit-primitives",
- "ax-mod-circuit-builder",
- "ax-stark-backend",
- "axvm-algebra-circuit",
- "axvm-circuit",
- "axvm-circuit-derive",
- "axvm-ecc-circuit",
- "axvm-ecc-guest",
- "axvm-instructions",
- "axvm-pairing-guest",
- "axvm-pairing-transpiler",
- "axvm-rv32-adapters",
- "axvm-rv32im-circuit",
- "derive-new",
- "derive_more 1.0.0",
- "eyre",
- "itertools 0.13.0",
- "num-bigint-dig",
- "num-traits",
- "once_cell",
- "rand",
- "serde",
- "strum",
-]
-
-[[package]]
-name = "axvm-pairing-guest"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "axvm",
- "axvm-algebra-complex-macros",
- "axvm-algebra-guest",
- "axvm-algebra-moduli-setup",
- "axvm-ecc-guest",
- "axvm-ecc-sw-setup",
- "axvm-platform",
- "axvm-rv32im-guest",
- "group 0.13.0",
- "halo2curves-axiom 0.7.0",
- "hex-literal",
- "itertools 0.13.0",
- "lazy_static",
- "num-bigint 0.4.6",
- "num-bigint-dig",
- "num-traits",
- "rand",
- "serde",
- "strum_macros",
-]
-
-[[package]]
-name = "axvm-pairing-transpiler"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-stark-backend",
- "axvm-instructions",
- "axvm-instructions-derive",
- "axvm-pairing-guest",
- "axvm-transpiler",
- "rrs-lib",
- "strum",
-]
-
-[[package]]
-name = "axvm-platform"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "getrandom",
- "libm",
- "stability",
- "strum_macros",
-]
-
-[[package]]
-name = "axvm-rv32-adapters"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-circuit-derive",
- "ax-circuit-primitives",
- "ax-stark-backend",
- "ax-stark-sdk",
- "axvm-circuit",
- "axvm-instructions",
- "axvm-rv32im-circuit",
- "derive-new",
- "itertools 0.13.0",
- "rand",
- "tracing",
-]
-
-[[package]]
-name = "axvm-rv32im-circuit"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-circuit-derive",
- "ax-circuit-primitives",
- "ax-stark-backend",
- "axvm-circuit",
- "axvm-circuit-derive",
- "axvm-instructions",
- "axvm-rv32im-transpiler",
- "derive-new",
- "derive_more 1.0.0",
- "eyre",
- "itertools 0.13.0",
- "num-bigint 0.4.6",
- "num-integer",
- "parking_lot",
- "rand",
- "serde",
- "strum",
- "tracing",
-]
-
-[[package]]
-name = "axvm-rv32im-guest"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "axvm-platform",
- "strum_macros",
-]
-
-[[package]]
-name = "axvm-rv32im-transpiler"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-stark-backend",
- "axvm-instructions",
- "axvm-instructions-derive",
- "axvm-rv32im-guest",
- "axvm-transpiler",
- "rrs-lib",
- "strum",
- "tracing",
-]
-
-[[package]]
-name = "axvm-sdk"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "async-trait",
- "ax-stark-backend",
- "ax-stark-sdk",
- "axvm",
- "axvm-algebra-circuit",
- "axvm-algebra-transpiler",
- "axvm-bigint-circuit",
- "axvm-bigint-transpiler",
- "axvm-build",
- "axvm-circuit",
- "axvm-ecc-circuit",
- "axvm-ecc-transpiler",
- "axvm-keccak256-circuit",
- "axvm-keccak256-transpiler",
- "axvm-native-circuit",
- "axvm-native-compiler",
- "axvm-native-recursion",
- "axvm-pairing-circuit",
- "axvm-pairing-transpiler",
- "axvm-rv32im-circuit",
- "axvm-rv32im-transpiler",
- "axvm-transpiler",
- "bincode 2.0.0-rc.3",
- "bon",
- "bson",
- "derivative",
- "derive_more 1.0.0",
- "eyre",
- "itertools 0.13.0",
- "metrics",
- "serde",
- "static_assertions",
- "tracing",
-]
-
-[[package]]
-name = "axvm-transpiler"
-version = "0.1.0"
-source = "git+ssh://git@github.com/axiom-crypto/afs-prototype.git?rev=9d14c1714f84e1b139c6e2818542d70cdaaaefaf#9d14c1714f84e1b139c6e2818542d70cdaaaefaf"
-dependencies = [
- "ax-stark-backend",
- "axvm-instructions",
- "axvm-platform",
- "derive_more 1.0.0",
- "elf",
- "eyre",
- "num-bigint-dig",
- "rrs-lib",
- "strum",
- "thiserror 1.0.69",
- "tracing",
-]
-
-[[package]]
 name = "backtrace"
 version = "0.3.74"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1371,7 +588,7 @@ checksum = "2d886547e41f740c616ae73108f6eb70afe6d940c7bc697cb30f13daec073037"
 dependencies = [
  "camino",
  "cargo-platform",
- "semver 1.0.23",
+ "semver 1.0.24",
  "serde",
  "serde_json",
  "thiserror 1.0.69",
@@ -1379,9 +596,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.3"
+version = "1.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "27f657647bcff5394bf56c7317665bbf790a137a50eaaa5c6bfbb9e27a518f2d"
+checksum = "9157bbaa6b165880c27a4293a474c91cdcf265cc68cc829bf10be0964a391caf"
 dependencies = [
  "shlex",
 ]
@@ -1740,6 +957,18 @@ name = "endian-type"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c34f04666d835ff5d62e058c3995147c06f42fe86ff053337632bca83e42702d"
+
+[[package]]
+name = "enum_dispatch"
+version = "0.3.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "aa18ce2bc66555b3218614519ac839ddb759a7d6720732f979ef8d13be147ecd"
+dependencies = [
+ "once_cell",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.90",
+]
 
 [[package]]
 name = "enumn"
@@ -2333,32 +1562,31 @@ dependencies = [
 name = "kzg-rs"
 version = "0.2.3"
 dependencies = [
- "ax-stark-sdk",
- "axvm",
- "axvm-algebra-circuit",
- "axvm-algebra-guest",
- "axvm-algebra-moduli-setup",
- "axvm-algebra-transpiler",
- "axvm-build",
- "axvm-circuit",
- "axvm-ecc-circuit",
- "axvm-ecc-guest",
- "axvm-ecc-sw-setup",
- "axvm-ecc-transpiler",
- "axvm-pairing-circuit",
- "axvm-pairing-guest",
- "axvm-pairing-transpiler",
- "axvm-rv32im-circuit",
- "axvm-rv32im-transpiler",
- "axvm-sdk",
- "axvm-transpiler",
  "bincode 1.3.3",
  "bls12_381 0.8.0",
  "ff 0.13.0",
  "hex",
  "num-bigint-dig",
  "num-traits",
- "p3-baby-bear",
+ "openvm",
+ "openvm-algebra-circuit",
+ "openvm-algebra-guest",
+ "openvm-algebra-moduli-setup",
+ "openvm-algebra-transpiler",
+ "openvm-build",
+ "openvm-circuit",
+ "openvm-ecc-circuit",
+ "openvm-ecc-guest",
+ "openvm-ecc-sw-setup",
+ "openvm-ecc-transpiler",
+ "openvm-pairing-circuit",
+ "openvm-pairing-guest",
+ "openvm-pairing-transpiler",
+ "openvm-rv32im-circuit",
+ "openvm-rv32im-transpiler",
+ "openvm-sdk",
+ "openvm-stark-sdk 0.1.0-alpha (git+https://github.com/openvm-org/stark-backend.git?rev=75f79da9da485c2091637207201fc40f0985ef14)",
+ "openvm-transpiler",
  "serde",
  "serde-big-array",
  "serde_yaml",
@@ -2694,6 +1922,846 @@ name = "once_cell"
 version = "1.20.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1261fe7e33c73b354eab43b1273a57c8f967d0391e80353e51f764ac02cf6775"
+
+[[package]]
+name = "openvm"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "bytemuck",
+ "hex-literal",
+ "num-bigint-dig",
+ "num-traits",
+ "openvm-platform",
+ "openvm-rv32im-guest",
+ "serde",
+]
+
+[[package]]
+name = "openvm-algebra-circuit"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "derive-new",
+ "derive_more 1.0.0",
+ "itertools 0.13.0",
+ "num-bigint-dig",
+ "num-traits",
+ "openvm-algebra-transpiler",
+ "openvm-circuit",
+ "openvm-circuit-derive",
+ "openvm-circuit-primitives",
+ "openvm-circuit-primitives-derive",
+ "openvm-instructions",
+ "openvm-mod-circuit-builder",
+ "openvm-rv32-adapters",
+ "openvm-rv32im-circuit",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-stark-sdk 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "rand",
+ "serde",
+ "strum",
+ "tracing",
+]
+
+[[package]]
+name = "openvm-algebra-complex-macros"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "openvm-macros-common",
+ "quote",
+ "syn 2.0.90",
+]
+
+[[package]]
+name = "openvm-algebra-guest"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "halo2curves-axiom 0.7.0",
+ "num-bigint-dig",
+ "openvm",
+ "openvm-algebra-moduli-setup",
+ "openvm-platform",
+ "serde",
+ "serde-big-array",
+ "strum_macros",
+]
+
+[[package]]
+name = "openvm-algebra-moduli-setup"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "openvm-macros-common",
+ "quote",
+ "syn 2.0.90",
+]
+
+[[package]]
+name = "openvm-algebra-transpiler"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "openvm-algebra-guest",
+ "openvm-instructions",
+ "openvm-instructions-derive",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-transpiler",
+ "rrs-lib",
+ "strum",
+ "strum_macros",
+]
+
+[[package]]
+name = "openvm-bigint-circuit"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "derive-new",
+ "derive_more 1.0.0",
+ "openvm-bigint-transpiler",
+ "openvm-circuit",
+ "openvm-circuit-derive",
+ "openvm-circuit-primitives",
+ "openvm-circuit-primitives-derive",
+ "openvm-instructions",
+ "openvm-rv32-adapters",
+ "openvm-rv32im-circuit",
+ "openvm-rv32im-transpiler",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-stark-sdk 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "rand",
+ "serde",
+]
+
+[[package]]
+name = "openvm-bigint-guest"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "num-bigint-dig",
+ "num-traits",
+ "openvm",
+ "openvm-platform",
+ "serde",
+ "strum_macros",
+]
+
+[[package]]
+name = "openvm-bigint-transpiler"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "openvm-bigint-guest",
+ "openvm-instructions",
+ "openvm-instructions-derive",
+ "openvm-rv32im-transpiler",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-transpiler",
+ "rrs-lib",
+ "strum",
+]
+
+[[package]]
+name = "openvm-build"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "cargo_metadata",
+ "dirs",
+ "eyre",
+ "hex",
+ "openvm-platform",
+ "serde",
+ "serde_json",
+ "tempfile",
+]
+
+[[package]]
+name = "openvm-circuit"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "async-trait",
+ "backtrace",
+ "cfg-if",
+ "derivative",
+ "derive-new",
+ "derive_more 1.0.0",
+ "enum_dispatch",
+ "eyre",
+ "getset",
+ "itertools 0.13.0",
+ "once_cell",
+ "openvm-circuit-derive",
+ "openvm-circuit-primitives",
+ "openvm-circuit-primitives-derive",
+ "openvm-instructions",
+ "openvm-poseidon2-air",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-stark-sdk 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "p3-baby-bear",
+ "p3-symmetric",
+ "parking_lot",
+ "rand",
+ "rustc-hash 2.1.0",
+ "serde",
+ "static_assertions",
+ "thiserror 1.0.69",
+ "toml",
+ "tracing",
+]
+
+[[package]]
+name = "openvm-circuit-derive"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "itertools 0.13.0",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.90",
+]
+
+[[package]]
+name = "openvm-circuit-primitives"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "derive-new",
+ "itertools 0.13.0",
+ "lazy_static",
+ "num-bigint-dig",
+ "num-traits",
+ "openvm-circuit-primitives-derive",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "rand",
+ "tracing",
+]
+
+[[package]]
+name = "openvm-circuit-primitives-derive"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "itertools 0.13.0",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.90",
+]
+
+[[package]]
+name = "openvm-ecc-circuit"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "derive-new",
+ "derive_more 1.0.0",
+ "eyre",
+ "num-bigint-dig",
+ "num-integer",
+ "num-traits",
+ "once_cell",
+ "openvm-algebra-circuit",
+ "openvm-circuit",
+ "openvm-circuit-derive",
+ "openvm-circuit-primitives",
+ "openvm-circuit-primitives-derive",
+ "openvm-ecc-guest",
+ "openvm-ecc-transpiler",
+ "openvm-instructions",
+ "openvm-mod-circuit-builder",
+ "openvm-rv32-adapters",
+ "openvm-rv32im-circuit",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "serde",
+ "strum",
+]
+
+[[package]]
+name = "openvm-ecc-guest"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "ecdsa",
+ "elliptic-curve",
+ "group 0.13.0",
+ "halo2curves-axiom 0.7.0",
+ "hex-literal",
+ "itertools 0.13.0",
+ "k256",
+ "lazy_static",
+ "num-bigint 0.4.6",
+ "num-bigint-dig",
+ "num-traits",
+ "openvm",
+ "openvm-algebra-guest",
+ "openvm-algebra-moduli-setup",
+ "openvm-ecc-sw-setup",
+ "openvm-platform",
+ "openvm-rv32im-guest",
+ "rand",
+ "serde",
+ "strum_macros",
+]
+
+[[package]]
+name = "openvm-ecc-sw-setup"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "openvm-macros-common",
+ "quote",
+ "syn 2.0.90",
+]
+
+[[package]]
+name = "openvm-ecc-transpiler"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "openvm-ecc-guest",
+ "openvm-instructions",
+ "openvm-instructions-derive",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-transpiler",
+ "rrs-lib",
+ "strum",
+]
+
+[[package]]
+name = "openvm-instructions"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "backtrace",
+ "derive-new",
+ "itertools 0.13.0",
+ "num-bigint-dig",
+ "num-traits",
+ "openvm-instructions-derive",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "serde",
+ "strum",
+ "strum_macros",
+]
+
+[[package]]
+name = "openvm-instructions-derive"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.90",
+]
+
+[[package]]
+name = "openvm-keccak256-circuit"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "derive-new",
+ "derive_more 1.0.0",
+ "eyre",
+ "hex-literal",
+ "itertools 0.13.0",
+ "openvm-circuit",
+ "openvm-circuit-derive",
+ "openvm-circuit-primitives",
+ "openvm-circuit-primitives-derive",
+ "openvm-instructions",
+ "openvm-keccak256-transpiler",
+ "openvm-rv32im-circuit",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-stark-sdk 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "p3-keccak-air",
+ "rand",
+ "serde",
+ "strum",
+ "tiny-keccak",
+ "tracing",
+]
+
+[[package]]
+name = "openvm-keccak256-guest"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "openvm-platform",
+ "serde",
+ "tiny-keccak",
+]
+
+[[package]]
+name = "openvm-keccak256-transpiler"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "openvm-instructions",
+ "openvm-instructions-derive",
+ "openvm-keccak256-guest",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-transpiler",
+ "rrs-lib",
+ "strum",
+]
+
+[[package]]
+name = "openvm-macros-common"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "syn 2.0.90",
+]
+
+[[package]]
+name = "openvm-mod-circuit-builder"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "itertools 0.13.0",
+ "num-bigint-dig",
+ "num-traits",
+ "openvm-circuit",
+ "openvm-circuit-primitives",
+ "openvm-instructions",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-stark-sdk 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "rand",
+ "tracing",
+]
+
+[[package]]
+name = "openvm-native-circuit"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "derive-new",
+ "derive_more 1.0.0",
+ "eyre",
+ "itertools 0.13.0",
+ "openvm-circuit",
+ "openvm-circuit-derive",
+ "openvm-circuit-primitives",
+ "openvm-circuit-primitives-derive",
+ "openvm-instructions",
+ "openvm-native-compiler",
+ "openvm-poseidon2-air",
+ "openvm-rv32im-circuit",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-stark-sdk 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "parking_lot",
+ "rand",
+ "serde",
+ "strum",
+ "tracing",
+]
+
+[[package]]
+name = "openvm-native-compiler"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "backtrace",
+ "cfg-if",
+ "itertools 0.13.0",
+ "num-bigint 0.4.6",
+ "num-bigint-dig",
+ "num-integer",
+ "num-traits",
+ "openvm-circuit",
+ "openvm-circuit-primitives",
+ "openvm-instructions",
+ "openvm-instructions-derive",
+ "openvm-native-compiler-derive",
+ "openvm-rv32im-transpiler",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-stark-sdk 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "serde",
+ "serde_json",
+ "snark-verifier-sdk",
+ "strum",
+ "strum_macros",
+ "tracing",
+ "zkhash",
+]
+
+[[package]]
+name = "openvm-native-compiler-derive"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.90",
+]
+
+[[package]]
+name = "openvm-native-recursion"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "cfg-if",
+ "itertools 0.13.0",
+ "lazy_static",
+ "once_cell",
+ "openvm-circuit",
+ "openvm-native-circuit",
+ "openvm-native-compiler",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-stark-sdk 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "p3-dft",
+ "p3-fri",
+ "p3-merkle-tree",
+ "p3-symmetric",
+ "rand",
+ "serde",
+ "serde_json",
+ "snark-verifier-sdk",
+ "tracing",
+]
+
+[[package]]
+name = "openvm-pairing-circuit"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "derive-new",
+ "derive_more 1.0.0",
+ "eyre",
+ "itertools 0.13.0",
+ "num-bigint-dig",
+ "num-traits",
+ "once_cell",
+ "openvm-algebra-circuit",
+ "openvm-circuit",
+ "openvm-circuit-derive",
+ "openvm-circuit-primitives",
+ "openvm-circuit-primitives-derive",
+ "openvm-ecc-circuit",
+ "openvm-ecc-guest",
+ "openvm-instructions",
+ "openvm-mod-circuit-builder",
+ "openvm-pairing-guest",
+ "openvm-pairing-transpiler",
+ "openvm-rv32-adapters",
+ "openvm-rv32im-circuit",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "rand",
+ "serde",
+ "strum",
+]
+
+[[package]]
+name = "openvm-pairing-guest"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "group 0.13.0",
+ "halo2curves-axiom 0.7.0",
+ "hex-literal",
+ "itertools 0.13.0",
+ "lazy_static",
+ "num-bigint 0.4.6",
+ "num-bigint-dig",
+ "num-traits",
+ "openvm",
+ "openvm-algebra-complex-macros",
+ "openvm-algebra-guest",
+ "openvm-algebra-moduli-setup",
+ "openvm-ecc-guest",
+ "openvm-ecc-sw-setup",
+ "openvm-platform",
+ "openvm-rv32im-guest",
+ "rand",
+ "serde",
+ "strum_macros",
+]
+
+[[package]]
+name = "openvm-pairing-transpiler"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "openvm-instructions",
+ "openvm-instructions-derive",
+ "openvm-pairing-guest",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-transpiler",
+ "rrs-lib",
+ "strum",
+]
+
+[[package]]
+name = "openvm-platform"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "getrandom",
+ "libm",
+ "stability",
+ "strum_macros",
+]
+
+[[package]]
+name = "openvm-poseidon2-air"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "itertools 0.13.0",
+ "lazy_static",
+ "openvm-circuit-primitives",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-stark-sdk 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "p3-monty-31",
+ "p3-poseidon2",
+ "p3-symmetric",
+ "rand",
+ "zkhash",
+]
+
+[[package]]
+name = "openvm-rv32-adapters"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "derive-new",
+ "itertools 0.13.0",
+ "openvm-circuit",
+ "openvm-circuit-primitives",
+ "openvm-circuit-primitives-derive",
+ "openvm-instructions",
+ "openvm-rv32im-circuit",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-stark-sdk 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "rand",
+ "tracing",
+]
+
+[[package]]
+name = "openvm-rv32im-circuit"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "derive-new",
+ "derive_more 1.0.0",
+ "eyre",
+ "itertools 0.13.0",
+ "num-bigint 0.4.6",
+ "num-integer",
+ "openvm-circuit",
+ "openvm-circuit-derive",
+ "openvm-circuit-primitives",
+ "openvm-circuit-primitives-derive",
+ "openvm-instructions",
+ "openvm-rv32im-transpiler",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "parking_lot",
+ "rand",
+ "serde",
+ "strum",
+ "tracing",
+]
+
+[[package]]
+name = "openvm-rv32im-guest"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "openvm-platform",
+ "strum_macros",
+]
+
+[[package]]
+name = "openvm-rv32im-transpiler"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "openvm-instructions",
+ "openvm-instructions-derive",
+ "openvm-rv32im-guest",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-transpiler",
+ "rrs-lib",
+ "strum",
+ "tracing",
+]
+
+[[package]]
+name = "openvm-sdk"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "async-trait",
+ "bincode 2.0.0-rc.3",
+ "bon",
+ "bson",
+ "derivative",
+ "derive_more 1.0.0",
+ "eyre",
+ "itertools 0.13.0",
+ "metrics",
+ "openvm",
+ "openvm-algebra-circuit",
+ "openvm-algebra-transpiler",
+ "openvm-bigint-circuit",
+ "openvm-bigint-transpiler",
+ "openvm-build",
+ "openvm-circuit",
+ "openvm-ecc-circuit",
+ "openvm-ecc-transpiler",
+ "openvm-keccak256-circuit",
+ "openvm-keccak256-transpiler",
+ "openvm-native-circuit",
+ "openvm-native-compiler",
+ "openvm-native-recursion",
+ "openvm-pairing-circuit",
+ "openvm-pairing-transpiler",
+ "openvm-rv32im-circuit",
+ "openvm-rv32im-transpiler",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-stark-sdk 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "openvm-transpiler",
+ "serde",
+ "static_assertions",
+ "tracing",
+]
+
+[[package]]
+name = "openvm-stark-backend"
+version = "0.1.0-alpha"
+source = "git+https://github.com/openvm-org/stark-backend.git?rev=75f79da9da485c2091637207201fc40f0985ef14#75f79da9da485c2091637207201fc40f0985ef14"
+dependencies = [
+ "async-trait",
+ "cfg-if",
+ "derivative",
+ "itertools 0.13.0",
+ "p3-air",
+ "p3-challenger",
+ "p3-commit",
+ "p3-field",
+ "p3-matrix",
+ "p3-maybe-rayon",
+ "p3-uni-stark",
+ "p3-util",
+ "rayon",
+ "serde",
+ "thiserror 1.0.69",
+ "tracing",
+]
+
+[[package]]
+name = "openvm-stark-backend"
+version = "0.1.0-alpha"
+source = "git+ssh://git@github.com/openvm-org/stark-backend#75f79da9da485c2091637207201fc40f0985ef14"
+dependencies = [
+ "async-trait",
+ "cfg-if",
+ "derivative",
+ "itertools 0.13.0",
+ "mimalloc",
+ "p3-air",
+ "p3-challenger",
+ "p3-commit",
+ "p3-field",
+ "p3-matrix",
+ "p3-maybe-rayon",
+ "p3-uni-stark",
+ "p3-util",
+ "rayon",
+ "serde",
+ "thiserror 1.0.69",
+ "tracing",
+]
+
+[[package]]
+name = "openvm-stark-sdk"
+version = "0.1.0-alpha"
+source = "git+https://github.com/openvm-org/stark-backend.git?rev=75f79da9da485c2091637207201fc40f0985ef14#75f79da9da485c2091637207201fc40f0985ef14"
+dependencies = [
+ "derive_more 0.99.18",
+ "ff 0.13.0",
+ "itertools 0.13.0",
+ "metrics",
+ "metrics-tracing-context",
+ "metrics-util",
+ "openvm-stark-backend 0.1.0-alpha (git+https://github.com/openvm-org/stark-backend.git?rev=75f79da9da485c2091637207201fc40f0985ef14)",
+ "p3-baby-bear",
+ "p3-blake3",
+ "p3-bn254-fr",
+ "p3-dft",
+ "p3-fri",
+ "p3-goldilocks",
+ "p3-keccak",
+ "p3-merkle-tree",
+ "p3-poseidon",
+ "p3-poseidon2",
+ "p3-symmetric",
+ "rand",
+ "serde",
+ "serde_json",
+ "static_assertions",
+ "toml",
+ "tracing",
+ "tracing-forest",
+ "tracing-subscriber",
+ "zkhash",
+]
+
+[[package]]
+name = "openvm-stark-sdk"
+version = "0.1.0-alpha"
+source = "git+ssh://git@github.com/openvm-org/stark-backend#75f79da9da485c2091637207201fc40f0985ef14"
+dependencies = [
+ "derive_more 0.99.18",
+ "ff 0.13.0",
+ "itertools 0.13.0",
+ "metrics",
+ "metrics-tracing-context",
+ "metrics-util",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "p3-baby-bear",
+ "p3-blake3",
+ "p3-bn254-fr",
+ "p3-dft",
+ "p3-fri",
+ "p3-goldilocks",
+ "p3-keccak",
+ "p3-merkle-tree",
+ "p3-poseidon",
+ "p3-poseidon2",
+ "p3-symmetric",
+ "rand",
+ "serde",
+ "serde_json",
+ "static_assertions",
+ "toml",
+ "tracing",
+ "tracing-forest",
+ "tracing-subscriber",
+ "zkhash",
+]
+
+[[package]]
+name = "openvm-transpiler"
+version = "0.1.0"
+source = "git+https://github.com/openvm-org/openvm.git?rev=180d34b411ccd5f36feeeb01c94d920553e87b6b#180d34b411ccd5f36feeeb01c94d920553e87b6b"
+dependencies = [
+ "derive_more 1.0.0",
+ "elf",
+ "eyre",
+ "num-bigint-dig",
+ "openvm-instructions",
+ "openvm-platform",
+ "openvm-stark-backend 0.1.0-alpha (git+ssh://git@github.com/openvm-org/stark-backend)",
+ "rrs-lib",
+ "strum",
+ "thiserror 1.0.69",
+ "tracing",
+]
 
 [[package]]
 name = "option-ext"
@@ -3273,9 +3341,9 @@ dependencies = [
 
 [[package]]
 name = "quanta"
-version = "0.12.3"
+version = "0.12.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8e5167a477619228a0b284fac2674e3c388cba90631d7b7de620e6f1fcd08da5"
+checksum = "773ce68d0bb9bc7ef20be3536ffe94e223e1f365bd374108b2659fac0c65cfe6"
 dependencies = [
  "crossbeam-utils",
  "libc",
@@ -3387,9 +3455,9 @@ dependencies = [
 
 [[package]]
 name = "redox_syscall"
-version = "0.5.7"
+version = "0.5.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9b6dfecf2c74bce2466cabf93f6664d6998a69eb21e39f4207930065b27b771f"
+checksum = "03a862b389f93e68874fbf580b9de08dd02facb9a788ebadaf4a3fd33cf58834"
 dependencies = [
  "bitflags",
 ]
@@ -3621,7 +3689,7 @@ version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cfcb3a22ef46e85b45de6ee7e79d063319ebb6594faafcf1c225ea92ab6e9b92"
 dependencies = [
- "semver 1.0.23",
+ "semver 1.0.24",
 ]
 
 [[package]]
@@ -3711,9 +3779,9 @@ dependencies = [
 
 [[package]]
 name = "semver"
-version = "1.0.23"
+version = "1.0.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61697e0a1c7e512e84a621326239844a24d8207b4669b41bc18b32ea5cbf988b"
+checksum = "3cb6eb87a131f756572d7fb904f6e7b68633f09cca868c5df1c4b8d1a694bbba"
 dependencies = [
  "serde",
 ]
@@ -3729,9 +3797,9 @@ dependencies = [
 
 [[package]]
 name = "serde"
-version = "1.0.215"
+version = "1.0.216"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6513c1ad0b11a9376da888e3e0baa0077f1aed55c17f50e7b2397136129fb88f"
+checksum = "0b9781016e935a97e8beecf0c933758c97a5520d32930e460142b4cd80c6338e"
 dependencies = [
  "serde_derive",
 ]
@@ -3765,9 +3833,9 @@ dependencies = [
 
 [[package]]
 name = "serde_derive"
-version = "1.0.215"
+version = "1.0.216"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ad1e866f866923f252f05c889987993144fb74e722403468a4ebd70c3cd756c0"
+checksum = "46f859dbbf73865c6627ed570e78961cd3ac92407a2d117204c49232485da55e"
 dependencies = [
  "proc-macro2",
  "quote",

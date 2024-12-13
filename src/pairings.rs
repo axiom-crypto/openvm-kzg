@@ -1,12 +1,12 @@
-use axvm_ecc_guest::{algebra::IntMod, AffinePoint};
-use axvm_pairing_guest::bls12_381::{Fp, Fp2};
 use bls12_381::{G1Affine, G2Affine};
+use openvm_ecc_guest::{algebra::IntMod, AffinePoint};
+use openvm_pairing_guest::bls12_381::{Fp, Fp2};
 
 /// Verifies the pairing of two G1 and two G2 points are equivalent using the multi-miller loop
 pub fn pairings_verify(a1: G1Affine, a2: G2Affine, b1: G1Affine, b2: G2Affine) -> bool {
     #[cfg(feature = "program-test")]
     {
-        use axvm_pairing_guest::{bls12_381::Bls12_381, pairing::PairingCheck};
+        use openvm_pairing_guest::{bls12_381::Bls12_381, pairing::PairingCheck};
         // Convert to AffinePoint
         let p0 = g1_affine_to_affine_point(a1);
         let p1 = g2_affine_to_affine_point(a2);

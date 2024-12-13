@@ -10,10 +10,13 @@ use crate::{
 };
 
 use alloc::{string::ToString, vec::Vec};
-use axvm_algebra_guest::{DivUnsafe, IntMod};
-use axvm_ecc_guest::weierstrass::WeierstrassPoint;
-use axvm_pairing_guest::bls12_381::{Fp, G1Affine as Bls12_381G1Affine, Scalar as Bls12_381Scalar};
-// use axvm_ecc_guest::msm;
+use openvm_algebra_guest::{DivUnsafe, IntMod};
+use openvm_ecc_guest::weierstrass::WeierstrassPoint;
+use openvm_ecc_guest::{msm, Group};
+use openvm_pairing_guest::bls12_381::{
+    Fp, G1Affine as Bls12_381G1Affine, Scalar as Bls12_381Scalar,
+};
+// use openvm_ecc_guest::msm;
 use bls12_381::{G1Affine, G1Projective, G2Affine, G2Projective, Scalar};
 use ff::derive::sbb;
 use sha2::{Digest, Sha256};
@@ -78,6 +81,39 @@ pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<G1Affine, KzgError> 
 
     Ok(g1)
 }
+
+// pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<Bls12_381G1Affine, KzgError> {
+//     let mut x_bytes = [0u8; 48];
+//     x_bytes.copy_from_slice(&bytes.0[0..48]);
+
+//     let compression_flag_set = ((x_bytes[0] >> 7) & 1) != 0;
+//     let infinity_flag_set = ((x_bytes[0] >> 6) & 1) != 0;
+//     let sort_flag_set = ((x_bytes[0] >> 5) & 1) != 0;
+
+//     // Mask away the flag bits
+//     x_bytes[0] &= 0b0001_1111;
+//     let x = Fp::from_be_bytes(&x_bytes);
+
+//     if infinity_flag_set && compression_flag_set && !sort_flag_set && x == Fp::ZERO {
+//         return Ok(Bls12_381G1Affine::IDENTITY);
+//     }
+
+//     // Note that we are hinting decompress and getting the y-coord pos/neg using lexicographical ordering, so
+//     // the value for rec_id does not matter and we can pass in either 0 or 1.
+//     let y = Bls12_381G1Affine::hint_decompress(&x, &0u8);
+//     let y = if is_lex_largest(y.clone()) ^ sort_flag_set {
+//         -y
+//     } else {
+//         y
+//     };
+//     let y_bytes = y.to_be_bytes();
+
+//     // Bls12_381G1Affine
+//     let uncompressed_bytes: [u8; 96] = [x_bytes, y_bytes].concat().try_into().unwrap();
+//     let g1 = G1Affine::from_uncompressed(&uncompressed_bytes).unwrap();
+
+//     Ok(g1)
+// }
 
 pub fn safe_scalar_affine_from_bytes(bytes: &Bytes32) -> Result<Scalar, KzgError> {
     let lendian: [u8; 32] = Into::<[u8; 32]>::into(bytes.clone())
