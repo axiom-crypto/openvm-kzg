@@ -80,14 +80,14 @@ fn test_verify_kzg_proof() {
             continue;
         };
 
-        let input = KzgInputs {
+        let io = KzgInputs {
             commitment_bytes: commitment,
             z_bytes: z,
             y_bytes: y,
             proof_bytes: proof,
         };
 
-        let io = axvm::serde::to_vec(&input.clone()).unwrap();
+        let io = axvm::serde::to_vec(&io).unwrap();
         let io = io
             .into_iter()
             .flat_map(|w| w.to_le_bytes())
@@ -96,17 +96,5 @@ fn test_verify_kzg_proof() {
         println!("axvm::serde: {:?}", io);
 
         new_air_test_with_min_segments(config.clone(), exe.clone(), vec![io], 1, false);
-
-        // let io = bincode::serialize(&input.clone()).unwrap();
-        // let io = io
-        //     .iter()
-        //     .map(|&x| F::from_canonical_u8(x))
-        //     .collect::<Vec<_>>();
-
-        // println!("bincode: {:?}", io);
-
-        // if false {
-        //     new_air_test_with_min_segments(config.clone(), exe.clone(), vec![io], 1, false);
-        // }
     }
 }

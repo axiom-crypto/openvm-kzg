@@ -15,7 +15,12 @@ axvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.gi
 ] }
 
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
-bls12_381 = { version = "0.8.0", default-features = false, features = [
+# bls12_381 = { version = "0.8.0", default-features = false, features = [
+#     "groups",
+#     "pairings",
+#     "alloc",
+# ] }
+bls12_381 = { path = "../tmp/bls12_381", default-features = false, features = [
     "groups",
     "pairings",
     "alloc",
@@ -72,7 +77,12 @@ axvm-ecc-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", 
 axvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/afs-prototype.git", rev = "9d14c1714f84e1b139c6e2818542d70cdaaaefaf", default-features = false, features = [
     "bls12_381",
 ] }
-bls12_381 = { version = "0.8.0", default-features = false, features = [
+# bls12_381 = { version = "0.8.0", default-features = false, features = [
+#     "groups",
+#     "pairings",
+#     "alloc",
+# ] }
+bls12_381 = { path = "../tmp/bls12_381", default-features = false, features = [
     "groups",
     "pairings",
     "alloc",

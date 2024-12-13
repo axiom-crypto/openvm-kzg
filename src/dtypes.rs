@@ -26,10 +26,8 @@ macro_rules! define_bytes_type {
                 &self.0
             }
 
-            pub fn reverse_bytes(&self) -> Self {
-                let mut bytes = self.0;
-                bytes.reverse();
-                Self(bytes)
+            pub fn reverse_bytes(&mut self) {
+                self.0.reverse();
             }
         }
 
