@@ -126,7 +126,7 @@ fn main() {
         let b1 = g1_points[0];
         let b2 = g2_points[1];
 
-        let is_monomial_form = pairings_verify(a1, a2, b1, b2);
+        let is_monomial_form = pairings_verify_host(a1, a2, b1, b2);
         if !is_monomial_form {
             return Err(KzgError::BadArgs("not in monomial form".to_string()));
         }
