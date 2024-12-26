@@ -2,35 +2,44 @@ use core::num::NonZeroUsize;
 use core::ops::Mul;
 
 use crate::enums::KzgError;
-use crate::pairings::{g2_affine_to_affine_point};
+use crate::pairings::g2_affine_to_affine_point;
 #[cfg(not(feature = "program-test"))]
 use crate::pairings::pairings_verify_host;
 use crate::types::KzgSettings;
 use crate::{
-    dtypes::*, BYTES_PER_BLOB, BYTES_PER_COMMITMENT, BYTES_PER_FIELD_ELEMENT,
-    BYTES_PER_PROOF, CHALLENGE_INPUT_SIZE, DOMAIN_STR_LENGTH, FIAT_SHAMIR_PROTOCOL_DOMAIN, MODULUS,
+    dtypes::*, BYTES_PER_BLOB, BYTES_PER_COMMITMENT, BYTES_PER_FIELD_ELEMENT, BYTES_PER_PROOF,
+    CHALLENGE_INPUT_SIZE, DOMAIN_STR_LENGTH, FIAT_SHAMIR_PROTOCOL_DOMAIN, MODULUS,
     NUM_FIELD_ELEMENTS_PER_BLOB, RANDOM_CHALLENGE_KZG_BATCH_DOMAIN,
 };
 
 use alloc::{string::ToString, vec::Vec};
+use bls12_381::{G1Affine, G1Projective, G2Affine, G2Projective, Scalar};
+use ff::derive::sbb;
 use hex_literal::hex;
 use openvm_algebra_guest::field::FieldExtension;
 use openvm_algebra_guest::{DivUnsafe, IntMod};
-use openvm_ecc_guest::weierstrass::{IntrinsicCurve, WeierstrassPoint};
+use openvm_ecc_guest::ecdsa::Coordinate;
+use openvm_ecc_guest::weierstrass::{FromCompressed, IntrinsicCurve, WeierstrassPoint};
 use openvm_ecc_guest::{msm, AffinePoint, CyclicGroup, Group};
 use openvm_pairing_guest::bls12_381::{
-    Fp, Fp2, G1Affine as Bls12_381G1Affine, Scalar as Bls12_381Scalar,
+    Fp, Fp2, G1Affine as Bls12_381G1Affine, G2Affine as Bls12_381G2Affine,
+    Scalar as Bls12_381Scalar,
 };
-use bls12_381::{G1Affine, G1Projective, G2Affine, G2Projective, Scalar};
-use ff::derive::sbb;
 use sha2::{Digest, Sha256};
 
-// pub fn msm_variable_base(coeffs: &[Scalar], bases: &[G1Affine]) -> G1Projective {
-//     let axvm_scalar: &[axvm_pairing_guest::bls12_381::Scalar] =
-//         unsafe { core::mem::transmute(coeffs) };
-
-//     msm(axvm_scalar, bases)
-// }
+pub fn openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
+    let x = g2.x;
+    let y = g2.y;
+    let ox = Fp2::from_coeffs([
+        Fp::from_be_bytes(&x.c0.to_bytes()),
+        Fp::from_be_bytes(&x.c1.to_bytes()),
+    ]);
+    let oy = Fp2::from_coeffs([
+        Fp::from_be_bytes(&y.c0.to_bytes()),
+        Fp::from_be_bytes(&y.c1.to_bytes()),
+    ]);
+    Bls12_381G2Affine::from_xy(ox, oy).unwrap()
+}
 
 /// Returns true if the field element is lexicographically larger than its negation
 pub fn is_lex_largest(y: Fp) -> bool {
@@ -56,7 +65,7 @@ pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<Bls12_381G1Affine, K
     let x = Fp::from_be_bytes(&x_bytes);
 
     if infinity_flag_set && compression_flag_set && !sort_flag_set && x == Fp::ZERO {
-        return Ok(Bls12_381G1Affine::IDENTITY);
+        return Ok(<Bls12_381G1Affine as Group>::IDENTITY);
     }
 
     // Note that we are hinting decompress and getting the y-coord pos/neg using lexicographical ordering, so
@@ -424,20 +433,27 @@ impl KzgProof {
             }
         };
 
-        let g2_affine_generator = AffinePoint::new(
+        let g2_affine_generator_pt = AffinePoint::new(
             Fp2::from_coeffs([
-                Fp::from_be_bytes(&hex!("024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8")), 
+                Fp::from_be_bytes(&hex!("024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8")),
                 Fp::from_be_bytes(&hex!("13e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e"))
             ]),
             Fp2::from_coeffs([
-                Fp::from_be_bytes(&hex!("0ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801")), 
+                Fp::from_be_bytes(&hex!("0ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801")),
                 Fp::from_be_bytes(&hex!("0606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be"))
-            ])    
+            ])
         );
-        let kzg_settings_g2_1 = g2_affine_to_affine_point(kzg_settings.g2_points[1]);
-        // let g2_x = IntrinsicCurve::msm(&[z], &[g2_affine_generator]);
-        let g2_x = msm(&[z], &[g2_affine_generator.clone()]);
-        let x_minus_z = kzg_settings_g2_1 - g2_x;
+
+        let g2_affine_generator = Bls12_381G2Affine::from_xy(
+            g2_affine_generator_pt.x.clone(),
+            g2_affine_generator_pt.y.clone(),
+        )
+        .unwrap();
+
+        let openvm_kzg_g2_point = openvm_g2_affine(kzg_settings.g2_points[1]);
+
+        let g2_x = msm(&[z], &[g2_affine_generator]);
+        let x_minus_z = openvm_kzg_g2_point - g2_x;
 
         let g1_y = msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
         let p_minus_y = commitment - g1_y;
@@ -445,12 +461,22 @@ impl KzgProof {
         let p0 = AffinePoint::<Fp>::new(p_minus_y.x, p_minus_y.y);
         let q0 = AffinePoint::<Fp>::new(proof.x, proof.y);
 
+        let x_minus_z_pt = AffinePoint::<Fp2>::new(
+            Fp2::from_coeffs([x_minus_z.x().c0.clone(), x_minus_z.x().c1.clone()]),
+            Fp2::from_coeffs([x_minus_z.y().c0.clone(), x_minus_z.y().c1.clone()]),
+        );
+
         // let p0 = p_minus_y;
         // let p1 = g2_affine_generator;
         // let q0 = proof;
         // let q1 = x_minus_z;
-        Ok(crate::pairings_verify(p0, g2_affine_generator, q0, x_minus_z))
-        
+        Ok(crate::pairings_verify(
+            p0,
+            g2_affine_generator_pt,
+            q0,
+            x_minus_z_pt,
+        ))
+        // Ok(true)
     }
 
     pub fn verify_kzg_proof_batch(

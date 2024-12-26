@@ -11,7 +11,7 @@ use openvm_algebra_circuit::{Fp2Extension, ModularExtension};
 use openvm_algebra_transpiler::{Fp2TranspilerExtension, ModularTranspilerExtension};
 use openvm_build::{GuestOptions, TargetFilter};
 use openvm_circuit::arch::SystemConfig;
-use openvm_circuit::utils::new_air_test_with_min_segments;
+use openvm_circuit::utils::air_test_with_min_segments;
 use openvm_ecc_circuit::{CurveConfig, WeierstrassExtension};
 use openvm_ecc_transpiler::EccTranspilerExtension;
 use openvm_pairing_circuit::{PairingCurve, PairingExtension, Rv32PairingConfig};
@@ -31,11 +31,18 @@ type F = BabyBear;
 #[test]
 fn test_verify_kzg_proof() {
     let sdk = Sdk;
-    let guest_opts = GuestOptions::default();
+    let guest_opts = GuestOptions::default().with_features(vec!["parallel"]);
     let mut pkg_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).to_path_buf();
-    pkg_dir.push("program");
+    pkg_dir.push("programs");
     let verify_kzg = sdk
-        .build(guest_opts.clone(), &pkg_dir, &TargetFilter::default())
+        .build(
+            guest_opts.clone(),
+            &pkg_dir,
+            &Some(TargetFilter {
+                name: "verify-kzg-example".to_string(),
+                kind: "bin".to_string(),
+            }),
+        )
         .unwrap();
     let transpiler = Transpiler::<F>::default()
         .with_extension(Rv32ITranspilerExtension)
@@ -94,6 +101,6 @@ fn test_verify_kzg_proof() {
             .map(F::from_canonical_u8)
             .collect();
 
-        new_air_test_with_min_segments(config.clone(), exe.clone(), vec![io], 1, false);
+        air_test_with_min_segments(config.clone(), exe.clone(), vec![io], 1);
     }
 }
