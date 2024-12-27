@@ -1,7 +1,9 @@
 // #![cfg_attr(not(test), no_std)]
-#![no_std]
-#![recursion_limit = "256"]
-// #![cfg_attr(feature = "program-test", no_std)]
+// #![no_std]
+// #![recursion_limit = "256"]
+#![cfg_attr(feature = "guest-program", no_std)]
+#![cfg_attr(feature = "guest-program", no_main)]
+
 #[macro_use]
 extern crate alloc;
 
@@ -12,6 +14,8 @@ pub mod consts;
 pub mod dtypes;
 pub mod enums;
 pub mod kzg_proof;
+#[cfg(not(feature = "guest-program"))]
+pub mod openvm_host;
 pub mod pairings;
 pub mod trusted_setup;
 pub mod types;
@@ -19,18 +23,20 @@ pub mod types;
 pub use consts::*;
 pub use dtypes::*;
 pub use kzg_proof::KzgProof;
+#[cfg(not(feature = "guest-program"))]
+pub use openvm_host::*;
 pub use pairings::pairings_verify;
-#[cfg(not(feature = "program-test"))]
+#[cfg(not(feature = "guest-program"))]
 pub use pairings::pairings_verify_host;
 pub use trusted_setup::*;
 pub use types::*;
 
 pub use enums::KzgError;
 
-#[cfg(not(feature = "program-test"))]
+#[cfg(not(feature = "guest-program"))]
 pub mod test_utils;
 
-#[cfg(not(feature = "program-test"))]
+#[cfg(not(feature = "guest-program"))]
 pub mod test_files {
     // Tests
     pub const VERIFY_KZG_PROOF_TESTS: [(&str, &str); 122] = [

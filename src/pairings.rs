@@ -9,15 +9,7 @@ pub fn pairings_verify(
     q0: AffinePoint<Fp>,
     q1: AffinePoint<Fp2>,
 ) -> bool {
-    // pub fn pairings_verify(a1: G1Affine, a2: G2Affine, b1: G1Affine, b2: G2Affine) -> bool {
-    // #[cfg(feature = "program-test")]
-    // {
     use openvm_pairing_guest::{bls12_381::Bls12_381, pairing::PairingCheck};
-    // Convert to AffinePoint
-    // let p0 = g1_affine_to_affine_point(a1);
-    // let p1 = g2_affine_to_affine_point(a2);
-    // let q0 = g1_affine_to_affine_point(b1);
-    // let q1 = g2_affine_to_affine_point(b2);
 
     // Check that input points are on the curve
     assert!(g1_affine_is_on_curve(&p0));
@@ -28,7 +20,7 @@ pub fn pairings_verify(
     Bls12_381::pairing_check(&[-p0, q0], &[p1, q1]).is_ok()
 }
 
-#[cfg(not(feature = "program-test"))]
+#[cfg(not(feature = "guest-program"))]
 pub fn pairings_verify_host(a1: G1Affine, a2: G2Affine, b1: G1Affine, b2: G2Affine) -> bool {
     // This is run during the build process
     use bls12_381::{multi_miller_loop, G2Prepared, Gt};

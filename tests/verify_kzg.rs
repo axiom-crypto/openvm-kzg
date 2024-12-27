@@ -1,79 +1,58 @@
 use std::path::PathBuf;
+use std::sync::Arc;
 
 use kzg_rs::test_files::{
     ONLY_VALID_KZG_PROOF_TESTS, SINGLE_VALID_KZG_PROOF_TEST, VERIFY_KZG_PROOF_TESTS,
 };
 use kzg_rs::test_utils::{Input, Test};
 use kzg_rs::KzgInputs;
-use num_bigint_dig::BigUint;
-use num_traits::{FromPrimitive, Zero};
 use openvm_algebra_circuit::{Fp2Extension, ModularExtension};
-use openvm_algebra_transpiler::{Fp2TranspilerExtension, ModularTranspilerExtension};
 use openvm_build::{GuestOptions, TargetFilter};
-use openvm_circuit::arch::SystemConfig;
-use openvm_circuit::utils::air_test_with_min_segments;
-use openvm_ecc_circuit::{CurveConfig, WeierstrassExtension};
-use openvm_ecc_transpiler::EccTranspilerExtension;
-use openvm_pairing_circuit::{PairingCurve, PairingExtension, Rv32PairingConfig};
+use openvm_circuit::openvm_stark_sdk::config::FriParameters;
+use openvm_pairing_circuit::{PairingCurve, PairingExtension};
 use openvm_pairing_guest::bls12_381::{BLS12_381_MODULUS, BLS12_381_ORDER};
-use openvm_pairing_transpiler::PairingTranspilerExtension;
-use openvm_rv32im_transpiler::{
-    Rv32ITranspilerExtension, Rv32IoTranspilerExtension, Rv32MTranspilerExtension,
-};
-use openvm_sdk::Sdk;
-use openvm_stark_sdk::openvm_stark_backend::p3_field::AbstractField;
-use openvm_stark_sdk::p3_baby_bear::BabyBear;
-use openvm_transpiler::transpiler::Transpiler;
+use openvm_sdk::config::{AppConfig, SdkVmConfig};
+use openvm_sdk::{Sdk, StdIn};
 use serde_yaml::from_str;
-
-type F = BabyBear;
 
 #[test]
 fn test_verify_kzg_proof() {
     let sdk = Sdk;
-    let guest_opts = GuestOptions::default().with_features(vec!["parallel"]);
+
+    let vm_config = SdkVmConfig::builder()
+        .system(Default::default())
+        .rv32i(Default::default())
+        .rv32m(Default::default())
+        .io(Default::default())
+        .keccak(Default::default())
+        .modular(ModularExtension::new(vec![BLS12_381_MODULUS.clone()]))
+        // .ecc(WeierstrassExtension::new(vec![BLS12_381_MODULUS.clone()]))
+        .fp2(Fp2Extension::new(vec![BLS12_381_MODULUS.clone()]))
+        .pairing(PairingExtension::new(vec![PairingCurve::Bls12_381]))
+        .build();
+
+    let guest_opts = GuestOptions::default().with_features(["guest-program"]);
+    let target_filter = Some(TargetFilter {
+        name: "verify-kzg-program".to_string(),
+        kind: "bin".to_string(),
+    });
     let mut pkg_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).to_path_buf();
     pkg_dir.push("programs");
-    let verify_kzg = sdk
-        .build(
-            guest_opts.clone(),
-            &pkg_dir,
-            &Some(TargetFilter {
-                name: "verify-kzg-example".to_string(),
-                kind: "bin".to_string(),
-            }),
-        )
-        .unwrap();
-    let transpiler = Transpiler::<F>::default()
-        .with_extension(Rv32ITranspilerExtension)
-        .with_extension(Rv32MTranspilerExtension)
-        .with_extension(Rv32IoTranspilerExtension)
-        .with_extension(PairingTranspilerExtension)
-        .with_extension(ModularTranspilerExtension)
-        .with_extension(EccTranspilerExtension)
-        .with_extension(Fp2TranspilerExtension);
-    let exe = sdk.transpile(verify_kzg, transpiler).unwrap();
 
-    // Config
-    let config = Rv32PairingConfig {
-        system: SystemConfig::default().with_continuations(),
-        base: Default::default(),
-        mul: Default::default(),
-        io: Default::default(),
-        modular: ModularExtension::new(vec![BLS12_381_MODULUS.clone()]),
-        fp2: Fp2Extension::new(vec![BLS12_381_MODULUS.clone()]),
-        weierstrass: WeierstrassExtension::new(vec![CurveConfig {
-            modulus: BLS12_381_MODULUS.clone(),
-            scalar: BLS12_381_ORDER.clone(),
-            a: BigUint::zero(),
-            b: BigUint::from_u8(4u8).unwrap(),
-        }]),
-        pairing: PairingExtension::new(vec![PairingCurve::Bls12_381]),
-    };
+    let elf = sdk
+        .build(guest_opts, pkg_dir.clone(), &target_filter)
+        .unwrap();
+
+    // Transpile the ELF into a VmExe
+    let exe = sdk.transpile(elf, vm_config.transpiler()).unwrap();
+
+    // Set App Config
+    let app_log_blowup = 2;
+    let app_fri_params = FriParameters::standard_with_100_bits_conjectured_security(app_log_blowup);
+    let app_config = AppConfig::new(app_fri_params, vm_config);
 
     // Get inputs from disk
     let test_files = SINGLE_VALID_KZG_PROOF_TEST;
-
     for (_test_file, data) in test_files {
         println!("Running test: {}", _test_file);
         let test: Test<Input> = from_str(data).unwrap();
@@ -87,20 +66,30 @@ fn test_verify_kzg_proof() {
             continue;
         };
 
-        let io = KzgInputs {
+        let input = KzgInputs {
             commitment_bytes: commitment,
             z_bytes: z,
             y_bytes: y,
             proof_bytes: proof,
         };
+        let mut io = StdIn::default();
+        io.write(&input);
 
-        let io = openvm::serde::to_vec(&io).unwrap();
-        let io = io
-            .into_iter()
-            .flat_map(|w| w.to_le_bytes())
-            .map(F::from_canonical_u8)
-            .collect();
+        println!("Committing app exe");
+        let app_committed_exe = sdk.commit_app_exe(app_fri_params, exe.clone()).unwrap();
 
-        air_test_with_min_segments(config.clone(), exe.clone(), vec![io], 1);
+        println!("Generating app proving key");
+        let app_pk = Arc::new(sdk.app_keygen(app_config.clone()).unwrap());
+
+        println!("Generating app proof");
+        let app_vk = app_pk.get_vk();
+        let proof = sdk
+            .generate_app_proof(app_pk.clone(), app_committed_exe.clone(), io.clone())
+            .unwrap();
+
+        println!("Verifying app proof");
+        sdk.verify_app_proof(&app_vk, &proof).unwrap();
+
+        println!("App proof verified!");
     }
 }

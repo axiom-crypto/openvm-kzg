@@ -4,12 +4,12 @@ include!("src/enums.rs");
 include!("src/consts.rs");
 include!("src/pairings.rs");
 
-#[cfg(any(feature = "program-test", target_arch = "riscv32", doc))]
+#[cfg(any(feature = "guest-program", target_arch = "riscv32", doc))]
 fn main() {
     // Binaries cannot be built in a RISC-V environment or when building docs
 }
 
-#[cfg(not(any(feature = "program-test", target_arch = "riscv32", doc)))]
+#[cfg(not(any(feature = "guest-program", target_arch = "riscv32", doc)))]
 fn main() {
     use bls12_381::Scalar;
     use std::{fs, io::Write, path::Path};

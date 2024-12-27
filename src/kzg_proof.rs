@@ -3,7 +3,7 @@ use core::ops::Mul;
 
 use crate::enums::KzgError;
 use crate::pairings::g2_affine_to_affine_point;
-#[cfg(not(feature = "program-test"))]
+#[cfg(not(feature = "guest-program"))]
 use crate::pairings::pairings_verify_host;
 use crate::types::KzgSettings;
 use crate::{
@@ -18,7 +18,6 @@ use ff::derive::sbb;
 use hex_literal::hex;
 use openvm_algebra_guest::field::FieldExtension;
 use openvm_algebra_guest::{DivUnsafe, IntMod};
-use openvm_ecc_guest::ecdsa::Coordinate;
 use openvm_ecc_guest::weierstrass::{FromCompressed, IntrinsicCurve, WeierstrassPoint};
 use openvm_ecc_guest::{msm, AffinePoint, CyclicGroup, Group};
 use openvm_pairing_guest::bls12_381::{
@@ -27,7 +26,7 @@ use openvm_pairing_guest::bls12_381::{
 };
 use sha2::{Digest, Sha256};
 
-pub fn openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
+pub fn to_openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
     let x = g2.x;
     let y = g2.y;
     let ox = Fp2::from_coeffs([
@@ -41,7 +40,7 @@ pub fn openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
     Bls12_381G2Affine::from_xy(ox, oy).unwrap()
 }
 
-/// Returns true if the field element is lexicographically larger than its negation
+/// Returns true if the field element is lexicographically larger than its negation.
 pub fn is_lex_largest(y: Fp) -> bool {
     let modulus = Fp::from_le_bytes(&Fp::MODULUS);
     let half_modulus = modulus.div_unsafe(Fp::from_u32(2));
@@ -450,12 +449,14 @@ impl KzgProof {
         )
         .unwrap();
 
-        let openvm_kzg_g2_point = openvm_g2_affine(kzg_settings.g2_points[1]);
+        let openvm_kzg_g2_point = to_openvm_g2_affine(kzg_settings.g2_points[1]);
 
-        let g2_x = msm(&[z], &[g2_affine_generator]);
+        // let g2_x = G2Affine::mul() msm(&[z], &[g2_affine_generator]);
+        let g2_x = g2_affine_generator;
         let x_minus_z = openvm_kzg_g2_point - g2_x;
 
-        let g1_y = msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
+        // let g1_y = msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
+        let g1_y = Bls12_381G1Affine::GENERATOR;
         let p_minus_y = commitment - g1_y;
 
         let p0 = AffinePoint::<Fp>::new(p_minus_y.x, p_minus_y.y);
