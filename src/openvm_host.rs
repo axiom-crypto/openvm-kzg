@@ -1,10 +1,13 @@
 use std::{path::PathBuf, sync::Arc};
 
+use num_bigint_dig::BigUint;
+use num_traits::{FromPrimitive, Zero};
 use openvm_algebra_circuit::{Fp2Extension, ModularExtension};
 use openvm_build::{GuestOptions, TargetFilter};
 use openvm_circuit::{arch::instructions::exe::VmExe, openvm_stark_sdk::config::FriParameters};
+use openvm_ecc_circuit::{CurveConfig, WeierstrassExtension};
 use openvm_pairing_circuit::{PairingCurve, PairingExtension};
-use openvm_pairing_guest::bls12_381::BLS12_381_MODULUS;
+use openvm_pairing_guest::bls12_381::{BLS12_381_MODULUS, BLS12_381_ORDER};
 use openvm_sdk::{
     config::{AppConfig, SdkVmConfig},
     Sdk, StdIn,
@@ -63,7 +66,12 @@ fn setup_test(sdk: &Sdk) -> (VmExe<F>, SdkVmConfig) {
         .io(Default::default())
         .keccak(Default::default())
         .modular(ModularExtension::new(vec![BLS12_381_MODULUS.clone()]))
-        // .ecc(WeierstrassExtension::new(vec![BLS12_381_MODULUS.clone()]))
+        .ecc(WeierstrassExtension::new(vec![CurveConfig {
+            modulus: BLS12_381_MODULUS.clone(),
+            scalar: BLS12_381_ORDER.clone(),
+            a: BigUint::zero(),
+            b: BigUint::from_u8(4).unwrap(),
+        }]))
         .fp2(Fp2Extension::new(vec![BLS12_381_MODULUS.clone()]))
         .pairing(PairingExtension::new(vec![PairingCurve::Bls12_381]))
         .build();

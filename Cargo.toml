@@ -20,6 +20,7 @@ openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "74fa
 openvm-algebra-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "74fac04032b985e58d784da5224d9fdc46fca69c", default-features = false }
 openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "74fac04032b985e58d784da5224d9fdc46fca69c", default-features = false }
 openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "74fac04032b985e58d784da5224d9fdc46fca69c", default-features = false }
+openvm-ecc-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "74fac04032b985e58d784da5224d9fdc46fca69c", default-features = false }
 openvm-pairing-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "74fac04032b985e58d784da5224d9fdc46fca69c", default-features = false }
 openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "74fac04032b985e58d784da5224d9fdc46fca69c", default-features = false, features = [
     "bls12_381",
@@ -52,6 +53,8 @@ serde = { version = "1.0.200", default-features = false, features = [
 serde-big-array = { version = "0.5.1", default-features = false }
 serde_yaml = { version = "0.9", default-features = false, optional = true }
 bincode = { version = "1.3.3", default-features = false, optional = true }
+num-bigint-dig = { version = "0.8.4", default-features = false, optional = true }
+num-traits = { version = "0.2.19", default-features = false, optional = true }
 
 [build-dependencies]
 openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "74fac04032b985e58d784da5224d9fdc46fca69c", default-features = false }
@@ -73,6 +76,12 @@ bls12_381 = { path = "../tmp/bls12_381", default-features = false, features = [
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 
 [features]
-default = ["dep:serde_yaml", "dep:bincode", "dep:openvm-stark-sdk"]
+default = [
+    "dep:serde_yaml",
+    "dep:bincode",
+    "dep:num-bigint-dig",
+    "dep:num-traits",
+    "dep:openvm-stark-sdk",
+]
 test = ["default"]
 guest-program = []
