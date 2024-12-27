@@ -1,12 +1,15 @@
 use kzg_rs::{
-    run_guest_program,
     test_files::SINGLE_VALID_KZG_PROOF_TEST,
     test_utils::{Input, Test},
     KzgInputs,
 };
 use serde_yaml::from_str;
+use setup::run_guest_program;
 
-pub fn main() {
+pub mod setup;
+
+#[test]
+fn test_verify_kzg() {
     let (_, data) = SINGLE_VALID_KZG_PROOF_TEST[0];
     let test: Test<Input> = from_str(data).unwrap();
     let (Ok(commitment), Ok(z), Ok(y), Ok(proof)) = (

@@ -14,8 +14,6 @@ pub mod consts;
 pub mod dtypes;
 pub mod enums;
 pub mod kzg_proof;
-#[cfg(not(feature = "guest-program"))]
-pub mod openvm_host;
 pub mod pairings;
 pub mod trusted_setup;
 pub mod types;
@@ -23,8 +21,6 @@ pub mod types;
 pub use consts::*;
 pub use dtypes::*;
 pub use kzg_proof::KzgProof;
-#[cfg(not(feature = "guest-program"))]
-pub use openvm_host::*;
 pub use pairings::pairings_verify;
 #[cfg(not(feature = "guest-program"))]
 pub use pairings::pairings_verify_host;
@@ -32,6 +28,9 @@ pub use trusted_setup::*;
 pub use types::*;
 
 pub use enums::KzgError;
+
+#[cfg(not(feature = "guest-program"))]
+pub mod path;
 
 #[cfg(not(feature = "guest-program"))]
 pub mod test_utils;

@@ -2,7 +2,6 @@ use core::num::NonZeroUsize;
 use core::ops::Mul;
 
 use crate::enums::KzgError;
-use crate::pairings::g2_affine_to_affine_point;
 #[cfg(not(feature = "guest-program"))]
 use crate::pairings::pairings_verify_host;
 use crate::types::KzgSettings;
@@ -18,8 +17,11 @@ use ff::derive::sbb;
 use hex_literal::hex;
 use openvm_algebra_guest::field::FieldExtension;
 use openvm_algebra_guest::{DivUnsafe, IntMod};
-use openvm_ecc_guest::weierstrass::{FromCompressed, IntrinsicCurve, WeierstrassPoint};
-use openvm_ecc_guest::{msm, AffinePoint, CyclicGroup, Group};
+use openvm_ecc_guest::{
+    msm,
+    weierstrass::{FromCompressed, IntrinsicCurve, WeierstrassPoint},
+    AffinePoint, CyclicGroup, Group,
+};
 use openvm_pairing_guest::bls12_381::{
     Bls12_381, Fp, Fp2, G1Affine as Bls12_381G1Affine, G2Affine as Bls12_381G2Affine,
     Scalar as Bls12_381Scalar,
@@ -452,15 +454,15 @@ impl KzgProof {
         let openvm_kzg_g2_point = to_openvm_g2_affine(kzg_settings.g2_points[1]);
 
         // error:
-        let g2_x = msm(&[z], &[g2_affine_generator]);
+        // let g2_x = msm(&[z], &[g2_affine_generator]);
         // tmp workaround:
-        // let g2_x = g2_affine_generator;
+        let g2_x = g2_affine_generator;
         let x_minus_z = openvm_kzg_g2_point - g2_x;
 
         // ok:
-        // let g1_y = Bls12_381::msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
+        let g1_y = Bls12_381::msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
         // error:
-        let g1_y = msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
+        // let g1_y = msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
         // tmp workaround:
         // let g1_y = Bls12_381G1Affine::GENERATOR;
         let p_minus_y = commitment - g1_y;

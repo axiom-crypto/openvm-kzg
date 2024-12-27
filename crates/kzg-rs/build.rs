@@ -3,6 +3,7 @@ const TRUSTED_SETUP_FILE: &str = include_str!("src/trusted_setup.txt");
 include!("src/enums.rs");
 include!("src/consts.rs");
 include!("src/pairings.rs");
+include!("src/path.rs");
 
 #[cfg(any(feature = "guest-program", target_arch = "riscv32", doc))]
 fn main() {
@@ -12,7 +13,11 @@ fn main() {
 #[cfg(not(any(feature = "guest-program", target_arch = "riscv32", doc)))]
 fn main() {
     use bls12_381::Scalar;
-    use std::{fs, io::Write, path::Path};
+    use std::{
+        fs,
+        io::Write,
+        path::{Path, PathBuf},
+    };
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct KzgSettingsOwned {
         pub roots_of_unity: [Scalar; NUM_ROOTS_OF_UNITY],
@@ -175,10 +180,15 @@ fn main() {
         Ok(expanded)
     }
 
-    let out_dir = String::from("./tmp");
+    let mut out_dir = get_repo_root();
+    out_dir.push("assets");
+    out_dir.push("trusted_setup");
     let g1_path = Path::new(&out_dir).join("g1.bin");
     let g2_path = Path::new(&out_dir).join("g2.bin");
     let roots_of_unity_path = Path::new(&out_dir).join("roots_of_unity.bin");
+    println!("g1_path: {:?}", g1_path);
+    println!("g2_path: {:?}", g2_path);
+    println!("roots_of_unity_path: {:?}", roots_of_unity_path);
 
     let g1_exists = g1_path.exists();
     let g2_exists = g2_path.exists();
