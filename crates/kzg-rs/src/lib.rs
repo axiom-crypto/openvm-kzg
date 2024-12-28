@@ -1,6 +1,3 @@
-// #![cfg_attr(not(test), no_std)]
-// #![no_std]
-// #![recursion_limit = "256"]
 #![cfg_attr(feature = "guest-program", no_std)]
 #![cfg_attr(feature = "guest-program", no_main)]
 
@@ -22,8 +19,6 @@ pub use consts::*;
 pub use dtypes::*;
 pub use kzg_proof::KzgProof;
 pub use pairings::pairings_verify;
-#[cfg(not(feature = "guest-program"))]
-pub use pairings::pairings_verify_host;
 pub use trusted_setup::*;
 pub use types::*;
 

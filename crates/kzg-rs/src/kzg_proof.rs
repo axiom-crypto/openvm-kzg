@@ -2,8 +2,7 @@ use core::num::NonZeroUsize;
 use core::ops::Mul;
 
 use crate::enums::KzgError;
-#[cfg(not(feature = "guest-program"))]
-use crate::pairings::pairings_verify_host;
+use crate::pairings::pairings_verify;
 use crate::types::KzgSettings;
 use crate::{
     dtypes::*, BYTES_PER_BLOB, BYTES_PER_COMMITMENT, BYTES_PER_FIELD_ELEMENT, BYTES_PER_PROOF,
@@ -28,6 +27,7 @@ use openvm_pairing_guest::bls12_381::{
 };
 use sha2::{Digest, Sha256};
 
+#[cfg(feature = "guest-program")]
 pub fn to_openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
     let x = g2.x;
     let y = g2.y;
@@ -42,6 +42,14 @@ pub fn to_openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
     Bls12_381G2Affine::from_xy(ox, oy).unwrap()
 }
 
+#[cfg(feature = "guest-program")]
+pub fn to_affine_point_fp2(g2: Bls12_381G2Affine) -> AffinePoint<Fp2> {
+    AffinePoint::<Fp2>::new(
+        Fp2::from_coeffs([g2.x().c0.clone(), g2.x().c1.clone()]),
+        Fp2::from_coeffs([g2.y().c0.clone(), g2.y().c1.clone()]),
+    )
+}
+
 /// Returns true if the field element is lexicographically larger than its negation.
 pub fn is_lex_largest(y: Fp) -> bool {
     let modulus = Fp::from_le_bytes(&Fp::MODULUS);
@@ -53,6 +61,7 @@ pub fn is_lex_largest(y: Fp) -> bool {
     diff.to_be_bytes() > neg_diff.to_be_bytes()
 }
 
+#[cfg(feature = "guest-program")]
 pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<Bls12_381G1Affine, KzgError> {
     let mut x_bytes = [0u8; 48];
     x_bytes.copy_from_slice(&bytes.0[0..48]);
@@ -79,6 +88,17 @@ pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<Bls12_381G1Affine, K
     };
 
     Ok(Bls12_381G1Affine::from_xy(x, y).unwrap())
+}
+
+#[cfg(not(feature = "guest-program"))]
+pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<G1Affine, KzgError> {
+    let g1 = G1Affine::from_compressed(&(bytes.clone().into()));
+    if g1.is_none().into() {
+        return Err(KzgError::BadArgs(
+            "Failed to parse G1Affine from bytes".to_string(),
+        ));
+    }
+    Ok(g1.unwrap())
 }
 
 pub fn safe_scalar_affine_from_bytes(bytes: &Bytes32) -> Result<Scalar, KzgError> {
@@ -267,7 +287,7 @@ fn batch_inversion(out: &mut [Scalar], a: &[Scalar], len: NonZeroUsize) -> Resul
 //     let p_minus_y = commitment - y;
 
 //     // Verify: P - y = Q * (X - z)
-//     Ok(pairings_verify_host(
+//     Ok(pairings_verify(
 //         p_minus_y.into(),
 //         G2Projective::generator().into(),
 //         proof,
@@ -407,34 +427,25 @@ impl KzgProof {
         proof_bytes: &Bytes48,
         kzg_settings: &KzgSettings,
     ) -> Result<bool, KzgError> {
-        let z = Bls12_381Scalar::from_be_bytes(z_bytes.as_slice());
-        let y = Bls12_381Scalar::from_be_bytes(y_bytes.as_slice());
-        // let z = match safe_scalar_affine_from_bytes(z_bytes) {
-        //     Ok(z) => z,
-        //     Err(e) => {
-        //         return Err(e);
-        //     }
-        // };
-        // let y = match safe_scalar_affine_from_bytes(y_bytes) {
-        //     Ok(y) => y,
-        //     Err(e) => {
-        //         return Err(e);
-        //     }
-        // };
-        let commitment = match safe_g1_affine_from_bytes(commitment_bytes) {
-            Ok(g1) => g1,
-            Err(e) => {
-                return Err(e);
-            }
-        };
-        let proof = match safe_g1_affine_from_bytes(proof_bytes) {
-            Ok(g1) => g1,
-            Err(e) => {
-                return Err(e);
-            }
-        };
+        #[cfg(feature = "guest-program")]
+        {
+            let z = Bls12_381Scalar::from_be_bytes(z_bytes.as_slice());
+            let y = Bls12_381Scalar::from_be_bytes(y_bytes.as_slice());
 
-        let g2_affine_generator_pt = AffinePoint::new(
+            let commitment = match safe_g1_affine_from_bytes(commitment_bytes) {
+                Ok(g1) => g1,
+                Err(e) => {
+                    return Err(e);
+                }
+            };
+            let proof = match safe_g1_affine_from_bytes(proof_bytes) {
+                Ok(g1) => g1,
+                Err(e) => {
+                    return Err(e);
+                }
+            };
+
+            let g2_affine_generator = Bls12_381G2Affine::from_xy(
             Fp2::from_coeffs([
                 Fp::from_be_bytes(&hex!("024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8")),
                 Fp::from_be_bytes(&hex!("13e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e"))
@@ -443,49 +454,74 @@ impl KzgProof {
                 Fp::from_be_bytes(&hex!("0ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801")),
                 Fp::from_be_bytes(&hex!("0606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be"))
             ])
-        );
-
-        let g2_affine_generator = Bls12_381G2Affine::from_xy(
-            g2_affine_generator_pt.x.clone(),
-            g2_affine_generator_pt.y.clone(),
         )
         .unwrap();
+            let g2_affine_generator_pt = to_affine_point_fp2(g2_affine_generator.clone());
 
-        let openvm_kzg_g2_point = to_openvm_g2_affine(kzg_settings.g2_points[1]);
+            let openvm_kzg_g2_point = to_openvm_g2_affine(kzg_settings.g2_points[1]);
 
-        // error:
-        let g2_x = msm(&[z], &[g2_affine_generator]);
-        // tmp workaround:
-        // let g2_x = g2_affine_generator;
-        let x_minus_z = openvm_kzg_g2_point - g2_x;
+            let g2_x = msm(&[z], &[g2_affine_generator]);
+            let x_minus_z = openvm_kzg_g2_point - g2_x;
 
-        // ok:
-        // let g1_y = Bls12_381::msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
-        // error:
-        let g1_y = msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
-        // tmp workaround:
-        // let g1_y = Bls12_381G1Affine::GENERATOR;
-        let p_minus_y = commitment - g1_y;
+            let g1_y = msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
+            let p_minus_y = commitment - g1_y;
 
-        let p0 = AffinePoint::<Fp>::new(p_minus_y.x, p_minus_y.y);
-        let q0 = AffinePoint::<Fp>::new(proof.x, proof.y);
+            let p0 = AffinePoint::<Fp>::new(p_minus_y.x, p_minus_y.y);
+            let q0 = AffinePoint::<Fp>::new(proof.x, proof.y);
 
-        let x_minus_z_pt = AffinePoint::<Fp2>::new(
-            Fp2::from_coeffs([x_minus_z.x().c0.clone(), x_minus_z.x().c1.clone()]),
-            Fp2::from_coeffs([x_minus_z.y().c0.clone(), x_minus_z.y().c1.clone()]),
-        );
+            let x_minus_z_pt = to_affine_point_fp2(x_minus_z);
 
-        // let p0 = p_minus_y;
-        // let p1 = g2_affine_generator;
-        // let q0 = proof;
-        // let q1 = x_minus_z;
-        Ok(crate::pairings_verify(
-            p0,
-            g2_affine_generator_pt,
-            q0,
-            x_minus_z_pt,
-        ))
-        // Ok(true)
+            // p0 = p_minus_y;
+            // p1 = g2_affine_generator;
+            // q0 = proof;
+            // q1 = x_minus_z;
+            Ok(crate::pairings_verify(
+                p0,
+                g2_affine_generator_pt,
+                q0,
+                x_minus_z_pt,
+            ))
+        }
+        #[cfg(not(feature = "guest-program"))]
+        {
+            let z = match safe_scalar_affine_from_bytes(z_bytes) {
+                Ok(z) => z,
+                Err(e) => {
+                    return Err(e);
+                }
+            };
+            let y = match safe_scalar_affine_from_bytes(y_bytes) {
+                Ok(y) => y,
+                Err(e) => {
+                    return Err(e);
+                }
+            };
+            let commitment = match safe_g1_affine_from_bytes(commitment_bytes) {
+                Ok(g1) => g1,
+                Err(e) => {
+                    return Err(e);
+                }
+            };
+            let proof = match safe_g1_affine_from_bytes(proof_bytes) {
+                Ok(g1) => g1,
+                Err(e) => {
+                    return Err(e);
+                }
+            };
+
+            let g2_x = G2Affine::generator() * z;
+            let x_minus_z = kzg_settings.g2_points[1] - g2_x;
+
+            let g1_y = G1Affine::generator() * y;
+            let p_minus_y = commitment - g1_y;
+
+            Ok(pairings_verify(
+                p_minus_y.into(),
+                G2Affine::generator(),
+                proof,
+                x_minus_z.into(),
+            ))
+        }
     }
 
     pub fn verify_kzg_proof_batch(
@@ -528,7 +564,7 @@ impl KzgProof {
         // let rhs_g1 = c_minus_y_lincomb + proof_z_lincomb;
 
         // // Verify the pairing equation
-        // let result = pairings_verify_host(
+        // let result = pairings_verify(
         //     proof_lincomb.into(),
         //     kzg_settings.g2_points[1],
         //     rhs_g1.into(),
