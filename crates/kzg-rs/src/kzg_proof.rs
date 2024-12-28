@@ -454,15 +454,15 @@ impl KzgProof {
         let openvm_kzg_g2_point = to_openvm_g2_affine(kzg_settings.g2_points[1]);
 
         // error:
-        // let g2_x = msm(&[z], &[g2_affine_generator]);
+        let g2_x = msm(&[z], &[g2_affine_generator]);
         // tmp workaround:
-        let g2_x = g2_affine_generator;
+        // let g2_x = g2_affine_generator;
         let x_minus_z = openvm_kzg_g2_point - g2_x;
 
         // ok:
-        let g1_y = Bls12_381::msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
+        // let g1_y = Bls12_381::msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
         // error:
-        // let g1_y = msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
+        let g1_y = msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
         // tmp workaround:
         // let g1_y = Bls12_381G1Affine::GENERATOR;
         let p_minus_y = commitment - g1_y;

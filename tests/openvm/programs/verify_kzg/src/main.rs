@@ -15,7 +15,7 @@ openvm_algebra_moduli_setup::moduli_init! {
 }
 
 openvm_algebra_complex_macros::complex_init! {
-    Fp2 { mod_idx = 0 },
+    Bls12_381Fp2 { mod_idx = 0 },
 }
 
 openvm_ecc_sw_setup::sw_init! {

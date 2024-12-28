@@ -1631,6 +1631,7 @@ dependencies = [
  "kzg-rs",
  "num-bigint-dig",
  "num-traits",
+ "openvm",
  "openvm-algebra-circuit",
  "openvm-algebra-guest",
  "openvm-build",
