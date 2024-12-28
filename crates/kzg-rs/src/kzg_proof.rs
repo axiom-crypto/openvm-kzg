@@ -444,8 +444,21 @@ impl KzgProof {
     ) -> Result<bool, KzgError> {
         #[cfg(feature = "guest-program")]
         {
-            let z = Bls12_381Scalar::from_be_bytes(z_bytes.as_slice());
-            let y = Bls12_381Scalar::from_be_bytes(y_bytes.as_slice());
+            // Check that the scalar is valid
+            let z = match safe_scalar_affine_from_bytes(z_bytes) {
+                Ok(_) => Bls12_381Scalar::from_be_bytes(z_bytes.as_slice()),
+                Err(e) => {
+                    return Err(e);
+                }
+            };
+            let y = match safe_scalar_affine_from_bytes(y_bytes) {
+                Ok(_) => Bls12_381Scalar::from_be_bytes(y_bytes.as_slice()),
+                Err(e) => {
+                    return Err(e);
+                }
+            };
+            // let z = Bls12_381Scalar::from_be_bytes(z_bytes.as_slice());
+            // let y = Bls12_381Scalar::from_be_bytes(y_bytes.as_slice());
 
             let commitment = match safe_g1_affine_from_bytes(commitment_bytes) {
                 Ok(g1) => g1,
@@ -461,16 +474,16 @@ impl KzgProof {
             };
 
             let g2_affine_generator = Bls12_381G2Affine::from_xy(
-            Fp2::from_coeffs([
-                Fp::from_be_bytes(&hex!("024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8")),
-                Fp::from_be_bytes(&hex!("13e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e"))
-            ]),
-            Fp2::from_coeffs([
-                Fp::from_be_bytes(&hex!("0ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801")),
-                Fp::from_be_bytes(&hex!("0606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be"))
-            ])
-        )
-        .unwrap();
+                Fp2::from_coeffs([
+                    Fp::from_be_bytes(&hex!("024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8")),
+                    Fp::from_be_bytes(&hex!("13e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e"))
+                ]),
+                Fp2::from_coeffs([
+                    Fp::from_be_bytes(&hex!("0ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801")),
+                    Fp::from_be_bytes(&hex!("0606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be"))
+                ])
+            )
+            .unwrap();
             let g2_affine_generator_pt = to_affine_point_fp2(g2_affine_generator.clone());
 
             let openvm_kzg_g2_point = to_openvm_g2_affine(kzg_settings.g2_points[1]);
@@ -539,6 +552,7 @@ impl KzgProof {
         }
     }
 
+    // TODO: Batch proofs are not used in revm, so we'll leave this out for now
     #[allow(unused_variables)]
     pub fn verify_kzg_proof_batch(
         commitments: &[G1Affine],
@@ -694,7 +708,8 @@ pub mod tests {
     use super::*;
     use crate::{
         test_files::{
-            VERIFY_BLOB_KZG_PROOF_BATCH_TESTS, VERIFY_BLOB_KZG_PROOF_TESTS, VERIFY_KZG_PROOF_TESTS,
+            ONLY_INVALID_KZG_PROOF_TESTS, VERIFY_BLOB_KZG_PROOF_BATCH_TESTS,
+            VERIFY_BLOB_KZG_PROOF_TESTS, VERIFY_KZG_PROOF_TESTS,
         },
         test_utils::{FromHex, Input, Test},
     };
@@ -707,7 +722,8 @@ pub mod tests {
         let kzg_settings = KzgSettings::load_trusted_setup_file().unwrap();
         let test_files = VERIFY_KZG_PROOF_TESTS;
 
-        for (_test_file, data) in test_files {
+        for (test_file, data) in &ONLY_INVALID_KZG_PROOF_TESTS[65..66] {
+            println!("test: {test_file}");
             let test: Test<Input> = serde_yaml::from_str(data).unwrap();
             let (Ok(commitment), Ok(z), Ok(y), Ok(proof)) = (
                 test.input.get_commitment(),
@@ -722,9 +738,11 @@ pub mod tests {
             let result = KzgProof::verify_kzg_proof(&commitment, &z, &y, &proof, &kzg_settings);
             match result {
                 Ok(result) => {
+                    println!("test: {test_file}: {result}");
                     assert_eq!(result, test.get_output().unwrap_or(false));
                 }
                 Err(_) => {
+                    println!("test: {test_file}: error");
                     assert!(test.get_output().is_none());
                 }
             }

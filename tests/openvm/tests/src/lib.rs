@@ -15,7 +15,7 @@ pub fn run_test_from_yaml_str(data: &str) {
         test.input.get_y(),
         test.input.get_proof(),
     ) else {
-        panic!("Unable to get test data");
+        panic!("Invalid test inputs");
     };
 
     let input = KzgInputs {
@@ -52,7 +52,6 @@ mod tests {
 
     #[test]
     fn test_multiple_invalid_verify_kzg() {
-        // Single test failing: &ONLY_INVALID_KZG_PROOF_TESTS[65..66]
         for (test_file, data) in ONLY_INVALID_KZG_PROOF_TESTS {
             println!("Running test: {}", test_file);
             let result = std::panic::catch_unwind(|| run_test_from_yaml_str(data));

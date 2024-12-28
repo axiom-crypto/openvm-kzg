@@ -16,12 +16,7 @@ openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev =
 
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 hex-literal = "0.4.1"
-# bls12_381 = { version = "0.8.0", default-features = false, features = [
-#     "groups",
-#     "pairings",
-#     "alloc",
-# ] }
-bls12_381 = { path = "../../../tmp/bls12_381", default-features = false, features = [
+bls12_381 = { version = "0.8.0", default-features = false, features = [
     "groups",
     "pairings",
     "alloc",
@@ -47,12 +42,7 @@ openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev =
     "bls12_381",
 ] }
 openvm-transpiler = { git = "https://github.com/openvm-org/openvm.git", rev = "74fac04032b985e58d784da5224d9fdc46fca69c", default-features = false }
-# bls12_381 = { version = "0.8.0", default-features = false, features = [
-#     "groups",
-#     "pairings",
-#     "alloc",
-# ] }
-bls12_381 = { path = "../../../tmp/bls12_381", default-features = false, features = [
+bls12_381 = { version = "0.8.0", default-features = false, features = [
     "groups",
     "pairings",
     "alloc",
