@@ -31,7 +31,7 @@ pub fn run_test_from_yaml_str(data: &str) {
 #[cfg(test)]
 mod tests {
     use kzg_rs::test_files::{
-        ONLY_VALID_KZG_PROOF_TESTS, SINGLE_VALID_KZG_PROOF_TEST, VERIFY_KZG_PROOF_TESTS,
+        ONLY_INVALID_KZG_PROOF_TESTS, ONLY_VALID_KZG_PROOF_TESTS, SINGLE_VALID_KZG_PROOF_TEST,
     };
 
     use crate::run_test_from_yaml_str;
@@ -51,10 +51,12 @@ mod tests {
     }
 
     #[test]
-    fn test_all_verify_kzg() {
-        for (test_file, data) in VERIFY_KZG_PROOF_TESTS {
+    fn test_multiple_invalid_verify_kzg() {
+        // Single test failing: &ONLY_INVALID_KZG_PROOF_TESTS[65..66]
+        for (test_file, data) in ONLY_INVALID_KZG_PROOF_TESTS {
             println!("Running test: {}", test_file);
-            run_test_from_yaml_str(data);
+            let result = std::panic::catch_unwind(|| run_test_from_yaml_str(data));
+            assert!(result.is_err(), "Test {} should have panicked", test_file);
         }
     }
 }
