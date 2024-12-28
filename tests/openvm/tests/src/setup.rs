@@ -31,38 +31,7 @@ pub fn run_guest_program(input: KzgInputs) {
     io.write(&input);
 
     air_test_with_min_segments(vm_config, exe, io, 1);
-
-    // // 5. Run the program
-    // let output = sdk
-    //     .execute(exe.clone(), vm_config.clone(), io.clone())
-    //     .unwrap();
-    // println!("public values output: {:?}", output);
-
-    // // 6. Set app configuration
-    // let app_log_blowup = 2;
-    // let app_fri_params = FriParameters::standard_with_100_bits_conjectured_security(app_log_blowup);
-    // let app_config = AppConfig::new(app_fri_params, vm_config);
-
-    // // 7. Commit the exe
-    // println!("Committing app exe");
-    // let app_committed_exe = sdk.commit_app_exe(app_fri_params, exe).unwrap();
-
-    // // 8. Generate an AppProvingKey
-    // println!("Generating app proving key");
-    // let app_pk = Arc::new(sdk.app_keygen(app_config).unwrap());
-
-    // // 9. Generate a proof
-    // println!("Generating app proof");
-    // let proof = sdk
-    //     .generate_app_proof(app_pk.clone(), app_committed_exe.clone(), io.clone())
-    //     .unwrap();
-
-    // // 10. Verify your program
-    // println!("Verifying app proof");
-    // let app_vk = app_pk.get_vk();
-    // sdk.verify_app_proof(&app_vk, &proof).unwrap();
-
-    // println!("App proof verified!");
+    // sdk_test(&sdk, vm_config, exe, io);
 }
 
 fn setup_test(sdk: &Sdk) -> (VmExe<F>, SdkVmConfig) {
@@ -100,4 +69,39 @@ fn setup_test(sdk: &Sdk) -> (VmExe<F>, SdkVmConfig) {
     // Transpile the ELF into a VmExe
     let exe = sdk.transpile(elf, vm_config.transpiler()).unwrap();
     (exe, vm_config)
+}
+
+#[allow(dead_code)]
+fn sdk_test(sdk: &Sdk, vm_config: SdkVmConfig, exe: VmExe<F>, io: StdIn) {
+    // Run the program
+    let output = sdk
+        .execute(exe.clone(), vm_config.clone(), io.clone())
+        .unwrap();
+    println!("public values output: {:?}", output);
+
+    // Set app configuration
+    let app_log_blowup = 2;
+    let app_fri_params = FriParameters::standard_with_100_bits_conjectured_security(app_log_blowup);
+    let app_config = AppConfig::new(app_fri_params, vm_config);
+
+    // Commit the exe
+    println!("Committing app exe");
+    let app_committed_exe = sdk.commit_app_exe(app_fri_params, exe).unwrap();
+
+    // Generate an AppProvingKey
+    println!("Generating app proving key");
+    let app_pk = Arc::new(sdk.app_keygen(app_config).unwrap());
+
+    // Generate a proof
+    println!("Generating app proof");
+    let proof = sdk
+        .generate_app_proof(app_pk.clone(), app_committed_exe.clone(), io.clone())
+        .unwrap();
+
+    // Verify your program
+    println!("Verifying app proof");
+    let app_vk = app_pk.get_vk();
+    sdk.verify_app_proof(&app_vk, &proof).unwrap();
+
+    println!("App proof verified!");
 }

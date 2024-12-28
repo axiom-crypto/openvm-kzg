@@ -539,6 +539,7 @@ impl KzgProof {
         }
     }
 
+    #[allow(unused_variables)]
     pub fn verify_kzg_proof_batch(
         commitments: &[G1Affine],
         zs: &[Scalar],

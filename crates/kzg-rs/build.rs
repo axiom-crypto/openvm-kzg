@@ -13,11 +13,8 @@ fn main() {
 #[cfg(not(any(feature = "guest-program", target_arch = "riscv32", doc)))]
 fn main() {
     use bls12_381::Scalar;
-    use std::{
-        fs,
-        io::Write,
-        path::{Path, PathBuf},
-    };
+    use std::{fs, io::Write, path::Path};
+
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct KzgSettingsOwned {
         pub roots_of_unity: [Scalar; NUM_ROOTS_OF_UNITY],

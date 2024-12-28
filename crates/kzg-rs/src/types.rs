@@ -4,13 +4,14 @@ use crate::get_kzg_settings;
 use crate::{Bytes32, Bytes48, KzgError, NUM_G1_POINTS, NUM_G2_POINTS, NUM_ROOTS_OF_UNITY};
 use alloc::sync::Arc;
 use bls12_381::{G1Affine, G2Affine, Scalar};
-#[cfg(not(feature = "guest-program"))]
-use openvm_ecc_guest::AffinePoint;
-#[cfg(not(feature = "guest-program"))]
-use openvm_pairing_guest::bls12_381::{Fp, Fp2};
 use serde::{Deserialize, Serialize};
 use serde_big_array::BigArray;
 use spin::Once;
+#[cfg(not(feature = "guest-program"))]
+use {
+    openvm_ecc_guest::AffinePoint,
+    openvm_pairing_guest::bls12_381::{Fp, Fp2},
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg(not(feature = "guest-program"))]
