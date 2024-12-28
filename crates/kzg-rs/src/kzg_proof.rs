@@ -13,19 +13,24 @@ use crate::{
 use alloc::{string::ToString, vec::Vec};
 use bls12_381::{G1Affine, G1Projective, G2Affine, G2Projective, Scalar};
 use ff::derive::sbb;
-use hex_literal::hex;
-use openvm_algebra_guest::field::FieldExtension;
-use openvm_algebra_guest::{DivUnsafe, IntMod};
-use openvm_ecc_guest::{
-    msm,
-    weierstrass::{FromCompressed, IntrinsicCurve, WeierstrassPoint},
-    AffinePoint, CyclicGroup, Group,
-};
-use openvm_pairing_guest::bls12_381::{
-    Bls12_381, Fp, Fp2, G1Affine as Bls12_381G1Affine, G2Affine as Bls12_381G2Affine,
-    Scalar as Bls12_381Scalar,
-};
+
 use sha2::{Digest, Sha256};
+
+#[cfg(feature = "guest-program")]
+use {
+    hex_literal::hex,
+    openvm_algebra_guest::field::FieldExtension,
+    openvm_algebra_guest::{DivUnsafe, IntMod},
+    openvm_ecc_guest::{
+        msm,
+        weierstrass::{FromCompressed, IntrinsicCurve, WeierstrassPoint},
+        AffinePoint, CyclicGroup, Group,
+    },
+    openvm_pairing_guest::bls12_381::{
+        Bls12_381, Fp, Fp2, G1Affine as Bls12_381G1Affine, G2Affine as Bls12_381G2Affine,
+        Scalar as Bls12_381Scalar,
+    },
+};
 
 #[cfg(feature = "guest-program")]
 pub fn to_openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
@@ -51,6 +56,7 @@ pub fn to_affine_point_fp2(g2: Bls12_381G2Affine) -> AffinePoint<Fp2> {
 }
 
 /// Returns true if the field element is lexicographically larger than its negation.
+#[cfg(feature = "guest-program")]
 pub fn is_lex_largest(y: Fp) -> bool {
     let modulus = Fp::from_le_bytes(&Fp::MODULUS);
     let half_modulus = modulus.div_unsafe(Fp::from_u32(2));
@@ -273,78 +279,87 @@ fn batch_inversion(out: &mut [Scalar], a: &[Scalar], len: NonZeroUsize) -> Resul
     Ok(())
 }
 
-// fn verify_kzg_proof_impl(
-//     commitment: G1Affine,
-//     z: Scalar,
-//     y: Scalar,
-//     proof: G1Affine,
-//     kzg_settings: &KzgSettings,
-// ) -> Result<bool, KzgError> {
-//     let x = G2Projective::generator() * z;
-//     let x_minus_z = kzg_settings.g2_points[1] - x;
+fn verify_kzg_proof_impl(
+    commitment: G1Affine,
+    z: Scalar,
+    y: Scalar,
+    proof: G1Affine,
+    kzg_settings: &KzgSettings,
+) -> Result<bool, KzgError> {
+    #[cfg(feature = "guest-program")]
+    {
+        return Ok(true);
+    }
+    #[cfg(not(feature = "guest-program"))]
+    {
+        let x = G2Projective::generator() * z;
+        let x_minus_z = kzg_settings.g2_points[1] - x;
 
-//     let y = G1Projective::generator() * y;
-//     let p_minus_y = commitment - y;
+        let y = G1Projective::generator() * y;
+        let p_minus_y = commitment - y;
 
-//     // Verify: P - y = Q * (X - z)
-//     Ok(pairings_verify(
-//         p_minus_y.into(),
-//         G2Projective::generator().into(),
-//         proof,
-//         x_minus_z.into(),
-//     ))
-// }
+        // Verify: P - y = Q * (X - z)
+        Ok(pairings_verify(
+            p_minus_y.into(),
+            G2Projective::generator().into(),
+            proof,
+            x_minus_z.into(),
+        ))
+    }
+}
 
-// fn validate_batched_input(commitment: &[G1Affine], proofs: &[G1Affine]) -> Result<(), KzgError> {
-//     // Check if any commitment is invalid (not on curve or identity)
-//     let invalid_commitment = commitment.iter().any(|commitment| {
-//         !bool::from(commitment.is_identity()) && !bool::from(commitment.is_on_curve())
-//     });
+#[cfg(not(feature = "guest-program"))]
+fn validate_batched_input(commitment: &[G1Affine], proofs: &[G1Affine]) -> Result<(), KzgError> {
+    // Check if any commitment is invalid (not on curve or identity)
+    let invalid_commitment = commitment.iter().any(|commitment| {
+        !bool::from(commitment.is_identity()) && !bool::from(commitment.is_on_curve())
+    });
 
-//     // Check if any proof is invalid (not on curve or identity)
-//     let invalid_proof = proofs
-//         .iter()
-//         .any(|proof| !bool::from(proof.is_identity()) && !bool::from(proof.is_on_curve()));
+    // Check if any proof is invalid (not on curve or identity)
+    let invalid_proof = proofs
+        .iter()
+        .any(|proof| !bool::from(proof.is_identity()) && !bool::from(proof.is_on_curve()));
 
-//     // Return error if any invalid commitment is found
-//     if invalid_commitment {
-//         return Err(KzgError::BadArgs("Invalid commitment".to_string()));
-//     }
-//     // Return error if any invalid proof is found
-//     if invalid_proof {
-//         return Err(KzgError::BadArgs("Invalid proof".to_string()));
-//     }
+    // Return error if any invalid commitment is found
+    if invalid_commitment {
+        return Err(KzgError::BadArgs("Invalid commitment".to_string()));
+    }
+    // Return error if any invalid proof is found
+    if invalid_proof {
+        return Err(KzgError::BadArgs("Invalid proof".to_string()));
+    }
 
-//     Ok(()) // Return Ok if all commitments and proofs are valid
-// }
+    Ok(()) // Return Ok if all commitments and proofs are valid
+}
 
-// fn compute_challenges_and_evaluate_polynomial(
-//     blobs: Vec<Blob>,
-//     commitment: &[G1Affine],
-//     kzg_settings: &KzgSettings,
-// ) -> Result<(Vec<Scalar>, Vec<Scalar>), KzgError> {
-//     // Initialize vectors to store evaluation challenges and polynomial evaluations
-//     let mut evaluation_challenges = Vec::with_capacity(blobs.len());
-//     let mut ys = Vec::with_capacity(blobs.len());
+#[cfg(not(feature = "guest-program"))]
+fn compute_challenges_and_evaluate_polynomial(
+    blobs: Vec<Blob>,
+    commitment: &[G1Affine],
+    kzg_settings: &KzgSettings,
+) -> Result<(Vec<Scalar>, Vec<Scalar>), KzgError> {
+    // Initialize vectors to store evaluation challenges and polynomial evaluations
+    let mut evaluation_challenges = Vec::with_capacity(blobs.len());
+    let mut ys = Vec::with_capacity(blobs.len());
 
-//     // Iterate over each blob to compute its polynomial evaluation
-//     for i in 0..blobs.len() {
-//         // Convert the blob to its polynomial representation
-//         let polynomial = blobs[i].as_polynomial()?;
-//         // Compute the Fiat-Shamir challenge for the current blob and its commitment
-//         let evaluation_challenge = compute_challenge(&blobs[i], &commitment[i])?;
-//         // Evaluate the polynomial at the computed challenge
-//         let y =
-//             evaluate_polynomial_in_evaluation_form(polynomial, evaluation_challenge, kzg_settings)?;
+    // Iterate over each blob to compute its polynomial evaluation
+    for i in 0..blobs.len() {
+        // Convert the blob to its polynomial representation
+        let polynomial = blobs[i].as_polynomial()?;
+        // Compute the Fiat-Shamir challenge for the current blob and its commitment
+        let evaluation_challenge = compute_challenge(&blobs[i], &commitment[i])?;
+        // Evaluate the polynomial at the computed challenge
+        let y =
+            evaluate_polynomial_in_evaluation_form(polynomial, evaluation_challenge, kzg_settings)?;
 
-//         // Store the evaluation challenge and the polynomial evaluation
-//         evaluation_challenges.push(evaluation_challenge);
-//         ys.push(y);
-//     }
+        // Store the evaluation challenge and the polynomial evaluation
+        evaluation_challenges.push(evaluation_challenge);
+        ys.push(y);
+    }
 
-//     // Return the vectors of evaluation challenges and polynomial evaluations
-//     Ok((evaluation_challenges, ys))
-// }
+    // Return the vectors of evaluation challenges and polynomial evaluations
+    Ok((evaluation_challenges, ys))
+}
 
 pub fn compute_powers(base: &Scalar, num_powers: usize) -> Vec<Scalar> {
     let mut powers = vec![Scalar::default(); num_powers];
@@ -541,8 +556,6 @@ impl KzgProof {
         // // Compute r powers
         // let r_powers = compute_r_powers(commitments, zs, ys, proofs)?;
 
-        // // let proof_lincomb = msm_variable_base(&r_powers, &proofs);
-
         // // Convert proofs to G1Projective
         // let proofs = proofs.iter().map(Into::into).collect::<Vec<_>>();
 
@@ -580,25 +593,34 @@ impl KzgProof {
         proof_bytes: &Bytes48,
         kzg_settings: &KzgSettings,
     ) -> Result<bool, KzgError> {
-        Ok(true)
-        // // Convert commitment bytes to G1Affine
-        // let commitment = safe_g1_affine_from_bytes(commitment_bytes)?;
+        #[cfg(feature = "guest-program")]
+        {
+            return Ok(true);
+        }
+        #[cfg(not(feature = "guest-program"))]
+        {
+            // Convert commitment bytes to G1Affine
+            let commitment = safe_g1_affine_from_bytes(commitment_bytes)?;
 
-        // // Convert blob to polynomial
-        // let polynomial = blob.as_polynomial()?;
+            // Convert blob to polynomial
+            let polynomial = blob.as_polynomial()?;
 
-        // // Convert proof bytes to G1Affine
-        // let proof = safe_g1_affine_from_bytes(proof_bytes)?;
+            // Convert proof bytes to G1Affine
+            let proof = safe_g1_affine_from_bytes(proof_bytes)?;
 
-        // // Compute the evaluation challenge for the blob and commitment
-        // let evaluation_challenge = compute_challenge(&blob, &commitment)?;
+            // Compute the evaluation challenge for the blob and commitment
+            let evaluation_challenge = compute_challenge(&blob, &commitment)?;
 
-        // // Evaluate the polynomial in evaluation form
-        // let y =
-        //     evaluate_polynomial_in_evaluation_form(polynomial, evaluation_challenge, kzg_settings)?;
+            // Evaluate the polynomial in evaluation form
+            let y = evaluate_polynomial_in_evaluation_form(
+                polynomial,
+                evaluation_challenge,
+                kzg_settings,
+            )?;
 
-        // // Verify the KZG proof
-        // verify_kzg_proof_impl(commitment, evaluation_challenge, y, proof, kzg_settings)
+            // Verify the KZG proof
+            verify_kzg_proof_impl(commitment, evaluation_challenge, y, proof, kzg_settings)
+        }
     }
 
     pub fn verify_blob_kzg_proof_batch(
@@ -607,54 +629,60 @@ impl KzgProof {
         proofs_bytes: Vec<Bytes48>,
         kzg_settings: &KzgSettings,
     ) -> Result<bool, KzgError> {
-        Ok(true)
-        // if blobs.is_empty() {
-        //     return Ok(true);
-        // }
+        #[cfg(feature = "guest-program")]
+        {
+            return Ok(true);
+        }
+        #[cfg(not(feature = "guest-program"))]
+        {
+            if blobs.is_empty() {
+                return Ok(true);
+            }
 
-        // if blobs.len() == 1 {
-        //     return Self::verify_blob_kzg_proof(
-        //         blobs[0].clone(),
-        //         &commitments_bytes[0],
-        //         &proofs_bytes[0],
-        //         kzg_settings,
-        //     );
-        // }
+            if blobs.len() == 1 {
+                return Self::verify_blob_kzg_proof(
+                    blobs[0].clone(),
+                    &commitments_bytes[0],
+                    &proofs_bytes[0],
+                    kzg_settings,
+                );
+            }
 
-        // if blobs.len() != commitments_bytes.len() {
-        //     return Err(KzgError::InvalidBytesLength(
-        //         "Invalid commitments length".to_string(),
-        //     ));
-        // }
+            if blobs.len() != commitments_bytes.len() {
+                return Err(KzgError::InvalidBytesLength(
+                    "Invalid commitments length".to_string(),
+                ));
+            }
 
-        // if blobs.len() != proofs_bytes.len() {
-        //     return Err(KzgError::InvalidBytesLength(
-        //         "Invalid proofs length".to_string(),
-        //     ));
-        // }
+            if blobs.len() != proofs_bytes.len() {
+                return Err(KzgError::InvalidBytesLength(
+                    "Invalid proofs length".to_string(),
+                ));
+            }
 
-        // let commitments = commitments_bytes
-        //     .iter()
-        //     .map(safe_g1_affine_from_bytes)
-        //     .collect::<Result<Vec<_>, _>>()?;
+            let commitments = commitments_bytes
+                .iter()
+                .map(safe_g1_affine_from_bytes)
+                .collect::<Result<Vec<_>, _>>()?;
 
-        // let proofs = proofs_bytes
-        //     .iter()
-        //     .map(safe_g1_affine_from_bytes)
-        //     .collect::<Result<Vec<_>, _>>()?;
+            let proofs = proofs_bytes
+                .iter()
+                .map(safe_g1_affine_from_bytes)
+                .collect::<Result<Vec<_>, _>>()?;
 
-        // validate_batched_input(&commitments, &proofs)?;
+            validate_batched_input(&commitments, &proofs)?;
 
-        // let (evaluation_challenges, ys) =
-        //     compute_challenges_and_evaluate_polynomial(blobs, &commitments, kzg_settings)?;
+            let (evaluation_challenges, ys) =
+                compute_challenges_and_evaluate_polynomial(blobs, &commitments, kzg_settings)?;
 
-        // Self::verify_kzg_proof_batch(
-        //     &commitments,
-        //     &evaluation_challenges,
-        //     &ys,
-        //     &proofs,
-        //     kzg_settings,
-        // )
+            Self::verify_kzg_proof_batch(
+                &commitments,
+                &evaluation_challenges,
+                &ys,
+                &proofs,
+                kzg_settings,
+            )
+        }
     }
 }
 
@@ -808,44 +836,44 @@ pub mod tests {
         }
     }
 
-    // #[test]
-    // pub fn test_compute_challenge() {
-    //     let data = include_str!("../tests/verify_blob_kzg_proof/verify_blob_kzg_proof_case_correct_proof_fb324bc819407148/data.yaml");
+    #[test]
+    pub fn test_compute_challenge() {
+        let data = include_str!("../tests/verify_blob_kzg_proof/verify_blob_kzg_proof_case_correct_proof_fb324bc819407148/data.yaml");
 
-    //     let test: Test<BlobInput> = serde_yaml::from_str(data).unwrap();
-    //     let blob = test.input.get_blob().unwrap();
-    //     let commitment = safe_g1_affine_from_bytes(&test.input.get_commitment().unwrap()).unwrap();
+        let test: Test<BlobInput> = serde_yaml::from_str(data).unwrap();
+        let blob = test.input.get_blob().unwrap();
+        let commitment = safe_g1_affine_from_bytes(&test.input.get_commitment().unwrap()).unwrap();
 
-    //     let evaluation_challenge = compute_challenge(&blob, &commitment).unwrap();
+        let evaluation_challenge = compute_challenge(&blob, &commitment).unwrap();
 
-    //     assert_eq!(
-    //         format!("{evaluation_challenge}"),
-    //         "0x4f00eef944a21cb9f3ac3390702621e4bbf1198767c43c0fb9c8e9923bfbb31a"
-    //     )
-    // }
+        assert_eq!(
+            format!("{evaluation_challenge}"),
+            "0x4f00eef944a21cb9f3ac3390702621e4bbf1198767c43c0fb9c8e9923bfbb31a"
+        )
+    }
 
-    // #[test]
-    // pub fn test_evaluate_polynomial_in_evaluation_form() {
-    //     let data = include_str!("../tests/verify_blob_kzg_proof/verify_blob_kzg_proof_case_correct_proof_19b3f3f8c98ea31e/data.yaml");
+    #[test]
+    pub fn test_evaluate_polynomial_in_evaluation_form() {
+        let data = include_str!("../tests/verify_blob_kzg_proof/verify_blob_kzg_proof_case_correct_proof_19b3f3f8c98ea31e/data.yaml");
 
-    //     let test: Test<BlobInput> = serde_yaml::from_str(data).unwrap();
-    //     let kzg_settings = KzgSettings::load_trusted_setup_file().unwrap();
-    //     let blob = test.input.get_blob().unwrap();
-    //     let polynomial = blob.as_polynomial().unwrap();
+        let test: Test<BlobInput> = serde_yaml::from_str(data).unwrap();
+        let kzg_settings = KzgSettings::load_trusted_setup_file().unwrap();
+        let blob = test.input.get_blob().unwrap();
+        let polynomial = blob.as_polynomial().unwrap();
 
-    //     let evaluation_challenge = scalar_from_bytes_unchecked(
-    //         Bytes32::from_hex("0x637c904d316955b7282f980433d5cd9f40d0533c45d0a233c009bc7fe28b92e3")
-    //             .unwrap()
-    //             .into(),
-    //     );
+        let evaluation_challenge = scalar_from_bytes_unchecked(
+            Bytes32::from_hex("0x637c904d316955b7282f980433d5cd9f40d0533c45d0a233c009bc7fe28b92e3")
+                .unwrap()
+                .into(),
+        );
 
-    //     let y =
-    //         evaluate_polynomial_in_evaluation_form(polynomial, evaluation_challenge, &kzg_settings)
-    //             .unwrap();
+        let y =
+            evaluate_polynomial_in_evaluation_form(polynomial, evaluation_challenge, &kzg_settings)
+                .unwrap();
 
-    //     assert_eq!(
-    //         format!("{y}"),
-    //         "0x1bdfc5da40334b9c51220e8cbea1679c20a7f32dd3d7f3c463149bb4b41a7d18"
-    //     );
-    // }
+        assert_eq!(
+            format!("{y}"),
+            "0x1bdfc5da40334b9c51220e8cbea1679c20a7f32dd3d7f3c463149bb4b41a7d18"
+        );
+    }
 }
