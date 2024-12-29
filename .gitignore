@@ -1,4 +1,4 @@
 **/target
 .env
-.DS_Store # OS X Finder metadata
+**/.DS_Store # OS X Finder metadata
 tmp/
