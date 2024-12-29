@@ -293,7 +293,7 @@ fn verify_kzg_proof_impl(
 ) -> Result<bool, KzgError> {
     #[cfg(feature = "guest-program")]
     {
-        return Ok(true);
+        unimplemented!();
     }
     #[cfg(not(feature = "guest-program"))]
     {
@@ -558,7 +558,7 @@ impl KzgProof {
     }
 
     // TODO: Batch proofs are not used in revm, so we'll leave this out for now since it requires
-    //       using
+    //       using the Succinct fork of the `bls12_381` crate
     #[allow(unused_variables)]
     pub fn verify_kzg_proof_batch(
         commitments: &[G1Affine],
@@ -567,7 +567,7 @@ impl KzgProof {
         proofs: &[G1Affine],
         kzg_settings: &KzgSettings,
     ) -> Result<bool, KzgError> {
-        Ok(true)
+        unimplemented!();
         // let n = commitments.len();
 
         // // Initialize vectors to store intermediate values
@@ -616,7 +616,7 @@ impl KzgProof {
     ) -> Result<bool, KzgError> {
         #[cfg(feature = "guest-program")]
         {
-            return Ok(true);
+            unimplemented!()
         }
         #[cfg(not(feature = "guest-program"))]
         {
@@ -652,7 +652,7 @@ impl KzgProof {
     ) -> Result<bool, KzgError> {
         #[cfg(feature = "guest-program")]
         {
-            return Ok(true);
+            unimplemented!();
         }
         #[cfg(not(feature = "guest-program"))]
         {
