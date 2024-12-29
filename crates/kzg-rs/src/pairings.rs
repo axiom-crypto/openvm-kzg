@@ -34,32 +34,6 @@ pub fn pairings_verify(a1: G1Affine, a2: G2Affine, b1: G1Affine, b2: G2Affine) -
         == Gt::identity()
 }
 
-// pub fn g1_affine_to_affine_point(a: G1Affine) -> AffinePoint<Fp> {
-//     if a.is_identity().into() {
-//         return AffinePoint::<Fp>::new(<Fp as IntMod>::ZERO, <Fp as IntMod>::ZERO);
-//     }
-//     let a_bytes = a.to_uncompressed();
-//     let x = Fp::from_be_bytes(&a_bytes[0..48]);
-//     let y = Fp::from_be_bytes(&a_bytes[48..96]);
-//     AffinePoint::<Fp>::new(x, y)
-// }
-
-// pub fn g2_affine_to_affine_point(a: G2Affine) -> AffinePoint<Fp2> {
-//     if a.is_identity().into() {
-//         return AffinePoint::<Fp2>::new(Fp2::ZERO, Fp2::ZERO);
-//     }
-//     let a_bytes = a.to_uncompressed();
-//     let x = Fp2 {
-//         c0: Fp::from_be_bytes(&a_bytes[48..96]),
-//         c1: Fp::from_be_bytes(&a_bytes[0..48]),
-//     };
-//     let y = Fp2 {
-//         c0: Fp::from_be_bytes(&a_bytes[144..192]),
-//         c1: Fp::from_be_bytes(&a_bytes[96..144]),
-//     };
-//     AffinePoint::<Fp2>::new(x, y)
-// }
-
 #[cfg(feature = "guest-program")]
 pub fn g1_affine_is_on_curve(p: &AffinePoint<Fp>) -> bool {
     if p.is_infinity() {
