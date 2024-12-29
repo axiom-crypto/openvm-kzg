@@ -34,16 +34,21 @@ use {
 
 #[cfg(feature = "guest-program")]
 pub fn to_openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
-    let x = g2.x;
-    let y = g2.y;
-    let ox = Fp2::from_coeffs([
-        Fp::from_be_bytes(&x.c0.to_bytes()),
-        Fp::from_be_bytes(&x.c1.to_bytes()),
-    ]);
-    let oy = Fp2::from_coeffs([
-        Fp::from_be_bytes(&y.c0.to_bytes()),
-        Fp::from_be_bytes(&y.c1.to_bytes()),
-    ]);
+    // let g2_bytes: [u8; 200] = unsafe { core::mem::transmute(g2) };
+    let g2_bytes = g2.to_uncompressed();
+    let x_c1: [u8; 48] = g2_bytes[0..48].try_into().unwrap();
+    let x_c0: [u8; 48] = g2_bytes[48..96].try_into().unwrap();
+    let y_c1: [u8; 48] = g2_bytes[96..144].try_into().unwrap();
+    let y_c0: [u8; 48] = g2_bytes[144..192].try_into().unwrap();
+
+    // let x = g2.x;
+    // let y = g2.y;
+    // assert_eq!(x.c0.to_bytes(), x_c0);
+    // assert_eq!(x.c1.to_bytes(), x_c1);
+    // assert_eq!(y.c0.to_bytes(), y_c0);
+    // assert_eq!(y.c1.to_bytes(), y_c1);
+    let ox = Fp2::from_coeffs([Fp::from_be_bytes(&x_c0), Fp::from_be_bytes(&x_c1)]);
+    let oy = Fp2::from_coeffs([Fp::from_be_bytes(&y_c0), Fp::from_be_bytes(&y_c1)]);
     Bls12_381G2Affine::from_xy(ox, oy).unwrap()
 }
 
@@ -552,7 +557,8 @@ impl KzgProof {
         }
     }
 
-    // TODO: Batch proofs are not used in revm, so we'll leave this out for now
+    // TODO: Batch proofs are not used in revm, so we'll leave this out for now since it requires
+    //       using
     #[allow(unused_variables)]
     pub fn verify_kzg_proof_batch(
         commitments: &[G1Affine],
