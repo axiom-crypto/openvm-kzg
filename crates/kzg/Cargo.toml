@@ -1,11 +1,8 @@
 [package]
-authors = ["Bhargav Annem <bhargav.annem@gmail.com>"]
-description = "Rust implementation of KZG point evaluation"
-edition = "2021"
-license = "MIT"
-name = "kzg-rs"
-version = "0.2.3"
-repository = "https://github.com/succinctlabs/kzg-rs"
+name = "openvm-kzg"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
 
 [dependencies]
 openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "1ad414", optional = true }

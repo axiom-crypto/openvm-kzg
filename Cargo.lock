@@ -1622,35 +1622,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "kzg-rs-openvm-tests"
-version = "0.1.0"
-dependencies = [
- "bincode",
- "ff 0.13.0",
- "hex",
- "hex-literal",
- "kzg-rs",
- "num-bigint-dig",
- "num-traits",
- "openvm",
- "openvm-algebra-circuit",
- "openvm-algebra-guest",
- "openvm-build",
- "openvm-circuit",
- "openvm-ecc-circuit",
- "openvm-ecc-guest",
- "openvm-pairing-circuit",
- "openvm-pairing-guest",
- "openvm-sdk",
- "openvm-stark-sdk",
- "serde",
- "serde-big-array",
- "serde_yaml",
- "sha2",
- "spin",
-]
-
-[[package]]
 name = "lazy_static"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2384,6 +2355,35 @@ dependencies = [
  "openvm-transpiler",
  "rrs-lib",
  "strum",
+]
+
+[[package]]
+name = "openvm-kzg-tests"
+version = "0.1.0"
+dependencies = [
+ "bincode",
+ "ff 0.13.0",
+ "hex",
+ "hex-literal",
+ "kzg-rs",
+ "num-bigint-dig",
+ "num-traits",
+ "openvm",
+ "openvm-algebra-circuit",
+ "openvm-algebra-guest",
+ "openvm-build",
+ "openvm-circuit",
+ "openvm-ecc-circuit",
+ "openvm-ecc-guest",
+ "openvm-pairing-circuit",
+ "openvm-pairing-guest",
+ "openvm-sdk",
+ "openvm-stark-sdk",
+ "serde",
+ "serde-big-array",
+ "serde_yaml",
+ "sha2",
+ "spin",
 ]
 
 [[package]]
