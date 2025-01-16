@@ -100,7 +100,7 @@ fn sdk_test(sdk: &Sdk, vm_config: SdkVmConfig, exe: VmExe<F>, io: StdIn) {
 
     // Verify your program
     println!("Verifying app proof");
-    let app_vk = app_pk.get_vk();
+    let app_vk = app_pk.get_app_vk();
     sdk.verify_app_proof(&app_vk, &proof).unwrap();
 
     println!("App proof verified!");
