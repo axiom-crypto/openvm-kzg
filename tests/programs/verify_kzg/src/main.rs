@@ -3,23 +3,23 @@
 
 extern crate alloc;
 
-use kzg_rs::{get_kzg_settings, KzgInputs, KzgProof};
 use openvm::io::read;
-use openvm_pairing_guest::bls12_381::Fp as Bls12_381Fp;
+use openvm_kzg::{get_kzg_settings, KzgInputs, KzgProof};
+use openvm_pairing_guest::bls12_381::Bls12_381G1Affine;
 
 openvm::entry!(main);
 
-openvm_algebra_moduli_setup::moduli_init! {
+openvm_algebra_guest::moduli_macros::moduli_init! {
     "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab",
     "0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001"
 }
 
-openvm_algebra_complex_macros::complex_init! {
+openvm_algebra_guest::complex_macros::complex_init! {
     Bls12_381Fp2 { mod_idx = 0 },
 }
 
-openvm_ecc_sw_setup::sw_init! {
-    Bls12_381Fp,
+openvm_ecc_guest::sw_macros::sw_init! {
+    Bls12_381G1Affine
 }
 
 pub fn main() {

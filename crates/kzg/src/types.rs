@@ -7,14 +7,14 @@ use bls12_381::{G1Affine, G2Affine, Scalar};
 use serde::{Deserialize, Serialize};
 use serde_big_array::BigArray;
 use spin::Once;
-#[cfg(not(feature = "guest-program"))]
+#[cfg(not(target_os = "zkvm"))]
 use {
     openvm_ecc_guest::AffinePoint,
     openvm_pairing_guest::bls12_381::{Fp, Fp2},
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[cfg(not(feature = "guest-program"))]
+#[cfg(not(target_os = "zkvm"))]
 pub struct PairingInputs {
     pub p0: AffinePoint<Fp>,
     pub p1: AffinePoint<Fp2>,
@@ -81,14 +81,14 @@ pub struct KzgSettings {
 }
 
 #[derive(Debug, Clone, Default, Eq)]
-#[cfg(not(feature = "guest-program"))]
+#[cfg(not(target_os = "zkvm"))]
 pub enum EnvKzgSettings {
     #[default]
     Default,
     Custom(Arc<KzgSettings>),
 }
 
-#[cfg(not(feature = "guest-program"))]
+#[cfg(not(target_os = "zkvm"))]
 impl PartialEq for EnvKzgSettings {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
@@ -99,7 +99,7 @@ impl PartialEq for EnvKzgSettings {
     }
 }
 
-#[cfg(not(feature = "guest-program"))]
+#[cfg(not(target_os = "zkvm"))]
 impl Hash for EnvKzgSettings {
     fn hash<H: Hasher>(&self, state: &mut H) {
         core::mem::discriminant(self).hash(state);
@@ -110,7 +110,7 @@ impl Hash for EnvKzgSettings {
     }
 }
 
-#[cfg(not(feature = "guest-program"))]
+#[cfg(not(target_os = "zkvm"))]
 impl EnvKzgSettings {
     pub fn get(&self) -> &KzgSettings {
         match self {
@@ -133,7 +133,7 @@ impl KzgSettings {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[cfg(not(feature = "guest-program"))]
+#[cfg(not(target_os = "zkvm"))]
 pub struct KzgSettingsOwned {
     pub roots_of_unity: [Scalar; NUM_ROOTS_OF_UNITY],
     pub g1_points: [G1Affine; NUM_G1_POINTS],

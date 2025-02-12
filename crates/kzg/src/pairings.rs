@@ -1,13 +1,13 @@
-#[cfg(not(feature = "guest-program"))]
+#[cfg(not(target_os = "zkvm"))]
 use bls12_381::{G1Affine, G2Affine};
-#[cfg(feature = "guest-program")]
+#[cfg(target_os = "zkvm")]
 use {
     openvm_ecc_guest::{algebra::IntMod, AffinePoint},
     openvm_pairing_guest::bls12_381::{Fp, Fp2},
 };
 
 /// Verifies the pairing of two G1 and two G2 points are equivalent using the multi-miller loop
-#[cfg(feature = "guest-program")]
+#[cfg(target_os = "zkvm")]
 pub fn pairings_verify(
     p0: AffinePoint<Fp>,
     p1: AffinePoint<Fp2>,
@@ -25,7 +25,7 @@ pub fn pairings_verify(
     Bls12_381::pairing_check(&[-p0, q0], &[p1, q1]).is_ok()
 }
 
-#[cfg(not(feature = "guest-program"))]
+#[cfg(not(target_os = "zkvm"))]
 pub fn pairings_verify(a1: G1Affine, a2: G2Affine, b1: G1Affine, b2: G2Affine) -> bool {
     // This is run during the build process
     use bls12_381::{multi_miller_loop, G2Prepared, Gt};
@@ -34,7 +34,7 @@ pub fn pairings_verify(a1: G1Affine, a2: G2Affine, b1: G1Affine, b2: G2Affine) -
         == Gt::identity()
 }
 
-#[cfg(feature = "guest-program")]
+#[cfg(target_os = "zkvm")]
 pub fn g1_affine_is_on_curve(p: &AffinePoint<Fp>) -> bool {
     if p.is_infinity() {
         return true;
@@ -48,7 +48,7 @@ pub fn g1_affine_is_on_curve(p: &AffinePoint<Fp>) -> bool {
     y_2 - x_3 == four
 }
 
-#[cfg(feature = "guest-program")]
+#[cfg(target_os = "zkvm")]
 pub fn g2_affine_is_on_curve(p: &AffinePoint<Fp2>) -> bool {
     if p.is_infinity() {
         return true;

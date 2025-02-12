@@ -1,4 +1,4 @@
-use kzg_rs::{
+use openvm_kzg::{
     test_utils::{Input, Test},
     KzgInputs,
 };
@@ -30,7 +30,7 @@ pub fn run_test_from_yaml_str(data: &str) {
 
 #[cfg(test)]
 mod tests {
-    use kzg_rs::test_files::{
+    use openvm_kzg::test_files::{
         ONLY_INVALID_KZG_PROOF_TESTS, ONLY_VALID_KZG_PROOF_TESTS, SINGLE_VALID_KZG_PROOF_TEST,
     };
 

@@ -16,7 +16,7 @@ use ff::derive::sbb;
 
 use sha2::{Digest, Sha256};
 
-#[cfg(feature = "guest-program")]
+#[cfg(target_os = "zkvm")]
 use {
     hex_literal::hex,
     openvm_algebra_guest::field::FieldExtension,
@@ -32,7 +32,7 @@ use {
     },
 };
 
-#[cfg(feature = "guest-program")]
+#[cfg(target_os = "zkvm")]
 pub fn to_openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
     let g2_bytes = g2.to_uncompressed();
     let x_c1: [u8; 48] = g2_bytes[0..48].try_into().unwrap();
@@ -45,7 +45,7 @@ pub fn to_openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
     Bls12_381G2Affine::from_xy(ox, oy).unwrap()
 }
 
-#[cfg(feature = "guest-program")]
+#[cfg(target_os = "zkvm")]
 pub fn to_affine_point_fp2(g2: Bls12_381G2Affine) -> AffinePoint<Fp2> {
     AffinePoint::<Fp2>::new(
         Fp2::from_coeffs([g2.x().c0.clone(), g2.x().c1.clone()]),
@@ -54,7 +54,7 @@ pub fn to_affine_point_fp2(g2: Bls12_381G2Affine) -> AffinePoint<Fp2> {
 }
 
 /// Returns true if the field element is lexicographically larger than its negation.
-#[cfg(feature = "guest-program")]
+#[cfg(target_os = "zkvm")]
 pub fn is_lex_largest(y: Fp) -> bool {
     let modulus = Fp::from_le_bytes(&Fp::MODULUS);
     let half_modulus = modulus.div_unsafe(Fp::from_u32(2));
@@ -65,7 +65,7 @@ pub fn is_lex_largest(y: Fp) -> bool {
     diff.to_be_bytes() > neg_diff.to_be_bytes()
 }
 
-#[cfg(feature = "guest-program")]
+#[cfg(target_os = "zkvm")]
 pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<Bls12_381G1Affine, KzgError> {
     let mut x_bytes = [0u8; 48];
     x_bytes.copy_from_slice(&bytes.0[0..48]);
@@ -94,7 +94,7 @@ pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<Bls12_381G1Affine, K
     Ok(Bls12_381G1Affine::from_xy(x, y).unwrap())
 }
 
-#[cfg(not(feature = "guest-program"))]
+#[cfg(not(target_os = "zkvm"))]
 pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<G1Affine, KzgError> {
     let g1 = G1Affine::from_compressed(&(bytes.clone().into()));
     if g1.is_none().into() {
@@ -284,11 +284,11 @@ fn verify_kzg_proof_impl(
     proof: G1Affine,
     kzg_settings: &KzgSettings,
 ) -> Result<bool, KzgError> {
-    #[cfg(feature = "guest-program")]
+    #[cfg(target_os = "zkvm")]
     {
         unimplemented!();
     }
-    #[cfg(not(feature = "guest-program"))]
+    #[cfg(not(target_os = "zkvm"))]
     {
         let x = G2Projective::generator() * z;
         let x_minus_z = kzg_settings.g2_points[1] - x;
@@ -306,7 +306,7 @@ fn verify_kzg_proof_impl(
     }
 }
 
-#[cfg(not(feature = "guest-program"))]
+#[cfg(not(target_os = "zkvm"))]
 fn validate_batched_input(commitment: &[G1Affine], proofs: &[G1Affine]) -> Result<(), KzgError> {
     // Check if any commitment is invalid (not on curve or identity)
     let invalid_commitment = commitment.iter().any(|commitment| {
@@ -330,7 +330,7 @@ fn validate_batched_input(commitment: &[G1Affine], proofs: &[G1Affine]) -> Resul
     Ok(()) // Return Ok if all commitments and proofs are valid
 }
 
-#[cfg(not(feature = "guest-program"))]
+#[cfg(not(target_os = "zkvm"))]
 fn compute_challenges_and_evaluate_polynomial(
     blobs: Vec<Blob>,
     commitment: &[G1Affine],
@@ -371,6 +371,7 @@ pub fn compute_powers(base: &Scalar, num_powers: usize) -> Vec<Scalar> {
     powers
 }
 
+#[allow(dead_code)]
 fn compute_r_powers(
     commitment: &[G1Affine],
     zs: &[Scalar],
@@ -440,7 +441,7 @@ impl KzgProof {
         proof_bytes: &Bytes48,
         kzg_settings: &KzgSettings,
     ) -> Result<bool, KzgError> {
-        #[cfg(feature = "guest-program")]
+        #[cfg(target_os = "zkvm")]
         {
             // Check that the scalar is valid
             let z = match safe_scalar_affine_from_bytes(z_bytes) {
@@ -492,8 +493,14 @@ impl KzgProof {
             let g1_y = msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
             let p_minus_y = commitment - g1_y;
 
-            let p0 = AffinePoint::<Fp>::new(p_minus_y.x, p_minus_y.y);
-            let q0 = AffinePoint::<Fp>::new(proof.x, proof.y);
+            let p0 = {
+                let (x, y) = p_minus_y.into_coords();
+                AffinePoint::<Fp>::new(x, y)
+            };
+            let q0 = {
+                let (x, y) = proof.into_coords();
+                AffinePoint::<Fp>::new(x, y)
+            };
 
             let x_minus_z_pt = to_affine_point_fp2(x_minus_z);
 
@@ -508,7 +515,7 @@ impl KzgProof {
                 x_minus_z_pt,
             ))
         }
-        #[cfg(not(feature = "guest-program"))]
+        #[cfg(not(target_os = "zkvm"))]
         {
             let z = match safe_scalar_affine_from_bytes(z_bytes) {
                 Ok(z) => z,
@@ -607,11 +614,11 @@ impl KzgProof {
         proof_bytes: &Bytes48,
         kzg_settings: &KzgSettings,
     ) -> Result<bool, KzgError> {
-        #[cfg(feature = "guest-program")]
+        #[cfg(target_os = "zkvm")]
         {
             unimplemented!()
         }
-        #[cfg(not(feature = "guest-program"))]
+        #[cfg(not(target_os = "zkvm"))]
         {
             // Convert commitment bytes to G1Affine
             let commitment = safe_g1_affine_from_bytes(commitment_bytes)?;
@@ -643,11 +650,11 @@ impl KzgProof {
         proofs_bytes: Vec<Bytes48>,
         kzg_settings: &KzgSettings,
     ) -> Result<bool, KzgError> {
-        #[cfg(feature = "guest-program")]
+        #[cfg(target_os = "zkvm")]
         {
             unimplemented!();
         }
-        #[cfg(not(feature = "guest-program"))]
+        #[cfg(not(target_os = "zkvm"))]
         {
             if blobs.is_empty() {
                 return Ok(true);
@@ -702,27 +709,21 @@ impl KzgProof {
 
 #[cfg(test)]
 pub mod tests {
-    use std::path::PathBuf;
-
     use super::*;
     use crate::{
         test_files::{
             ONLY_INVALID_KZG_PROOF_TESTS, VERIFY_BLOB_KZG_PROOF_BATCH_TESTS,
-            VERIFY_BLOB_KZG_PROOF_TESTS, VERIFY_KZG_PROOF_TESTS,
+            VERIFY_BLOB_KZG_PROOF_TESTS,
         },
         test_utils::{FromHex, Input, Test},
     };
     use serde::Deserialize;
 
-    // type F = BabyBear;
-
     #[test]
     pub fn test_verify_kzg_proof() {
         let kzg_settings = KzgSettings::load_trusted_setup_file().unwrap();
-        let test_files = VERIFY_KZG_PROOF_TESTS;
 
         for (test_file, data) in &ONLY_INVALID_KZG_PROOF_TESTS[65..66] {
-            println!("test: {test_file}");
             let test: Test<Input> = serde_yaml::from_str(data).unwrap();
             let (Ok(commitment), Ok(z), Ok(y), Ok(proof)) = (
                 test.input.get_commitment(),
@@ -807,7 +808,7 @@ pub mod tests {
         proof: &'a str,
     }
 
-    impl<'a> BlobBatchInput<'a> {
+    impl BlobBatchInput<'_> {
         pub fn get_blobs(&self) -> Result<Blob, KzgError> {
             Blob::from_hex(self.blob)
         }

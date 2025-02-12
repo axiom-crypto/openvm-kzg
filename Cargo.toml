@@ -7,4 +7,7 @@ homepage = "https://axiom.xyz"
 license = "MIT"
 
 [workspace]
-members = ["crates/kzg", "tests/openvm/tests"]
+members = ["crates/kzg", "tests/"]
+
+[profile.dev]
+opt-level = 1

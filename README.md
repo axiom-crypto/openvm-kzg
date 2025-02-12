@@ -1,14 +1,14 @@
-# kzg-rs with OpenVM
+# OpenVM KZG
 
 ## Quickstart
 
 ```bash
-RUST_MIN_STACK=8388608 cargo test --release --package kzg-rs-openvm-tests --lib -- --show-output --test-threads=2
+RUST_MIN_STACK=8388608 cargo test --release --package openvm-kzg-tests --lib -- --show-output
 ```
 
 ## Crates
 
-### kzg-rs
+### `openvm-kzg`
 
 Fork of [kzg-rs](https://github.com/succinctlabs/kzg-rs) that swaps out components for `verify_kzg_proof` with OpenVM equivalents.
 

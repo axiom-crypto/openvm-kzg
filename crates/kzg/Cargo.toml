@@ -5,9 +5,9 @@ edition.workspace = true
 license.workspace = true
 
 [dependencies]
-openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "1ad414", optional = true }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "1ad414", optional = true }
-openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "1ad414", optional = true, features = ["bls12_381"] }
+openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.0.0-rc.0" }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.0.0-rc.0" }
+openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.0.0-rc.0", features = ["bls12_381"] }
 
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 hex-literal = "0.4.1"
@@ -15,23 +15,25 @@ bls12_381 = { version = "0.8.0", default-features = false, features = ["groups",
 sha2 = { version = "0.10.8", default-features = false }
 ff = { version = "0.13.0", default-features = false, features = ["derive"] }
 spin = { version = "0.9.8", default-features = false, features = ["once"] }
-num-bigint-dig = { version = "0.8.4", default-features = false, optional = true }
-num-traits = { version = "0.2.19", default-features = false, optional = true }
-
 serde = { version = "1.0.200", default-features = false, features = ["alloc", "derive"] }
 serde-big-array = { version = "0.5.1", default-features = false }
-serde_yaml = { version = "0.9", default-features = false, optional = true }
-bincode = { version = "1.3.3", default-features = false, optional = true }
+
+# Dependencies only when NOT targeting zkvm
+[target.'cfg(not(target_os = "zkvm"))'.dependencies]
+num-bigint = { version = "0.4.6", default-features = false }
+num-traits = { version = "0.2.19", default-features = false }
+
+[dev-dependencies]
+serde_yaml = { version = "0.9", default-features = false }
 
 [build-dependencies]
-openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "1ad414", default-features = false }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "1ad414", default-features = false }
-openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "1ad414", default-features = false, features = ["bls12_381"] }
-openvm-transpiler = { git = "https://github.com/openvm-org/openvm.git", rev = "1ad414", default-features = false }
+openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.0.0-rc.0", default-features = false }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.0.0-rc.0", default-features = false }
+openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.0.0-rc.0", default-features = false, features = ["bls12_381"] }
+openvm-transpiler = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.0.0-rc.0", default-features = false }
 bls12_381 = { version = "0.8.0", default-features = false, features = ["groups", "pairings", "alloc"] }
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 
 [features]
-default = ["dep:serde_yaml", "dep:bincode", "dep:num-bigint-dig", "dep:num-traits", "openvm-guest"]
-guest-program = ["openvm-guest"]
-openvm-guest = ["dep:openvm-algebra-guest", "dep:openvm-ecc-guest", "dep:openvm-pairing-guest"]
+default = []
+test-utils = []

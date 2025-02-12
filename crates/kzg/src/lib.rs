@@ -1,11 +1,7 @@
-#![cfg_attr(feature = "guest-program", no_std)]
-#![cfg_attr(feature = "guest-program", no_main)]
+#![cfg_attr(target_os = "zkvm", no_std)]
 
 #[macro_use]
 extern crate alloc;
-
-#[macro_use]
-extern crate serde_big_array;
 
 pub mod consts;
 pub mod dtypes;
@@ -24,13 +20,13 @@ pub use types::*;
 
 pub use enums::KzgError;
 
-#[cfg(not(feature = "guest-program"))]
+#[cfg(not(target_os = "zkvm"))]
 pub mod path;
 
-#[cfg(not(feature = "guest-program"))]
+#[cfg(any(feature = "test-utils", test))]
 pub mod test_utils;
 
-#[cfg(not(feature = "guest-program"))]
+#[cfg(any(feature = "test-utils", test))]
 pub mod test_files {
     // Tests
     pub const VERIFY_KZG_PROOF_TESTS: [(&str, &str); 122] = [

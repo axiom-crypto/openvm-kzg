@@ -1,6 +1,6 @@
 use std::{path::PathBuf, sync::Arc};
 
-use num_bigint_dig::BigUint;
+use num_bigint::BigUint;
 use num_traits::{FromPrimitive, Zero};
 use openvm_algebra_circuit::{Fp2Extension, ModularExtension};
 use openvm_build::{GuestOptions, TargetFilter};
