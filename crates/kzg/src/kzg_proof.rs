@@ -45,15 +45,16 @@ pub fn to_affine_point_fp2(g2: Bls12_381G2Affine) -> AffinePoint<Fp2> {
 }
 
 /// Returns true if the field element is lexicographically larger than its negation.
+///
+/// The input `y` does not need to be reduced modulo the modulus.
 #[cfg(target_os = "zkvm")]
 pub fn is_lex_largest(y: Fp) -> bool {
-    let modulus = Fp::from_le_bytes(&Fp::MODULUS);
-    let half_modulus = modulus.div_unsafe(Fp::from_u32(2));
-    // Use subtraction and sign check instead of direct comparison
-    let diff = y - half_modulus;
-    // Check if difference is positive by checking if negation would be smaller
-    let neg_diff = -diff.clone();
-    diff.to_be_bytes() > neg_diff.to_be_bytes()
+    use core::hint::black_box;
+
+    let neg_y = -y.clone();
+    // This is a way to assert canonical representation of y and -y simultaneously using iseqmod
+    let _ = black_box(y == neg_y);
+    y.to_be_bytes() > neg_y.to_be_bytes()
 }
 
 #[cfg(target_os = "zkvm")]
