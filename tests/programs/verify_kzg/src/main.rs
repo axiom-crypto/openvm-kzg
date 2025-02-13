@@ -23,7 +23,7 @@ openvm_ecc_guest::sw_macros::sw_init! {
 }
 
 pub fn main() {
-    setup_0();
+    setup_all_moduli();
     setup_all_complex_extensions();
     setup_all_curves();
 

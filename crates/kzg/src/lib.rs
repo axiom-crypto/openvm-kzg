@@ -1,6 +1,5 @@
 #![cfg_attr(target_os = "zkvm", no_std)]
 
-#[macro_use]
 extern crate alloc;
 
 pub mod consts;

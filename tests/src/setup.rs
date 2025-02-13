@@ -41,7 +41,10 @@ fn setup_test(sdk: &Sdk) -> (VmExe<F>, SdkVmConfig) {
         .rv32m(Default::default())
         .io(Default::default())
         .keccak(Default::default())
-        .modular(ModularExtension::new(vec![BLS12_381_MODULUS.clone()]))
+        .modular(ModularExtension::new(vec![
+            BLS12_381_MODULUS.clone(),
+            BLS12_381_ORDER.clone(),
+        ]))
         .ecc(WeierstrassExtension::new(vec![CurveConfig {
             modulus: BLS12_381_MODULUS.clone(),
             scalar: BLS12_381_ORDER.clone(),
