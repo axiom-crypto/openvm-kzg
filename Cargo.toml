@@ -1,0 +1,14 @@
+[workspace.package]
+version = "0.1.0-alpha"
+edition = "2021"
+rust-version = "1.82"
+authors = ["Axiom"]
+homepage = "https://axiom.xyz"
+license = "MIT"
+
+[workspace]
+members = ["crates/kzg", "tests/"]
+resolver = "2"
+
+[profile.dev]
+opt-level = 1
