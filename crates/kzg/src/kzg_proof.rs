@@ -14,12 +14,12 @@ use {
     openvm_algebra_guest::{DivUnsafe, IntMod},
     openvm_ecc_guest::{
         msm,
-        weierstrass::{FromCompressed, WeierstrassPoint},
+        weierstrass::{CachedMulTable, FromCompressed, IntrinsicCurve, WeierstrassPoint},
         AffinePoint, CyclicGroup, Group,
     },
     openvm_pairing_guest::bls12_381::{
-        Fp, Fp2, G1Affine as Bls12_381G1Affine, G2Affine as Bls12_381G2Affine,
-        Scalar as Bls12_381Scalar,
+        Bls12_381 as Bls12_381_G1, Fp, Fp2, G1Affine as Bls12_381G1Affine,
+        G2Affine as Bls12_381G2Affine, Scalar as Bls12_381Scalar,
     },
 };
 
@@ -150,25 +150,45 @@ impl KzgProof {
                 }
             };
 
-            let g2_affine_generator = Bls12_381G2Affine::from_xy(
-                Fp2::from_coeffs([
-                    Fp::from_be_bytes(&hex!("024aa2b2f08f0a91260805272dc51051c6e47ad4fa403b02b4510b647ae3d1770bac0326a805bbefd48056c8c121bdb8")),
-                    Fp::from_be_bytes(&hex!("13e02b6052719f607dacd3a088274f65596bd0d09920b61ab5da61bbdc7f5049334cf11213945d57e5ac7d055d042b7e"))
-                ]),
-                Fp2::from_coeffs([
-                    Fp::from_be_bytes(&hex!("0ce5d527727d6e118cc9cdc6da2e351aadfd9baa8cbdd3a76d429a695160d12c923ac9cc3baca289e193548608b82801")),
-                    Fp::from_be_bytes(&hex!("0606c4a02ea734cc32acd2b02bc28b99cb3e287e85a763af267492ab572e99ab3f370d275cec1da1aaa9075ff05f79be"))
-                ])
-            )
-            .unwrap();
-            let g2_affine_generator_pt = to_affine_point_fp2(g2_affine_generator.clone());
+            const G2_AFFINE_GENERATOR: Bls12_381G2Affine = Bls12_381G2Affine::new(
+                Fp2::new(
+                    Fp::from_const_bytes(hex!("B8BD21C1C85680D4EFBB05A82603AC0B77D1E37A640B51B4023B40FAD47AE4C65110C52D27050826910A8FF0B2A24A02")),
+                    Fp::from_const_bytes(hex!("7E2B045D057DACE5575D941312F14C3349507FDCBB61DAB51AB62099D0D06B59654F2788A0D3AC7D609F7152602BE013"))
+                ),
+                Fp2::new(
+                    Fp::from_const_bytes(hex!("0128B808865493E189A2AC3BCCC93A922CD16051699A426DA7D3BD8CAA9BFDAD1A352EDAC6CDC98C116E7D7227D5E50C")),
+                    Fp::from_const_bytes(hex!("BE795FF05F07A9AAA11DEC5C270D373FAB992E57AB927426AF63A7857E283ECB998BC22BB0D2AC32CC34A72EA0C40606"))
+                )
+            );
+            let g2_affine_generator_pt = to_affine_point_fp2(G2_AFFINE_GENERATOR.clone());
 
             let openvm_kzg_g2_point = to_openvm_g2_affine(kzg_settings.g2_points[1]);
 
-            let g2_x = msm(&[z], &[g2_affine_generator]);
+            // Used for CachedMulTable implementation of msm for Bls12_381_G2.
+            struct Bls12_381_G2;
+            impl IntrinsicCurve for Bls12_381_G2 {
+                type Scalar = Bls12_381Scalar; // order of the generator is prime
+                type Point = Bls12_381G2Affine;
+
+                fn msm(coeffs: &[Self::Scalar], bases: &[Self::Point]) -> Self::Point {
+                    openvm_ecc_guest::msm(coeffs, bases)
+                }
+            }
+
+            // We use the fact that g2_affine_generator has prime order.
+            let table =
+                CachedMulTable::<Bls12_381_G2>::new_with_prime_order(&[G2_AFFINE_GENERATOR], 4);
+            let g2_x = table.windowed_mul(&[z]);
+
             let x_minus_z = openvm_kzg_g2_point - g2_x;
 
-            let g1_y = msm(&[y], &[Bls12_381G1Affine::GENERATOR]);
+            // We use the fact that Bls12_381G1Affine::GENERATOR has prime order.
+            let table = CachedMulTable::<Bls12_381_G1>::new_with_prime_order(
+                &[Bls12_381G1Affine::GENERATOR],
+                4,
+            );
+            let g1_y = table.windowed_mul(&[y]);
+
             let p_minus_y = commitment - g1_y;
 
             let p0 = {
