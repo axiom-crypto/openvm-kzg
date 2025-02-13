@@ -8,6 +8,7 @@ license = "MIT"
 
 [workspace]
 members = ["crates/kzg", "tests/"]
+resolver = "2"
 
 [profile.dev]
 opt-level = 1

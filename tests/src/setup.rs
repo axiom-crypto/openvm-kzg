@@ -58,7 +58,6 @@ fn setup_test(sdk: &Sdk) -> (VmExe<F>, SdkVmConfig) {
         kind: "bin".to_string(),
     });
     let mut pkg_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    pkg_dir.push("..");
     pkg_dir.push("programs");
     pkg_dir.push("verify_kzg");
 

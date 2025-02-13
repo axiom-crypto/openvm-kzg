@@ -2,7 +2,6 @@ use core::num::NonZeroUsize;
 use core::ops::Mul;
 
 use crate::enums::KzgError;
-use crate::pairings::pairings_verify;
 use crate::types::KzgSettings;
 use crate::{
     dtypes::*, BYTES_PER_BLOB, BYTES_PER_COMMITMENT, BYTES_PER_FIELD_ELEMENT, BYTES_PER_PROOF,
@@ -11,11 +10,16 @@ use crate::{
 };
 
 use alloc::{string::ToString, vec::Vec};
-use bls12_381::{G1Affine, G1Projective, G2Affine, G2Projective, Scalar};
+use bls12_381::{G1Affine, G2Affine, Scalar};
 use ff::derive::sbb;
 
 use sha2::{Digest, Sha256};
 
+#[cfg(not(target_os = "zkvm"))]
+use {
+    crate::pairings_verify,
+    bls12_381::{G1Projective, G2Projective},
+};
 #[cfg(target_os = "zkvm")]
 use {
     hex_literal::hex,
@@ -23,11 +27,11 @@ use {
     openvm_algebra_guest::{DivUnsafe, IntMod},
     openvm_ecc_guest::{
         msm,
-        weierstrass::{FromCompressed, IntrinsicCurve, WeierstrassPoint},
+        weierstrass::{FromCompressed, WeierstrassPoint},
         AffinePoint, CyclicGroup, Group,
     },
     openvm_pairing_guest::bls12_381::{
-        Bls12_381, Fp, Fp2, G1Affine as Bls12_381G1Affine, G2Affine as Bls12_381G2Affine,
+        Fp, Fp2, G1Affine as Bls12_381G1Affine, G2Affine as Bls12_381G2Affine,
         Scalar as Bls12_381Scalar,
     },
 };
@@ -277,6 +281,7 @@ fn batch_inversion(out: &mut [Scalar], a: &[Scalar], len: NonZeroUsize) -> Resul
     Ok(())
 }
 
+#[cfg(not(target_os = "zkvm"))]
 fn verify_kzg_proof_impl(
     commitment: G1Affine,
     z: Scalar,
@@ -284,26 +289,19 @@ fn verify_kzg_proof_impl(
     proof: G1Affine,
     kzg_settings: &KzgSettings,
 ) -> Result<bool, KzgError> {
-    #[cfg(target_os = "zkvm")]
-    {
-        unimplemented!();
-    }
-    #[cfg(not(target_os = "zkvm"))]
-    {
-        let x = G2Projective::generator() * z;
-        let x_minus_z = kzg_settings.g2_points[1] - x;
+    let x = G2Projective::generator() * z;
+    let x_minus_z = kzg_settings.g2_points[1] - x;
 
-        let y = G1Projective::generator() * y;
-        let p_minus_y = commitment - y;
+    let y = G1Projective::generator() * y;
+    let p_minus_y = commitment - y;
 
-        // Verify: P - y = Q * (X - z)
-        Ok(pairings_verify(
-            p_minus_y.into(),
-            G2Projective::generator().into(),
-            proof,
-            x_minus_z.into(),
-        ))
-    }
+    // Verify: P - y = Q * (X - z)
+    Ok(pairings_verify(
+        p_minus_y.into(),
+        G2Projective::generator().into(),
+        proof,
+        x_minus_z.into(),
+    ))
 }
 
 #[cfg(not(target_os = "zkvm"))]
