@@ -123,10 +123,9 @@ impl KzgProof {
         {
             // Check that the scalar is valid
             let z = Bls12_381Scalar::from_be_bytes(z_bytes.as_slice());
-            // Assert that the value of `z` is less than the modulus
-            z.assert_unique();
             let y = Bls12_381Scalar::from_be_bytes(y_bytes.as_slice());
-            y.assert_unique();
+            // Small optimization: this is a way to check both z, y are less than the modulus
+            let _ = black_box(z == y);
 
             let commitment = match safe_g1_affine_from_bytes(commitment_bytes) {
                 Ok(g1) => g1,
