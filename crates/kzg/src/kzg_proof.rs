@@ -3,17 +3,16 @@ use crate::enums::KzgError;
 use crate::types::KzgSettings;
 
 use alloc::{string::ToString, vec::Vec};
-use bls12_381::{G1Affine, G2Affine, Scalar};
+use bls12_381::{G2Affine, Scalar};
 
 #[cfg(not(target_os = "zkvm"))]
-use crate::pairings_verify;
+use {crate::pairings_verify, bls12_381::G1Affine};
 #[cfg(target_os = "zkvm")]
 use {
     hex_literal::hex,
     openvm_algebra_guest::field::FieldExtension,
-    openvm_algebra_guest::{DivUnsafe, IntMod},
+    openvm_algebra_guest::IntMod,
     openvm_ecc_guest::{
-        msm,
         weierstrass::{CachedMulTable, FromCompressed, IntrinsicCurve, WeierstrassPoint},
         AffinePoint, CyclicGroup, Group,
     },
@@ -34,14 +33,6 @@ pub fn to_openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
     let ox = Fp2::from_coeffs([Fp::from_be_bytes(&x_c0), Fp::from_be_bytes(&x_c1)]);
     let oy = Fp2::from_coeffs([Fp::from_be_bytes(&y_c0), Fp::from_be_bytes(&y_c1)]);
     Bls12_381G2Affine::from_xy(ox, oy).unwrap()
-}
-
-#[cfg(target_os = "zkvm")]
-pub fn to_affine_point_fp2(g2: Bls12_381G2Affine) -> AffinePoint<Fp2> {
-    AffinePoint::<Fp2>::new(
-        Fp2::from_coeffs([g2.x().c0.clone(), g2.x().c1.clone()]),
-        Fp2::from_coeffs([g2.y().c0.clone(), g2.y().c1.clone()]),
-    )
 }
 
 /// Returns true if the field element is lexicographically larger than its negation.
@@ -160,11 +151,11 @@ impl KzgProof {
                     Fp::from_const_bytes(hex!("BE795FF05F07A9AAA11DEC5C270D373FAB992E57AB927426AF63A7857E283ECB998BC22BB0D2AC32CC34A72EA0C40606"))
                 )
             );
-            let g2_affine_generator_pt = to_affine_point_fp2(G2_AFFINE_GENERATOR.clone());
 
             let openvm_kzg_g2_point = to_openvm_g2_affine(kzg_settings.g2_points[1]);
 
             // Used for CachedMulTable implementation of msm for Bls12_381_G2.
+            #[allow(non_camel_case_types)]
             struct Bls12_381_G2;
             impl IntrinsicCurve for Bls12_381_G2 {
                 type Scalar = Bls12_381Scalar; // order of the generator is prime
@@ -200,17 +191,15 @@ impl KzgProof {
                 AffinePoint::<Fp>::new(x, y)
             };
 
-            let x_minus_z_pt = to_affine_point_fp2(x_minus_z);
-
             // p0 = p_minus_y;
             // p1 = g2_affine_generator;
             // q0 = proof;
             // q1 = x_minus_z;
             Ok(crate::pairings_verify(
                 p0,
-                g2_affine_generator_pt,
+                G2_AFFINE_GENERATOR.clone().into(),
                 q0,
-                x_minus_z_pt,
+                x_minus_z.into(),
             ))
         }
         #[cfg(not(target_os = "zkvm"))]
