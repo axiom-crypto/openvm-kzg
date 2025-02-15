@@ -2,8 +2,6 @@ const TRUSTED_SETUP_FILE: &str = include_str!("src/trusted_setup.txt");
 
 include!("src/enums.rs");
 include!("src/consts.rs");
-include!("src/pairings.rs");
-include!("src/path.rs");
 
 #[cfg(any(target_os = "zkvm", doc))]
 fn main() {
@@ -12,7 +10,7 @@ fn main() {
 
 #[cfg(not(any(target_os = "zkvm", doc)))]
 fn main() {
-    use bls12_381::Scalar;
+    use bls12_381::{G1Affine, G2Affine, Scalar};
     use std::{fs, io::Write, path::Path};
 
     #[derive(Debug, Clone, PartialEq, Eq)]
@@ -112,6 +110,13 @@ fn main() {
         Ok(bit_reversed_permutation)
     }
 
+    fn host_pairings_verify(a1: G1Affine, a2: G2Affine, b1: G1Affine, b2: G2Affine) -> bool {
+        use bls12_381::{multi_miller_loop, G2Prepared, Gt};
+        multi_miller_loop(&[(&-a1, &G2Prepared::from(a2)), (&b1, &G2Prepared::from(b2))])
+            .final_exponentiation()
+            == Gt::identity()
+    }
+
     fn is_trusted_setup_in_lagrange_form(
         g1_points: &[G1Affine],
         g2_points: &[G2Affine],
@@ -128,7 +133,7 @@ fn main() {
         let b1 = g1_points[0];
         let b2 = g2_points[1];
 
-        let is_monomial_form = pairings_verify(a1, a2, b1, b2);
+        let is_monomial_form = host_pairings_verify(a1, a2, b1, b2);
         if !is_monomial_form {
             return Err(KzgError::BadArgs("not in monomial form".to_string()));
         }
@@ -246,4 +251,11 @@ fn main() {
         .unwrap();
 
     g2_file.write_all(&g2_bytes).unwrap();
+}
+
+pub fn get_repo_root() -> std::path::PathBuf {
+    let mut path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push("..");
+    path.push("..");
+    path
 }
