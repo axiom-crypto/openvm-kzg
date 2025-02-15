@@ -6,21 +6,16 @@ pub mod consts;
 pub mod dtypes;
 pub mod enums;
 pub mod kzg_proof;
-pub mod pairings;
 pub mod trusted_setup;
 pub mod types;
 
 pub use consts::*;
 pub use dtypes::*;
 pub use kzg_proof::KzgProof;
-pub use pairings::pairings_verify;
 pub use trusted_setup::*;
 pub use types::*;
 
 pub use enums::KzgError;
-
-#[cfg(not(target_os = "zkvm"))]
-pub mod path;
 
 #[cfg(any(feature = "test-utils", test))]
 pub mod test_utils;
