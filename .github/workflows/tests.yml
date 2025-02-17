@@ -35,4 +35,6 @@ jobs:
 
       - name: Run guest tests
         working-directory: tests
-        run: cargo nextest run --release
+        run: |
+          rustup component add rust-src --toolchain nightly-2024-10-30
+          cargo nextest run --release
