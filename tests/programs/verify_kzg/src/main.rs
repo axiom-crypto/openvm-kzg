@@ -32,11 +32,13 @@ pub fn main() {
 
     let io: KzgInputs = read();
 
-    KzgProof::assert_kzg_proof(
+    let success = KzgProof::verify_kzg_proof(
         &io.commitment_bytes,
         &io.z_bytes,
         &io.y_bytes,
         &io.proof_bytes,
         &kzg_settings,
-    );
+    )
+    .unwrap();
+    assert!(success);
 }

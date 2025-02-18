@@ -3,10 +3,8 @@ use crate::enums::KzgError;
 use crate::types::KzgSettings;
 
 use alloc::{string::ToString, vec::Vec};
-use bls12_381::{G2Affine, Scalar};
+use bls12_381::{multi_miller_loop, G1Affine, G2Affine, G2Prepared, Gt, Scalar};
 
-#[cfg(not(target_os = "zkvm"))]
-use bls12_381::G1Affine;
 #[cfg(target_os = "zkvm")]
 use openvm_ecc_guest::weierstrass::FromCompressed;
 use {
@@ -45,13 +43,13 @@ impl KzgProof {
     ///
     /// Therefore this function should only be used in cases where successful guest program execution requires
     /// the KZG proof to be valid.
-    pub fn assert_kzg_proof(
+    pub fn verify_kzg_proof(
         commitment_bytes: &Bytes48,
         z_bytes: &Bytes32,
         y_bytes: &Bytes32,
         proof_bytes: &Bytes48,
         kzg_settings: &KzgSettings,
-    ) {
+    ) -> Result<bool, KzgError> {
         // Check that the scalar is valid
         let z = Bls12_381Scalar::from_be_bytes(z_bytes.as_slice());
         let y = Bls12_381Scalar::from_be_bytes(y_bytes.as_slice());
@@ -60,12 +58,12 @@ impl KzgProof {
         #[cfg(not(target_os = "zkvm"))]
         {
             // On host: check z, y are less than the modulus. (On guest this is done by iseqmod above)
-            safe_scalar_affine_from_bytes(z_bytes).unwrap();
-            safe_scalar_affine_from_bytes(y_bytes).unwrap();
+            safe_scalar_affine_from_bytes(z_bytes)?;
+            safe_scalar_affine_from_bytes(y_bytes)?;
         }
 
-        let commitment = safe_g1_affine_from_bytes(commitment_bytes).unwrap();
-        let proof = safe_g1_affine_from_bytes(proof_bytes).unwrap();
+        let commitment = safe_g1_affine_from_bytes(commitment_bytes)?;
+        let proof = safe_g1_affine_from_bytes(proof_bytes)?;
 
         let openvm_kzg_g2_point = to_openvm_g2_affine(kzg_settings.g2_points[1]);
 
@@ -96,50 +94,43 @@ impl KzgProof {
 
         let p_minus_y = commitment - g1_y;
 
-        let p0 = {
-            let (x, y) = p_minus_y.into_coords();
-            AffinePoint::<Fp>::new(x, y)
-        };
-        let q0 = {
-            let (x, y) = proof.into_coords();
-            AffinePoint::<Fp>::new(x, y)
-        };
-
-        // p0 = p_minus_y;
-        // p1 = g2_affine_generator;
-        // q0 = proof;
-        // q1 = x_minus_z;
-        assert_pairing_equality(p0, G2_AFFINE_GENERATOR.clone().into(), q0, x_minus_z.into())
+        let success = pairings_verify(p_minus_y, G2_AFFINE_GENERATOR.clone(), proof, x_minus_z);
+        Ok(success)
     }
 }
 
 /// Verifies the pairing of two G1 and two G2 points are equivalent using the multi-miller loop.
-/// If this function succeeds without panicking, then the two pairings are equal.
-///
-/// **However** a dishonest host of the VM may cause this function to panic even on valid inputs,
-/// so this function cannot be used to prove that two pairings are unequal.
-///
-/// Therefore this function should only be used in cases where successful guest program execution requires
-/// the two pairings to be equal.
-///
-/// # Panics
-/// - If the inputs are not valid points on the curve.
-/// - If the two pairings are not equal.
-pub fn assert_pairing_equality(
-    p0: AffinePoint<Fp>,
-    p1: AffinePoint<Fp2>,
-    q0: AffinePoint<Fp>,
-    q1: AffinePoint<Fp2>,
-) {
+fn pairings_verify(
+    p0: Bls12_381G1Affine,
+    p1: Bls12_381G2Affine,
+    q0: Bls12_381G1Affine,
+    q1: Bls12_381G2Affine,
+) -> bool {
     use openvm_pairing_guest::{bls12_381::Bls12_381, pairing::PairingCheck};
 
-    // Check that input points are on the curve
-    assert!(g1_affine_is_on_curve(&p0));
-    assert!(g2_affine_is_on_curve(&p1));
-    assert!(g1_affine_is_on_curve(&q0));
-    assert!(g2_affine_is_on_curve(&q1));
+    let [p0, q0] = [p0, q0].map(|p| {
+        let (x, y) = p.into_coords();
+        AffinePoint::new(x, y)
+    });
+    let g1_points = [-p0, q0];
+    let g2_points = [p1, q1].map(Into::into);
 
-    Bls12_381::pairing_check(&[-p0, q0], &[p1, q1]).unwrap();
+    if Bls12_381::pairing_check(&g1_points, &g2_points).is_ok() {
+        true
+    } else {
+        let [a1, b1] = g1_points.map(|x| convert_g1(&x));
+        let [a2, b2] = g2_points.map(|x| convert_g2(&x));
+        // The above pairing_check relies on host hinting and can have false negatives. To prove negatives,
+        // we call the fallback function
+        pairing_check_fallback(a1, a2, b1, b2)
+    }
+}
+
+/// Verifies the pairing of two G1 and two G2 points are equivalent using the multi-miller loop
+pub fn pairing_check_fallback(a1: G1Affine, a2: G2Affine, b1: G1Affine, b2: G2Affine) -> bool {
+    multi_miller_loop(&[(&a1, &G2Prepared::from(a2)), (&b1, &G2Prepared::from(b2))])
+        .final_exponentiation()
+        == Gt::identity()
 }
 
 pub fn g1_affine_is_on_curve(p: &AffinePoint<Fp>) -> bool {
@@ -267,10 +258,32 @@ pub fn safe_scalar_affine_from_bytes(bytes: &Bytes32) -> Result<Scalar, KzgError
     Ok(scalar.unwrap())
 }
 
+fn convert_g1(g1: &AffinePoint<Fp>) -> G1Affine {
+    let is_identity = g1.is_infinity();
+    let mut bytes = [0u8; 96];
+    bytes[0..48].copy_from_slice(&g1.x.to_be_bytes());
+    bytes[48..96].copy_from_slice(&g1.y.to_be_bytes());
+    if is_identity {
+        bytes[0] |= 1 << 6;
+    }
+    G1Affine::from_uncompressed_unchecked(&bytes).unwrap()
+}
+
+fn convert_g2(g2: &AffinePoint<Fp2>) -> G2Affine {
+    let is_identity = g2.is_infinity();
+    let mut bytes = [0; 192];
+    bytes[0..48].copy_from_slice(&g2.x.c1.to_be_bytes());
+    bytes[48..96].copy_from_slice(&g2.x.c0.to_be_bytes());
+    bytes[96..144].copy_from_slice(&g2.y.c1.to_be_bytes());
+    bytes[144..192].copy_from_slice(&g2.y.c0.to_be_bytes());
+    if is_identity {
+        bytes[0] |= 1 << 6;
+    }
+    G2Affine::from_uncompressed_unchecked(&bytes).unwrap()
+}
+
 #[cfg(test)]
 pub mod tests {
-    use std::panic::catch_unwind;
-
     use super::*;
     use crate::{
         test_files::VERIFY_KZG_PROOF_TESTS,
@@ -294,11 +307,8 @@ pub mod tests {
                 continue;
             };
 
-            let result = catch_unwind(|| {
-                KzgProof::assert_kzg_proof(&commitment, &z, &y, &proof, &kzg_settings)
-            });
-            // We assume an honest host, so panic implies result is false
-            let result = result.is_ok();
+            let result = KzgProof::verify_kzg_proof(&commitment, &z, &y, &proof, &kzg_settings);
+            let result = result.unwrap_or(false);
             println!("test: {test_file}: {result}");
             assert_eq!(result, test.get_output().unwrap_or(false));
         }
