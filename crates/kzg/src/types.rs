@@ -1,16 +1,15 @@
-use crate::get_kzg_settings;
-use crate::{Bytes32, Bytes48, KzgError};
+use alloc::sync::Arc;
+use core::hash::{Hash, Hasher};
+
 use bls12_381::{G1Affine, G2Affine, Scalar};
+use openvm_ecc_guest::AffinePoint;
+use openvm_pairing_guest::bls12_381::{Fp, Fp2};
 use serde::{Deserialize, Serialize};
 use serde_big_array::BigArray;
-#[cfg(not(target_os = "zkvm"))]
-use {
-    alloc::sync::Arc,
-    core::hash::{Hash, Hasher},
-    openvm_ecc_guest::AffinePoint,
-    openvm_pairing_guest::bls12_381::{Fp, Fp2},
-    spin::Once,
-};
+use spin::Once;
+
+use crate::get_kzg_settings;
+use crate::{Bytes32, Bytes48, KzgError};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg(not(target_os = "zkvm"))]
