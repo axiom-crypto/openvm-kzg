@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 use serde_big_array::BigArray;
 #[cfg(not(target_os = "zkvm"))]
 use {
-    crate::{NUM_G1_POINTS, NUM_G2_POINTS, NUM_ROOTS_OF_UNITY},
     alloc::sync::Arc,
     core::hash::{Hash, Hasher},
     openvm_ecc_guest::AffinePoint,
@@ -81,14 +80,12 @@ pub struct KzgSettings {
 }
 
 #[derive(Debug, Clone, Default, Eq)]
-#[cfg(not(target_os = "zkvm"))]
 pub enum EnvKzgSettings {
     #[default]
     Default,
     Custom(Arc<KzgSettings>),
 }
 
-#[cfg(not(target_os = "zkvm"))]
 impl PartialEq for EnvKzgSettings {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
@@ -99,7 +96,6 @@ impl PartialEq for EnvKzgSettings {
     }
 }
 
-#[cfg(not(target_os = "zkvm"))]
 impl Hash for EnvKzgSettings {
     fn hash<H: Hasher>(&self, state: &mut H) {
         core::mem::discriminant(self).hash(state);
@@ -110,7 +106,6 @@ impl Hash for EnvKzgSettings {
     }
 }
 
-#[cfg(not(target_os = "zkvm"))]
 impl EnvKzgSettings {
     pub fn get(&self) -> &KzgSettings {
         match self {
@@ -130,12 +125,4 @@ impl KzgSettings {
     pub fn load_trusted_setup_file() -> Result<Self, KzgError> {
         Ok(get_kzg_settings())
     }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-#[cfg(not(target_os = "zkvm"))]
-pub struct KzgSettingsOwned {
-    pub roots_of_unity: [Scalar; NUM_ROOTS_OF_UNITY],
-    pub g1_points: [G1Affine; NUM_G1_POINTS],
-    pub g2_points: [G2Affine; NUM_G2_POINTS],
 }
