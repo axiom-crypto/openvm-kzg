@@ -43,6 +43,7 @@ impl KzgProof {
     ///
     /// Therefore this function should only be used in cases where successful guest program execution requires
     /// the KZG proof to be valid.
+    #[cfg(feature = "use-intrinsics")]
     pub fn verify_kzg_proof(
         commitment_bytes: &Bytes48,
         z_bytes: &Bytes32,
@@ -95,6 +96,37 @@ impl KzgProof {
         let p_minus_y = commitment - g1_y;
 
         let success = pairings_verify(p_minus_y, G2_AFFINE_GENERATOR.clone(), proof, x_minus_z);
+        Ok(success)
+    }
+
+    /// Does not use intrinsics. Pure Rust implementation.
+    #[cfg(not(feature = "use-intrinsics"))]
+    pub fn verify_kzg_proof(
+        commitment_bytes: &Bytes48,
+        z_bytes: &Bytes32,
+        y_bytes: &Bytes32,
+        proof_bytes: &Bytes48,
+        kzg_settings: &KzgSettings,
+    ) -> Result<bool, KzgError> {
+        // Check that the scalar is valid
+        let z = safe_scalar_affine_from_bytes(z_bytes)?;
+        let y = safe_scalar_affine_from_bytes(y_bytes)?;
+
+        let commitment = safe_g1_affine_from_bytes_native(commitment_bytes)?;
+        let proof = safe_g1_affine_from_bytes_native(proof_bytes)?;
+
+        let kzg_g2_point = kzg_settings.g2_points[1];
+        let g2_z = G2Affine::generator() * z;
+        let x_minus_z = G2Affine::from(kzg_g2_point - g2_z);
+        let g1_y = G1Affine::generator() * y;
+        let p_minus_y = G1Affine::from(commitment - g1_y);
+
+        let success = multi_miller_loop(&[
+            (&-p_minus_y, &G2Prepared::from(G2Affine::generator())),
+            (&proof, &G2Prepared::from(x_minus_z)),
+        ])
+        .final_exponentiation()
+            == Gt::identity();
         Ok(success)
     }
 }
@@ -230,13 +262,14 @@ fn to_openvm_g1_affine(g1: G1Affine) -> Bls12_381G1Affine {
 
 #[cfg(not(target_os = "zkvm"))]
 pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<Bls12_381G1Affine, KzgError> {
+    let g1 = safe_g1_affine_from_bytes_native(bytes)?;
+    Ok(to_openvm_g1_affine(g1))
+}
+
+pub fn safe_g1_affine_from_bytes_native(bytes: &Bytes48) -> Result<G1Affine, KzgError> {
     let g1 = G1Affine::from_compressed(&bytes.0);
-    if g1.is_none().into() {
-        return Err(KzgError::BadArgs(
-            "Failed to parse G1Affine from bytes".to_string(),
-        ));
-    }
-    Ok(to_openvm_g1_affine(g1.unwrap()))
+    g1.into_option()
+        .ok_or_else(|| KzgError::BadArgs("Failed to parse G1Affine from bytes".to_string()))
 }
 
 pub fn safe_scalar_affine_from_bytes(bytes: &Bytes32) -> Result<Scalar, KzgError> {
@@ -308,9 +341,9 @@ pub mod tests {
             };
 
             let result = KzgProof::verify_kzg_proof(&commitment, &z, &y, &proof, &kzg_settings);
-            let result = result.unwrap_or(false);
-            println!("test: {test_file}: {result}");
-            assert_eq!(result, test.get_output().unwrap_or(false));
+            println!("test: {test_file}: {result:?}");
+            let is_ok = result.unwrap_or(false);
+            assert_eq!(is_ok, test.get_output().unwrap_or(false));
         }
     }
 }
