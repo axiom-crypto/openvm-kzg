@@ -237,6 +237,7 @@ pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<Bls12_381G1Affine, K
     // Note that we are hinting decompress and getting the y-coord pos/neg using lexicographical ordering, so
     // the value for rec_id does not matter and we can pass in either 0 or 1.
     let y = Bls12_381G1Affine::hint_decompress(&x, &0u8);
+    let _ = black_box(x == y);
     let y = if is_lex_largest(&y) ^ sort_flag_set {
         -y
     } else {
