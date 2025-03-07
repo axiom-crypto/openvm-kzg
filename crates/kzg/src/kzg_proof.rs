@@ -3,8 +3,9 @@ use crate::enums::KzgError;
 use crate::types::KzgSettings;
 
 use alloc::{string::ToString, vec::Vec};
-use bls12_381::{multi_miller_loop, G1Affine, G2Affine, G2Prepared, Gt, Scalar};
-
+#[cfg(not(feature = "use-intrinsics"))]
+use bls12_381::{multi_miller_loop, G2Prepared, Gt};
+use bls12_381::{G1Affine, G2Affine, Scalar};
 #[cfg(target_os = "zkvm")]
 use openvm_ecc_guest::weierstrass::FromCompressed;
 use {
@@ -147,22 +148,7 @@ fn pairings_verify(
     let g1_points = [-p0, q0];
     let g2_points = [p1, q1].map(Into::into);
 
-    if Bls12_381::pairing_check(&g1_points, &g2_points).is_ok() {
-        true
-    } else {
-        let [a1, b1] = g1_points.map(|x| convert_g1(&x));
-        let [a2, b2] = g2_points.map(|x| convert_g2(&x));
-        // The above pairing_check relies on host hinting and can have false negatives. To prove negatives,
-        // we call the fallback function
-        pairing_check_fallback(a1, a2, b1, b2)
-    }
-}
-
-/// Verifies the pairing of two G1 and two G2 points are equivalent using the multi-miller loop
-pub fn pairing_check_fallback(a1: G1Affine, a2: G2Affine, b1: G1Affine, b2: G2Affine) -> bool {
-    multi_miller_loop(&[(&a1, &G2Prepared::from(a2)), (&b1, &G2Prepared::from(b2))])
-        .final_exponentiation()
-        == Gt::identity()
+    Bls12_381::pairing_check(&g1_points, &g2_points).is_ok()
 }
 
 pub fn g1_affine_is_on_curve(p: &AffinePoint<Fp>) -> bool {
@@ -236,7 +222,14 @@ pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<Bls12_381G1Affine, K
 
     // Note that we are hinting decompress and getting the y-coord pos/neg using lexicographical ordering, so
     // the value for rec_id does not matter and we can pass in either 0 or 1.
-    let y = Bls12_381G1Affine::hint_decompress(&x, &0u8);
+    let hint = Bls12_381G1Affine::hint_decompress(&x, &0u8)
+        .ok_or_else(|| KzgError::BadArgs("Bad G1Affine decompression hint".to_string()))?;
+    if !hint.possible {
+        return Err(KzgError::BadArgs(
+            "Failed to parse G1Affine from bytes".to_string(),
+        ));
+    }
+    let y = hint.sqrt;
     let y = if is_lex_largest(&y) ^ sort_flag_set {
         -y
     } else {
@@ -291,6 +284,7 @@ pub fn safe_scalar_affine_from_bytes(bytes: &Bytes32) -> Result<Scalar, KzgError
     Ok(scalar.unwrap())
 }
 
+#[allow(dead_code)]
 fn convert_g1(g1: &AffinePoint<Fp>) -> G1Affine {
     let is_identity = g1.is_infinity();
     let mut bytes = [0u8; 96];
@@ -302,6 +296,7 @@ fn convert_g1(g1: &AffinePoint<Fp>) -> G1Affine {
     G1Affine::from_uncompressed_unchecked(&bytes).unwrap()
 }
 
+#[allow(dead_code)]
 fn convert_g2(g2: &AffinePoint<Fp2>) -> G2Affine {
     let is_identity = g2.is_infinity();
     let mut bytes = [0; 192];

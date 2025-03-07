@@ -4,19 +4,19 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-openvm = { git = "https://github.com/openvm-org/openvm.git", rev = "91496503cb9a214ce7f8cef3a4a6e35fc6f0d938" }
-openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", rev = "91496503cb9a214ce7f8cef3a4a6e35fc6f0d938" }
-openvm-build = { git = "https://github.com/openvm-org/openvm.git", rev = "91496503cb9a214ce7f8cef3a4a6e35fc6f0d938" }
-openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "91496503cb9a214ce7f8cef3a4a6e35fc6f0d938", features = ["parallel", "mimalloc", "test-utils"] }
-openvm-algebra-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "91496503cb9a214ce7f8cef3a4a6e35fc6f0d938" }
-openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "91496503cb9a214ce7f8cef3a4a6e35fc6f0d938" }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "91496503cb9a214ce7f8cef3a4a6e35fc6f0d938" }
-openvm-ecc-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "91496503cb9a214ce7f8cef3a4a6e35fc6f0d938" }
-openvm-pairing-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "91496503cb9a214ce7f8cef3a4a6e35fc6f0d938" }
-openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "91496503cb9a214ce7f8cef3a4a6e35fc6f0d938", features = ["bls12_381"] }
+openvm = { git = "ssh://git@github.com/axiom-crypto/openvm-private.git", rev = "411e2a2f042c5e86407eaa8b18974d04ca1aba11" }
+openvm-sdk = { git = "ssh://git@github.com/axiom-crypto/openvm-private.git", rev = "411e2a2f042c5e86407eaa8b18974d04ca1aba11" }
+openvm-build = { git = "ssh://git@github.com/axiom-crypto/openvm-private.git", rev = "411e2a2f042c5e86407eaa8b18974d04ca1aba11" }
+openvm-circuit = { git = "ssh://git@github.com/axiom-crypto/openvm-private.git", rev = "411e2a2f042c5e86407eaa8b18974d04ca1aba11", features = ["parallel", "mimalloc", "test-utils"] }
+openvm-algebra-circuit = { git = "ssh://git@github.com/axiom-crypto/openvm-private.git", rev = "411e2a2f042c5e86407eaa8b18974d04ca1aba11" }
+openvm-algebra-guest = { git = "ssh://git@github.com/axiom-crypto/openvm-private.git", rev = "411e2a2f042c5e86407eaa8b18974d04ca1aba11" }
+openvm-ecc-guest = { git = "ssh://git@github.com/axiom-crypto/openvm-private.git", rev = "411e2a2f042c5e86407eaa8b18974d04ca1aba11" }
+openvm-ecc-circuit = { git = "ssh://git@github.com/axiom-crypto/openvm-private.git", rev = "411e2a2f042c5e86407eaa8b18974d04ca1aba11" }
+openvm-pairing-circuit = { git = "ssh://git@github.com/axiom-crypto/openvm-private.git", rev = "411e2a2f042c5e86407eaa8b18974d04ca1aba11" }
+openvm-pairing-guest = { git = "ssh://git@github.com/axiom-crypto/openvm-private.git", rev = "411e2a2f042c5e86407eaa8b18974d04ca1aba11", features = ["bls12_381"] }
 openvm-kzg = { path = "../crates/kzg", features = ["test-utils"] }
 
-openvm-stark-sdk = { git = "https://github.com/openvm-org/stark-backend.git", tag = "v1.0.0-rc.0" }
+openvm-stark-sdk = { git = "ssh://git@github.com/axiom-crypto/stark-backend-private.git", rev = "738c68157058a0f95d4b9e96deb01b1f36309bfa" }
 
 hex = { version = "0.4.3", features = ["alloc"] }
 hex-literal = "0.4.1"
