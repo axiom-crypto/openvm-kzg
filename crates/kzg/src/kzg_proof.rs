@@ -7,9 +7,8 @@ use alloc::{string::ToString, vec::Vec};
 use bls12_381::{multi_miller_loop, G2Prepared, Gt};
 use bls12_381::{G1Affine, G2Affine, Scalar};
 #[cfg(target_os = "zkvm")]
-use openvm_ecc_guest::weierstrass::FromCompressed;
+use {core::cmp::Ordering, openvm_ecc_guest::weierstrass::FromCompressed};
 use {
-    core::hint::black_box,
     hex_literal::hex,
     openvm_algebra_guest::field::FieldExtension,
     openvm_algebra_guest::IntMod,
@@ -55,13 +54,11 @@ impl KzgProof {
         // Check that the scalar is valid
         let z = Bls12_381Scalar::from_be_bytes(z_bytes.as_slice());
         let y = Bls12_381Scalar::from_be_bytes(y_bytes.as_slice());
-        // Small optimization: this is a way to check both z, y are less than the modulus
-        let _ = black_box(z == y);
-        #[cfg(not(target_os = "zkvm"))]
-        {
-            // On host: check z, y are less than the modulus. (On guest this is done by iseqmod above)
-            safe_scalar_affine_from_bytes(z_bytes)?;
-            safe_scalar_affine_from_bytes(y_bytes)?;
+        if !z.is_reduced() {
+            return Err(KzgError::BadArgs("Scalar z is not reduced".to_string()));
+        }
+        if !y.is_reduced() {
+            return Err(KzgError::BadArgs("Scalar y is not reduced".to_string()));
         }
 
         let commitment = safe_g1_affine_from_bytes(commitment_bytes)?;
@@ -195,16 +192,34 @@ fn to_openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
 /// Returns true if the field element is lexicographically larger than its negation.
 ///
 /// The input `y` does not need to be reduced modulo the modulus.
-pub fn is_lex_largest(y: &Fp) -> bool {
+#[cfg(target_os = "zkvm")]
+fn is_lex_largest(y: &Fp) -> bool {
     let neg_y = -y.clone();
-    // This is a way to assert canonical representation of y and -y simultaneously using iseqmod
-    let _ = black_box(y == &neg_y);
-    y.to_be_bytes() > neg_y.to_be_bytes()
+    // This is a way to force y and -y are both in reduced form simultaneously using `iseqmod` opcode
+    // Guest execution will never terminate if these elements are not reduced
+    let _ = core::hint::black_box(y == &neg_y);
+    // Compare y big endian bytes lexicographically with -y big endian bytes
+    for (l, r) in y
+        .as_le_bytes()
+        .iter()
+        .rev()
+        .zip(neg_y.as_le_bytes().iter().rev())
+    {
+        match l.cmp(r) {
+            Ordering::Greater => return true,
+            Ordering::Less => return false,
+            Ordering::Equal => continue,
+        }
+    }
+    // all bytes are equal
+    false
 }
 
 // hint_decompress is currently not implemented on host because of the need to do a sqrt
 #[cfg(target_os = "zkvm")]
 pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<Bls12_381G1Affine, KzgError> {
+    use openvm_ecc_guest::weierstrass::FromCompressed;
+
     let mut x_bytes = [0u8; 48];
     x_bytes.copy_from_slice(&bytes.0[0..48]);
 
@@ -220,25 +235,14 @@ pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<Bls12_381G1Affine, K
         return Ok(<Bls12_381G1Affine as Group>::IDENTITY);
     }
 
-    // Note that we are hinting decompress and getting the y-coord pos/neg using lexicographical ordering, so
+    // Note that we need to determine the y-coord using lexicographic ordering instead of parity, so
     // the value for rec_id does not matter and we can pass in either 0 or 1.
-    let hint = Bls12_381G1Affine::hint_decompress(&x, &0u8)
-        .ok_or_else(|| KzgError::BadArgs("Bad G1Affine decompression hint".to_string()))?;
-    if !hint.possible {
-        return Err(KzgError::BadArgs(
-            "Failed to parse G1Affine from bytes".to_string(),
-        ));
+    let mut point = Bls12_381G1Affine::decompress(x, &0u8)
+        .ok_or_else(|| KzgError::BadArgs("Failed to decompress G1Affine".to_string()))?;
+    if is_lex_largest(point.y()) ^ sort_flag_set {
+        point.y_mut().neg_assign();
     }
-    let y = hint.sqrt;
-    let y = if is_lex_largest(&y) ^ sort_flag_set {
-        -y
-    } else {
-        y
-    };
-
-    Bls12_381G1Affine::from_xy(x, y).ok_or(KzgError::BadArgs(
-        "Failed to parse G1Affine from bytes".to_string(),
-    ))
+    Ok(point)
 }
 
 /// Assumes that G1Affine is a point on the curve in the correct subgroup.
@@ -278,7 +282,7 @@ pub fn safe_scalar_affine_from_bytes(bytes: &Bytes32) -> Result<Scalar, KzgError
     let scalar = Scalar::from_bytes(&lendian);
     if scalar.is_none().into() {
         return Err(KzgError::BadArgs(
-            "Failed to parse G1Affine from bytes".to_string(),
+            "Failed to parse Scalar from bytes32".to_string(),
         ));
     }
     Ok(scalar.unwrap())
