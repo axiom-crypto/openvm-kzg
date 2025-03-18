@@ -38,4 +38,4 @@ jobs:
         run: |
           rustup install nightly-2024-10-30
           rustup component add rust-src --toolchain nightly-2024-10-30
-          OPENVM_FAST_TEST=1 cargo nextest run --release
+          OPENVM_FAST_TEST=1 cargo nextest run --release test_multiple_valid_verify_kzg

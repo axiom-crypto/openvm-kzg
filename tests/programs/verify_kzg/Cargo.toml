@@ -10,4 +10,4 @@ openvm = { git = "https://github.com/openvm-org/openvm.git", rev = "7f87e1ddfb42
 openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "7f87e1ddfb420a2c73c141c8ce35990f4c93086a" }
 openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "7f87e1ddfb420a2c73c141c8ce35990f4c93086a" }
 openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "7f87e1ddfb420a2c73c141c8ce35990f4c93086a", features = ["bls12_381"] }
-openvm-kzg = { path = "../../../crates/kzg", default-features = false, features = ["use-intrinsics"] }
+openvm-kzg = { path = "../../../crates/kzg", default-features = false }
