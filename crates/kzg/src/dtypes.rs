@@ -7,6 +7,7 @@ use bls12_381::Scalar;
 
 macro_rules! define_bytes_type {
     ($name:ident, $size:expr) => {
+        #[repr(C, align(16))]
         #[derive(Debug, Clone)]
         pub struct $name(pub(crate) [u8; $size]);
 
