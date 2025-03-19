@@ -5,9 +5,8 @@ use num_traits::{FromPrimitive, Zero};
 use openvm_algebra_circuit::{Fp2Extension, ModularExtension};
 use openvm_build::{GuestOptions, TargetFilter};
 use openvm_circuit::{
-    arch::instructions::exe::VmExe,
+    arch::{instructions::exe::VmExe, VmExecutor},
     openvm_stark_sdk::config::{setup_tracing, FriParameters},
-    utils::air_test_with_min_segments,
 };
 use openvm_ecc_circuit::{CurveConfig, WeierstrassExtension};
 use openvm_pairing_circuit::{PairingCurve, PairingExtension};
@@ -30,7 +29,8 @@ pub fn run_guest_program(input: KzgInputs) {
     let mut io = StdIn::default();
     io.write(&input);
 
-    air_test_with_min_segments(vm_config, exe, io, 1);
+    let executor = VmExecutor::new(vm_config);
+    executor.execute(exe, io).unwrap();
     // sdk_test(&sdk, vm_config, exe, io);
 }
 
