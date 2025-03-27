@@ -36,6 +36,6 @@ jobs:
       - name: Run guest tests
         working-directory: tests
         run: |
-          rustup install nightly-2024-10-30
-          rustup component add rust-src --toolchain nightly-2024-10-30
+          rustup install nightly-2025-02-14
+          rustup component add rust-src --toolchain nightly-2025-02-14
           OPENVM_FAST_TEST=1 cargo nextest run --release

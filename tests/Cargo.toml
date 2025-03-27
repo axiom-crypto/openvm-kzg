@@ -4,16 +4,16 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-openvm = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6" }
-openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6" }
-openvm-build = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6" }
-openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6", features = ["parallel", "mimalloc", "test-utils"] }
-openvm-algebra-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6" }
-openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6" }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6" }
-openvm-ecc-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6" }
-openvm-pairing-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6" }
-openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6", features = ["bls12_381"] }
+openvm = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9" }
+openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9" }
+openvm-build = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9" }
+openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9", features = ["parallel", "mimalloc", "test-utils"] }
+openvm-algebra-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9" }
+openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9" }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9" }
+openvm-ecc-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9" }
+openvm-pairing-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9" }
+openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9", features = ["bls12_381"] }
 openvm-kzg = { path = "../crates/kzg", features = ["test-utils"] }
 
 openvm-stark-sdk = { git = "https://github.com/openvm-org/stark-backend.git", rev = "fdb808bec40ff21dce7e462c2c18dbb997207adb" }

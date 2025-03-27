@@ -24,7 +24,7 @@ type F = BabyBear;
 
 pub fn run_guest_program(input: KzgInputs) {
     setup_tracing();
-    let sdk = Sdk;
+    let sdk = Sdk::new();
     let (exe, vm_config) = setup_test(&sdk);
 
     let mut io = StdIn::default();
