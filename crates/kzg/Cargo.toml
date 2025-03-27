@@ -5,16 +5,16 @@ edition.workspace = true
 license.workspace = true
 
 [dependencies]
-openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6" }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6" }
-openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6", features = ["bls12_381"] }
+openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9" }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9" }
+openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9", features = ["bls12_381"] }
 
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
-hex-literal = "0.4.1"
+hex-literal = "1.0.0"
 bls12_381 = { version = "0.8.0", default-features = false, features = ["groups", "pairings", "alloc"] }
 sha2 = { version = "0.10.8", default-features = false }
 ff = { version = "0.13.0", default-features = false, features = ["derive"] }
-spin = { version = "0.9.8", default-features = false, features = ["once"] }
+spin = { version = "0.10.0", default-features = false, features = ["once"] }
 serde = { version = "1.0.200", default-features = false, features = ["alloc", "derive"] }
 serde-big-array = { version = "0.5.1", default-features = false }
 
@@ -22,22 +22,22 @@ serde-big-array = { version = "0.5.1", default-features = false }
 [target.'cfg(not(target_os = "zkvm"))'.dependencies]
 num-bigint = { version = "0.4.6", default-features = false }
 num-traits = { version = "0.2.19", default-features = false }
-openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6", features = ["halo2curves"] }
+openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9", features = ["halo2curves"] }
 
 [dev-dependencies]
 serde_yaml = { version = "0.9", default-features = false }
 
 [build-dependencies]
-openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6", default-features = false }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6", default-features = false }
-openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6", default-features = false, features = ["bls12_381"] }
-openvm-transpiler = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6", default-features = false }
+openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9", default-features = false }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9", default-features = false }
+openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9", default-features = false, features = ["bls12_381"] }
+openvm-transpiler = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9", default-features = false }
 
 bls12_381 = { version = "0.8.0", default-features = false, features = ["groups", "pairings", "alloc"] }
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 
 [target.'cfg(not(target_os = "zkvm"))'.build-dependencies]
-openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "efb782371b0fad77c597b77be64bfab75b20c5a6", features = ["halo2curves"] }
+openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9", features = ["halo2curves"] }
 
 [features]
 default = ["use-intrinsics"]
