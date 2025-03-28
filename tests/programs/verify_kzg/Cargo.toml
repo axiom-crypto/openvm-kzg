@@ -6,9 +6,9 @@ edition = "2021"
 resolver = "2"
 
 [dependencies]
-openvm = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9" }
-openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9" }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9" }
-openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "3c35e9f369da8dee065a089fb72f3580af7dcaf9", features = ["bls12_381"] }
+openvm = { git = "https://github.com/openvm-org/openvm.git", rev = "f41640c37bc5468a0775a38098053fe37ea3538a" }
+openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "f41640c37bc5468a0775a38098053fe37ea3538a" }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "f41640c37bc5468a0775a38098053fe37ea3538a" }
+openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "f41640c37bc5468a0775a38098053fe37ea3538a", features = ["bls12_381"] }
 
 openvm-kzg = { path = "../../../crates/kzg", default-features = false, features = ["use-intrinsics"] }
