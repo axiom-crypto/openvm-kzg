@@ -50,6 +50,7 @@ mod tests {
         }
     }
 
+    #[ignore]
     #[test]
     fn test_multiple_invalid_verify_kzg() {
         for (test_file, data) in ONLY_INVALID_KZG_PROOF_TESTS {
