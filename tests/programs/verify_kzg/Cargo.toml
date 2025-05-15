@@ -13,6 +13,6 @@ openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev =
     "bls12_381",
 ] }
 
-openvm-kzg = { path = "../../../crates/kzg", default-features = false, features = [
+openvm-kzg = { path = "../../..", default-features = false, features = [
     "use-intrinsics",
 ] }

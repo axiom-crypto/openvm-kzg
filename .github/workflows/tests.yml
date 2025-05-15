@@ -29,13 +29,8 @@ jobs:
           cache-on-failure: true
       - uses: taiki-e/install-action@nextest
 
-      - name: Run host tests
-        working-directory: crates/kzg
-        run: cargo nextest run
-
-      - name: Run guest tests
-        working-directory: tests
+      - name: Run tests
         run: |
           rustup install nightly-2025-02-14
           rustup component add rust-src --toolchain nightly-2025-02-14
-          OPENVM_FAST_TEST=1 cargo nextest run --release
+          cargo nextest run --release
