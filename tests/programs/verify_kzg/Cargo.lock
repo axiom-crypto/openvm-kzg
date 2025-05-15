@@ -626,7 +626,19 @@ checksum = "c4567c8db10ae91089c99af84c68c38da3ec2f087c3f82960bcdbf3656b6f4d7"
 dependencies = [
  "cfg-if",
  "libc",
- "wasi",
+ "wasi 0.11.0+wasi-snapshot-preview1",
+]
+
+[[package]]
+name = "getrandom"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "26145e563e54f2cadc477553f1ec5ee650b00862f0a58bcd12cbdc5f0ea2d2f4"
+dependencies = [
+ "cfg-if",
+ "libc",
+ "r-efi",
+ "wasi 0.14.2+wasi-0.2.4",
 ]
 
 [[package]]
@@ -1098,10 +1110,11 @@ checksum = "1261fe7e33c73b354eab43b1273a57c8f967d0391e80353e51f764ac02cf6775"
 
 [[package]]
 name = "openvm"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "bytemuck",
+ "getrandom 0.3.3",
  "num-bigint 0.4.6",
  "openvm-custom-insn",
  "openvm-platform",
@@ -1112,7 +1125,7 @@ dependencies = [
 [[package]]
 name = "openvm-algebra-complex-macros"
 version = "0.1.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "openvm-macros-common",
  "quote",
@@ -1121,11 +1134,12 @@ dependencies = [
 
 [[package]]
 name = "openvm-algebra-guest"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "halo2curves-axiom",
  "num-bigint 0.4.6",
+ "once_cell",
  "openvm-algebra-complex-macros",
  "openvm-algebra-moduli-macros",
  "serde-big-array",
@@ -1134,8 +1148,8 @@ dependencies = [
 
 [[package]]
 name = "openvm-algebra-moduli-macros"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "openvm-macros-common",
  "quote",
@@ -1144,8 +1158,8 @@ dependencies = [
 
 [[package]]
 name = "openvm-circuit"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "backtrace",
  "cfg-if",
@@ -1174,8 +1188,8 @@ dependencies = [
 
 [[package]]
 name = "openvm-circuit-derive"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "itertools 0.14.0",
  "quote",
@@ -1184,8 +1198,8 @@ dependencies = [
 
 [[package]]
 name = "openvm-circuit-primitives"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "derive-new 0.6.0",
  "itertools 0.14.0",
@@ -1199,8 +1213,8 @@ dependencies = [
 
 [[package]]
 name = "openvm-circuit-primitives-derive"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "itertools 0.14.0",
  "quote",
@@ -1210,7 +1224,7 @@ dependencies = [
 [[package]]
 name = "openvm-custom-insn"
 version = "0.1.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1219,8 +1233,8 @@ dependencies = [
 
 [[package]]
 name = "openvm-ecc-guest"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "ecdsa",
  "elliptic-curve",
@@ -1242,8 +1256,8 @@ dependencies = [
 
 [[package]]
 name = "openvm-ecc-sw-macros"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "openvm-macros-common",
  "quote",
@@ -1252,8 +1266,8 @@ dependencies = [
 
 [[package]]
 name = "openvm-instructions"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "backtrace",
  "derive-new 0.6.0",
@@ -1269,8 +1283,8 @@ dependencies = [
 
 [[package]]
 name = "openvm-instructions-derive"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "quote",
  "syn 2.0.92",
@@ -1299,16 +1313,16 @@ dependencies = [
 
 [[package]]
 name = "openvm-macros-common"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "syn 2.0.92",
 ]
 
 [[package]]
 name = "openvm-pairing-guest"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "group 0.13.0",
  "halo2curves-axiom",
@@ -1333,10 +1347,9 @@ dependencies = [
 
 [[package]]
 name = "openvm-platform"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
- "getrandom",
  "libm",
  "openvm-custom-insn",
  "openvm-rv32im-guest",
@@ -1344,8 +1357,8 @@ dependencies = [
 
 [[package]]
 name = "openvm-poseidon2-air"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "derivative",
  "lazy_static",
@@ -1361,8 +1374,8 @@ dependencies = [
 
 [[package]]
 name = "openvm-rv32im-guest"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "openvm-custom-insn",
  "strum_macros",
@@ -1371,7 +1384,7 @@ dependencies = [
 [[package]]
 name = "openvm-stark-backend"
 version = "1.0.0"
-source = "git+https://github.com/openvm-org/stark-backend.git?tag=v1.0.0#884f8e6aabf72bde00dc51f1f1121277bff73b1e"
+source = "git+https://github.com/openvm-org/stark-backend.git?tag=v1.0.1#e540dbdd09ef20db7207ad7f2674bece75a2b803"
 dependencies = [
  "bitcode",
  "cfg-if",
@@ -1395,7 +1408,7 @@ dependencies = [
 [[package]]
 name = "openvm-stark-sdk"
 version = "1.0.0"
-source = "git+https://github.com/openvm-org/stark-backend.git?tag=v1.0.0#884f8e6aabf72bde00dc51f1f1121277bff73b1e"
+source = "git+https://github.com/openvm-org/stark-backend.git?tag=v1.0.1#e540dbdd09ef20db7207ad7f2674bece75a2b803"
 dependencies = [
  "derivative",
  "derive_more 0.99.18",
@@ -1412,6 +1425,7 @@ dependencies = [
  "p3-fri",
  "p3-goldilocks",
  "p3-keccak",
+ "p3-koala-bear",
  "p3-merkle-tree",
  "p3-poseidon",
  "p3-poseidon2",
@@ -1429,8 +1443,8 @@ dependencies = [
 
 [[package]]
 name = "openvm-transpiler"
-version = "1.0.0"
-source = "git+https://github.com/openvm-org/openvm.git?rev=51f07d50d20174b23091f48e25d9ea421b4e2787#51f07d50d20174b23091f48e25d9ea421b4e2787"
+version = "1.1.2"
+source = "git+https://github.com/openvm-org/openvm.git?rev=2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a#2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a"
 dependencies = [
  "elf",
  "eyre",
@@ -1617,6 +1631,20 @@ dependencies = [
  "p3-symmetric",
  "p3-util",
  "tiny-keccak",
+]
+
+[[package]]
+name = "p3-koala-bear"
+version = "0.1.0"
+source = "git+https://github.com/Plonky3/Plonky3.git?rev=1ba4e5c#1ba4e5c40417f4f7aae86bcca56b6484b4b2490b"
+dependencies = [
+ "p3-field",
+ "p3-mds",
+ "p3-monty-31",
+ "p3-poseidon2",
+ "p3-symmetric",
+ "rand",
+ "serde",
 ]
 
 [[package]]
@@ -1882,7 +1910,7 @@ dependencies = [
  "libc",
  "once_cell",
  "raw-cpuid",
- "wasi",
+ "wasi 0.11.0+wasi-snapshot-preview1",
  "web-sys",
  "winapi",
 ]
@@ -1895,6 +1923,12 @@ checksum = "0e4dccaaaf89514f546c693ddc140f729f958c247918a13380cccc6078391acc"
 dependencies = [
  "proc-macro2",
 ]
+
+[[package]]
+name = "r-efi"
+version = "5.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "74765f6d916ee2faa39bc8e68e4f3ed8949b48cccdac59983d287a7cb71ce9c5"
 
 [[package]]
 name = "radium"
@@ -1939,7 +1973,7 @@ version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
- "getrandom",
+ "getrandom 0.2.15",
 ]
 
 [[package]]
@@ -2509,6 +2543,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
 
 [[package]]
+name = "wasi"
+version = "0.14.2+wasi-0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9683f9a5a998d873c0d21fcbe3c083009670149a8fab228644b8bd36b2c48cb3"
+dependencies = [
+ "wit-bindgen-rt",
+]
+
+[[package]]
 name = "wasm-bindgen"
 version = "0.2.99"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2665,6 +2708,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "36c1fec1a2bb5866f07c25f68c26e565c4c200aebb96d7e55710c19d3e8ac49b"
 dependencies = [
  "memchr",
+]
+
+[[package]]
+name = "wit-bindgen-rt"
+version = "0.39.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6f42320e61fe2cfd34354ecb597f86f413484a798ba44a8ca1165c58d42da6c1"
+dependencies = [
+ "bitflags",
 ]
 
 [[package]]

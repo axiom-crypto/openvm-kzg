@@ -2,3 +2,5 @@
 .env
 **/.DS_Store # OS X Finder metadata
 tmp/
+
+**/Cargo.lock

@@ -2,23 +2,12 @@ use alloc::sync::Arc;
 use core::hash::{Hash, Hasher};
 
 use bls12_381::{G1Affine, G2Affine, Scalar};
-use openvm_ecc_guest::AffinePoint;
-use openvm_pairing_guest::bls12_381::{Fp, Fp2};
 use serde::{Deserialize, Serialize};
 use serde_big_array::BigArray;
 use spin::Once;
 
 use crate::get_kzg_settings;
 use crate::{Bytes32, Bytes48, KzgError};
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[cfg(not(target_os = "zkvm"))]
-pub struct PairingInputs {
-    pub p0: AffinePoint<Fp>,
-    pub p1: AffinePoint<Fp2>,
-    pub q0: AffinePoint<Fp>,
-    pub q1: AffinePoint<Fp2>,
-}
 
 /// Inputs to pass to the VM for KZG proof verification
 /// Excludes `KzgSettings`, which is read from disk by the VM
