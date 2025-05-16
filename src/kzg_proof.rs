@@ -7,7 +7,7 @@ use alloc::{string::ToString, vec::Vec};
 use bls12_381::{multi_miller_loop, G2Prepared, Gt};
 use bls12_381::{G1Affine, G2Affine, Scalar};
 #[cfg(target_os = "zkvm")]
-use {core::cmp::Ordering, openvm_ecc_guest::weierstrass::FromCompressed};
+use core::cmp::Ordering;
 use {
     hex_literal::hex,
     openvm_algebra_guest::field::FieldExtension,

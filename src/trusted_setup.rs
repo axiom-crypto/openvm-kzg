@@ -32,7 +32,7 @@ pub fn get_roots_of_unity() -> &'static [Scalar] {
             Scalar,
             concat!(
                 env!("CARGO_MANIFEST_DIR"),
-                "/../../assets/trusted_setup/roots_of_unity.bin"
+                "/assets/trusted_setup/roots_of_unity.bin"
             )
         );
         // The minimum alignment required is 4
@@ -51,10 +51,7 @@ pub fn get_g1_points() -> &'static [G1Affine] {
     G1_POINTS.call_once(|| {
         static ALIGNED_BYTES: &[u8] = include_bytes_align_as!(
             G1Affine,
-            concat!(
-                env!("CARGO_MANIFEST_DIR"),
-                "/../../assets/trusted_setup/g1.bin"
-            )
+            concat!(env!("CARGO_MANIFEST_DIR"), "/assets/trusted_setup/g1.bin")
         );
         // The minimum alignment required is 4
         assert!(ALIGNED_BYTES.as_ptr() as usize % align_of::<G1Affine>() == 0);
@@ -72,10 +69,7 @@ pub fn get_g2_points() -> &'static [G2Affine] {
     G2_POINTS.call_once(|| {
         static ALIGNED_BYTES: &[u8] = include_bytes_align_as!(
             G2Affine,
-            concat!(
-                env!("CARGO_MANIFEST_DIR"),
-                "/../../assets/trusted_setup/g2.bin"
-            )
+            concat!(env!("CARGO_MANIFEST_DIR"), "/assets/trusted_setup/g2.bin")
         );
         // The minimum alignment required is 4
         assert!(ALIGNED_BYTES.as_ptr() as usize % align_of::<G2Affine>() == 0);
