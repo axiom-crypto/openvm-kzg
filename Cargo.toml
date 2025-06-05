@@ -1,4 +1,8 @@
-[workspace.package]
+[workspace]
+members = ["tests/programs/verify_kzg"]
+
+[package]
+name = "openvm-kzg"
 version = "0.1.0-alpha"
 edition = "2021"
 rust-version = "1.82"
@@ -6,9 +10,59 @@ authors = ["Axiom"]
 homepage = "https://axiom.xyz"
 license = "MIT"
 
-[workspace]
-members = ["crates/kzg", "tests/"]
-resolver = "2"
+[dependencies]
+openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "27b4e7d5fdbc1452f7c3768f904bf34663747d79" }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "27b4e7d5fdbc1452f7c3768f904bf34663747d79" }
+openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", rev = "27b4e7d5fdbc1452f7c3768f904bf34663747d79", features = [
+    "bls12_381",
+] }
+
+hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
+hex-literal = "1.0.0"
+bls12_381 = { version = "0.8.0", default-features = false, features = [
+    "groups",
+    "pairings",
+    "alloc",
+] }
+spin = { version = "0.10.0", default-features = false, features = ["once"] }
+serde = { version = "1.0.200", default-features = false, features = [
+    "alloc",
+    "derive",
+] }
+serde-big-array = { version = "0.5.1", default-features = false }
+
+[dev-dependencies]
+serde_yaml = { version = "0.9", default-features = false }
+
+[target.'cfg(not(target_os = "zkvm"))'.dev-dependencies]
+openvm-stark-sdk = { git = "https://github.com/openvm-org/stark-backend.git", rev = "f48090c9febd021f8ee0349bc929a775fb1fa3ad", default-features = false }
+
+openvm = { git = "https://github.com/openvm-org/openvm.git", rev = "27b4e7d5fdbc1452f7c3768f904bf34663747d79" }
+openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", rev = "27b4e7d5fdbc1452f7c3768f904bf34663747d79" }
+openvm-build = { git = "https://github.com/openvm-org/openvm.git", rev = "27b4e7d5fdbc1452f7c3768f904bf34663747d79" }
+openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "27b4e7d5fdbc1452f7c3768f904bf34663747d79", features = [
+    "parallel",
+    "test-utils",
+] }
+openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", rev = "27b4e7d5fdbc1452f7c3768f904bf34663747d79", features = [
+    "halo2curves",
+] }
+openvm-kzg = { path = ".", default-features = false, features = ["test-utils"] }
+
+toml = "0.8.22"
+
+[build-dependencies]
+bls12_381 = { version = "0.8.0", default-features = false, features = [
+    "groups",
+    "pairings",
+    "alloc",
+] }
+hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
+
+[features]
+default = ["use-intrinsics"]
+test-utils = []
+use-intrinsics = []          # When enabled, uses OpenVM intrinsic functions
 
 [profile.dev]
 opt-level = 1

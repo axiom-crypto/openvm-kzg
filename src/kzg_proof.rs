@@ -7,7 +7,7 @@ use alloc::{string::ToString, vec::Vec};
 use bls12_381::{multi_miller_loop, G2Prepared, Gt};
 use bls12_381::{G1Affine, G2Affine, Scalar};
 #[cfg(target_os = "zkvm")]
-use {core::cmp::Ordering, openvm_ecc_guest::weierstrass::FromCompressed};
+use core::cmp::Ordering;
 use {
     hex_literal::hex,
     openvm_algebra_guest::field::FieldExtension,
@@ -16,7 +16,7 @@ use {
         weierstrass::{CachedMulTable, IntrinsicCurve, WeierstrassPoint},
         AffinePoint, CyclicGroup, Group,
     },
-    openvm_pairing_guest::bls12_381::{
+    openvm_pairing::bls12_381::{
         Bls12_381 as Bls12_381_G1, Fp, Fp2, G1Affine as Bls12_381G1Affine,
         G2Affine as Bls12_381G2Affine, Scalar as Bls12_381Scalar,
     },
@@ -136,7 +136,7 @@ fn pairings_verify(
     q0: Bls12_381G1Affine,
     q1: Bls12_381G2Affine,
 ) -> bool {
-    use openvm_pairing_guest::{bls12_381::Bls12_381, pairing::PairingCheck};
+    use openvm_pairing::{bls12_381::Bls12_381, PairingCheck};
 
     let [p0, q0] = [p0, q0].map(|p| {
         let (x, y) = p.into_coords();
