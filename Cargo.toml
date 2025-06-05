@@ -1,3 +1,6 @@
+[workspace]
+members = ["tests/programs/verify_kzg"]
+
 [package]
 name = "openvm-kzg"
 version = "0.1.0-alpha"
