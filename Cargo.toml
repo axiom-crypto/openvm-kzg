@@ -8,9 +8,9 @@ homepage = "https://axiom.xyz"
 license = "MIT"
 
 [dependencies]
-openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a" }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a" }
-openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a", features = [
+openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.2.1-rc.0" }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.2.1-rc.0" }
+openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.2.1-rc.0", features = [
     "bls12_381",
 ] }
 
@@ -28,24 +28,16 @@ serde = { version = "1.0.200", default-features = false, features = [
 ] }
 serde-big-array = { version = "0.5.1", default-features = false }
 
-# Dependencies only when NOT targeting zkvm
-[target.'cfg(not(target_os = "zkvm"))'.dependencies]
-num-bigint = { version = "0.4.6", default-features = false }
-num-traits = { version = "0.2.19", default-features = false }
-openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a", features = [
-    "halo2curves",
-] }
-
 [dev-dependencies]
 serde_yaml = { version = "0.9", default-features = false }
 
 [target.'cfg(not(target_os = "zkvm"))'.dev-dependencies]
-openvm-stark-sdk = { git = "https://github.com/openvm-org/stark-backend.git", tag = "v1.0.1", default-features = false }
+openvm-stark-sdk = { git = "https://github.com/openvm-org/stark-backend.git", rev = "f48090c9febd021f8ee0349bc929a775fb1fa3ad", default-features = false }
 
-openvm = { git = "https://github.com/openvm-org/openvm.git", rev = "2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a" }
-openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", rev = "2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a" }
-openvm-build = { git = "https://github.com/openvm-org/openvm.git", rev = "2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a" }
-openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a", features = [
+openvm = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.2.1-rc.0" }
+openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.2.1-rc.0" }
+openvm-build = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.2.1-rc.0" }
+openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", tag = "v1.2.1-rc.0", features = [
     "parallel",
     "test-utils",
 ] }
@@ -54,23 +46,12 @@ openvm-kzg = { path = ".", features = ["test-utils"] }
 toml = "0.8.22"
 
 [build-dependencies]
-openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a", default-features = false }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a", default-features = false }
-openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a", default-features = false, features = [
-    "bls12_381",
-] }
-
 bls12_381 = { version = "0.8.0", default-features = false, features = [
     "groups",
     "pairings",
     "alloc",
 ] }
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
-
-[target.'cfg(not(target_os = "zkvm"))'.build-dependencies]
-openvm-pairing-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "2b220f3e0dede6fa6fe3c67a591e7e3f0d93202a", features = [
-    "halo2curves",
-] }
 
 [features]
 default = ["use-intrinsics"]

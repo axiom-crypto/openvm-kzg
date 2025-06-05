@@ -5,7 +5,8 @@ extern crate alloc;
 
 use openvm::io::read;
 use openvm_kzg::{get_kzg_settings, KzgInputs, KzgProof};
-use openvm_pairing_guest::bls12_381::Bls12_381G1Affine;
+#[allow(unused_imports)] // init! macro needs it
+use openvm_pairing::bls12_381::Bls12_381G1Affine;
 
 // Init moduli, curves, and complex extensions
 openvm::init!();
