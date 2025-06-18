@@ -231,7 +231,8 @@ pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<Bls12_381G1Affine, K
 
     // Mask away the flag bits
     x_bytes[0] &= 0b0001_1111;
-    let x = Fp::from_be_bytes(&x_bytes);
+    let x = Fp::from_be_bytes(&x_bytes)
+        .ok_or_else(|| KzgError::BadArgs("x bytes not in canonical form".to_string()))?;
 
     if infinity_flag_set && compression_flag_set && !sort_flag_set && x == Fp::ZERO {
         return Ok(<Bls12_381G1Affine as Group>::IDENTITY);
