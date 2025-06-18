@@ -52,14 +52,10 @@ impl KzgProof {
         kzg_settings: &KzgSettings,
     ) -> Result<bool, KzgError> {
         // Check that the scalar is valid
-        let z = Bls12_381Scalar::from_be_bytes(z_bytes.as_slice());
-        let y = Bls12_381Scalar::from_be_bytes(y_bytes.as_slice());
-        if !z.is_reduced() {
-            return Err(KzgError::BadArgs("Scalar z is not reduced".to_string()));
-        }
-        if !y.is_reduced() {
-            return Err(KzgError::BadArgs("Scalar y is not reduced".to_string()));
-        }
+        let z = Bls12_381Scalar::from_be_bytes(z_bytes.as_slice())
+            .ok_or_else(|| KzgError::BadArgs("Scalar z is not reduced".to_string()))?;
+        let y = Bls12_381Scalar::from_be_bytes(y_bytes.as_slice())
+            .ok_or_else(|| KzgError::BadArgs("Scalar y is not reduced".to_string()))?;
 
         let commitment = safe_g1_affine_from_bytes(commitment_bytes)?;
         let proof = safe_g1_affine_from_bytes(proof_bytes)?;
@@ -184,8 +180,14 @@ fn to_openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
     let y_c1: [u8; 48] = g2_bytes[96..144].try_into().unwrap();
     let y_c0: [u8; 48] = g2_bytes[144..192].try_into().unwrap();
 
-    let ox = Fp2::from_coeffs([Fp::from_be_bytes(&x_c0), Fp::from_be_bytes(&x_c1)]);
-    let oy = Fp2::from_coeffs([Fp::from_be_bytes(&y_c0), Fp::from_be_bytes(&y_c1)]);
+    let ox = Fp2::from_coeffs([
+        Fp::from_be_bytes_unchecked(&x_c0),
+        Fp::from_be_bytes_unchecked(&x_c1),
+    ]);
+    let oy = Fp2::from_coeffs([
+        Fp::from_be_bytes_unchecked(&y_c0),
+        Fp::from_be_bytes_unchecked(&y_c1),
+    ]);
     Bls12_381G2Affine::from_xy_unchecked(ox, oy)
 }
 
@@ -229,7 +231,8 @@ pub fn safe_g1_affine_from_bytes(bytes: &Bytes48) -> Result<Bls12_381G1Affine, K
 
     // Mask away the flag bits
     x_bytes[0] &= 0b0001_1111;
-    let x = Fp::from_be_bytes(&x_bytes);
+    let x = Fp::from_be_bytes(&x_bytes)
+        .ok_or_else(|| KzgError::BadArgs("x bytes not in canonical form".to_string()))?;
 
     if infinity_flag_set && compression_flag_set && !sort_flag_set && x == Fp::ZERO {
         return Ok(<Bls12_381G1Affine as Group>::IDENTITY);
@@ -252,8 +255,8 @@ fn to_openvm_g1_affine(g1: G1Affine) -> Bls12_381G1Affine {
         return <Bls12_381G1Affine as Group>::IDENTITY;
     }
     let g1_bytes = g1.to_uncompressed();
-    let x = Fp::from_be_bytes(&g1_bytes[0..48]);
-    let y = Fp::from_be_bytes(&g1_bytes[48..96]);
+    let x = Fp::from_be_bytes_unchecked(&g1_bytes[0..48]);
+    let y = Fp::from_be_bytes_unchecked(&g1_bytes[48..96]);
     Bls12_381G1Affine::from_xy_unchecked(x, y)
 }
 
