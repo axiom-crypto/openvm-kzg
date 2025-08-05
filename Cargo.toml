@@ -11,9 +11,9 @@ homepage = "https://axiom.xyz"
 license = "MIT"
 
 [dependencies]
-openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-execution" }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-execution" }
-openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-execution", features = [
+openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "val/update-snark-verifier" }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "val/update-snark-verifier" }
+openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "val/update-snark-verifier", features = [
     "bls12_381",
 ] }
 
@@ -35,16 +35,16 @@ serde-big-array = { version = "0.5.1", default-features = false }
 serde_yaml = { version = "0.9", default-features = false }
 
 [target.'cfg(not(target_os = "zkvm"))'.dev-dependencies]
-openvm-stark-sdk = { git = "https://github.com/openvm-org/stark-backend.git", rev = "0879de162658b797b8dd6b6ee4429cbb8dd78ba1", default-features = false }
+openvm-stark-sdk = { git = "https://github.com/openvm-org/stark-backend.git", rev = "v1.2.0-rc.1", default-features = false }
 
-openvm = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-execution" }
-openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-execution" }
-openvm-build = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-execution" }
-openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-execution", features = [
+openvm = { git = "https://github.com/openvm-org/openvm.git", branch = "val/update-snark-verifier" }
+openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", branch = "val/update-snark-verifier" }
+openvm-build = { git = "https://github.com/openvm-org/openvm.git", branch = "val/update-snark-verifier" }
+openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", branch = "val/update-snark-verifier", features = [
     "parallel",
     "test-utils",
 ] }
-openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-execution", features = [
+openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "val/update-snark-verifier", features = [
     "halo2curves",
 ] }
 openvm-kzg = { path = ".", default-features = false, features = ["test-utils"] }
