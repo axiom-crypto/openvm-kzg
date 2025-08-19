@@ -5,10 +5,10 @@ edition = "2021"
 resolver = "2"
 
 [dependencies]
-openvm = { git = "https://github.com/openvm-org/openvm.git", rev = "9ef822c947f14eb436e293971c969cfcb688dbe7" }
-openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "9ef822c947f14eb436e293971c969cfcb688dbe7" }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "9ef822c947f14eb436e293971c969cfcb688dbe7" }
-openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", rev = "9ef822c947f14eb436e293971c969cfcb688dbe7", features = [
+openvm = { git = "https://github.com/openvm-org/openvm.git", rev = "51d0aa69694fd33def3c433e48228a5675e4fd97" }
+openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "51d0aa69694fd33def3c433e48228a5675e4fd97" }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "51d0aa69694fd33def3c433e48228a5675e4fd97" }
+openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", rev = "51d0aa69694fd33def3c433e48228a5675e4fd97", features = [
     "bls12_381",
 ] }
 
