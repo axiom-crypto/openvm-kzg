@@ -1,10 +1,7 @@
 use std::path::PathBuf;
 
 use openvm_build::{GuestOptions, TargetFilter};
-use openvm_circuit::{
-    arch::instructions::exe::VmExe, openvm_stark_sdk::config::setup_tracing,
-    utils::air_test_with_min_segments,
-};
+use openvm_circuit::openvm_stark_sdk::config::setup_tracing;
 use openvm_kzg::test_files::{
     ONLY_INVALID_KZG_PROOF_TESTS, ONLY_VALID_KZG_PROOF_TESTS, SINGLE_VALID_KZG_PROOF_TEST,
 };
@@ -18,8 +15,6 @@ use openvm_sdk::{
 };
 use openvm_stark_sdk::p3_baby_bear::BabyBear;
 use serde_yaml::from_str;
-
-type F = BabyBear;
 
 #[test]
 fn test_single_valid_verify_kzg() {
@@ -75,19 +70,9 @@ pub fn run_test_from_yaml_str(data: &str) {
 
 pub fn run_guest_program(input: KzgInputs) {
     setup_tracing();
-    let sdk = Sdk::new();
-    let (exe, vm_config) = setup_test(&sdk);
-
-    let mut io = StdIn::default();
-    io.write(&input);
-
-    air_test_with_min_segments(vm_config, exe, io, 1);
-}
-
-fn setup_test(sdk: &Sdk) -> (VmExe<F>, SdkVmConfig) {
     let app_config: AppConfig<SdkVmConfig> =
         toml::from_str(include_str!("programs/verify_kzg/openvm.toml")).unwrap();
-    let vm_config = app_config.app_vm_config;
+    let sdk = Sdk::new(app_config).unwrap();
 
     let guest_opts = GuestOptions::default();
     let target_filter = Some(TargetFilter {
@@ -100,10 +85,11 @@ fn setup_test(sdk: &Sdk) -> (VmExe<F>, SdkVmConfig) {
     pkg_dir.push("verify_kzg");
 
     let elf = sdk
-        .build(guest_opts, &vm_config, &pkg_dir, &target_filter, None)
+        .build(guest_opts, &pkg_dir, &target_filter, None)
         .unwrap();
 
-    // Transpile the ELF into a VmExe
-    let exe = sdk.transpile(elf, vm_config.transpiler()).unwrap();
-    (exe, vm_config)
+    let mut io = StdIn::default();
+    io.write(&input);
+
+    sdk.app_prover(elf).unwrap().prove(io).unwrap();
 }

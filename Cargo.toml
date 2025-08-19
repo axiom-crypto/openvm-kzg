@@ -11,9 +11,9 @@ homepage = "https://axiom.xyz"
 license = "MIT"
 
 [dependencies]
-openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "9ef822c947f14eb436e293971c969cfcb688dbe7" }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", rev = "9ef822c947f14eb436e293971c969cfcb688dbe7" }
-openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", rev = "9ef822c947f14eb436e293971c969cfcb688dbe7", features = [
+openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "main" }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "main" }
+openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "main", features = [
     "bls12_381",
 ] }
 
@@ -35,16 +35,16 @@ serde-big-array = { version = "0.5.1", default-features = false }
 serde_yaml = { version = "0.9", default-features = false }
 
 [target.'cfg(not(target_os = "zkvm"))'.dev-dependencies]
-openvm-stark-sdk = { git = "https://github.com/openvm-org/stark-backend.git", rev = "0879de162658b797b8dd6b6ee4429cbb8dd78ba1", default-features = false }
+openvm-stark-sdk = { git = "https://github.com/openvm-org/stark-backend.git", tag = "v1.2.0-rc.2", default-features = false }
 
-openvm = { git = "https://github.com/openvm-org/openvm.git", rev = "9ef822c947f14eb436e293971c969cfcb688dbe7" }
-openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", rev = "9ef822c947f14eb436e293971c969cfcb688dbe7" }
-openvm-build = { git = "https://github.com/openvm-org/openvm.git", rev = "9ef822c947f14eb436e293971c969cfcb688dbe7" }
-openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", rev = "9ef822c947f14eb436e293971c969cfcb688dbe7", features = [
+openvm = { git = "https://github.com/openvm-org/openvm.git", branch = "main" }
+openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", branch = "main" }
+openvm-build = { git = "https://github.com/openvm-org/openvm.git", branch = "main" }
+openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", branch = "main", features = [
     "parallel",
     "test-utils",
 ] }
-openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", rev = "9ef822c947f14eb436e293971c969cfcb688dbe7", features = [
+openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "main", features = [
     "halo2curves",
 ] }
 openvm-kzg = { path = ".", default-features = false, features = ["test-utils"] }
