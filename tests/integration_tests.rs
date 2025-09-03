@@ -13,7 +13,6 @@ use openvm_sdk::{
     config::{AppConfig, SdkVmConfig},
     Sdk, StdIn,
 };
-use openvm_stark_sdk::p3_baby_bear::BabyBear;
 use serde_yaml::from_str;
 
 #[test]
