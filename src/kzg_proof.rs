@@ -69,9 +69,13 @@ impl KzgProof {
             type Scalar = Bls12_381Scalar; // order of the generator is prime
             type Point = Bls12_381G2Affine;
 
-            fn msm(coeffs: &[Self::Scalar], bases: &[Self::Point]) -> Self::Point {
+            fn msm<const CHECK_SETUP: bool>(
+                coeffs: &[Self::Scalar],
+                bases: &[Self::Point],
+            ) -> Self::Point {
                 openvm_ecc_guest::msm(coeffs, bases)
             }
+            fn set_up_once() {}
         }
 
         // We use the fact that g2_affine_generator has prime order.
