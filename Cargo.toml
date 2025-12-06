@@ -35,7 +35,7 @@ serde-big-array = { version = "0.5.1", default-features = false }
 serde_yaml = { version = "0.9", default-features = false }
 
 [target.'cfg(not(target_os = "zkvm"))'.dev-dependencies]
-openvm-stark-sdk = { git = "https://github.com/openvm-org/stark-backend.git", tag = "v1.2.0", default-features = false }
+openvm-stark-sdk = { git = "https://github.com/openvm-org/stark-backend.git", tag = "v1.2.2-rc.1", default-features = false }
 
 openvm = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/ec-mul-chip" }
 openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/ec-mul-chip" }
