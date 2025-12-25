@@ -1721,7 +1721,7 @@ dependencies = [
 [[package]]
 name = "openvm"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "bytemuck",
  "getrandom 0.2.16",
@@ -1736,7 +1736,7 @@ dependencies = [
 [[package]]
 name = "openvm-algebra-circuit"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "blstrs",
  "cfg-if",
@@ -1776,7 +1776,7 @@ dependencies = [
 [[package]]
 name = "openvm-algebra-complex-macros"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-macros-common 1.4.2 (git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth)",
  "quote",
@@ -1802,7 +1802,7 @@ dependencies = [
 [[package]]
 name = "openvm-algebra-guest"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "halo2curves-axiom",
  "num-bigint 0.4.6",
@@ -1830,7 +1830,7 @@ dependencies = [
 [[package]]
 name = "openvm-algebra-moduli-macros"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "num-bigint 0.4.6",
  "num-prime",
@@ -1842,7 +1842,7 @@ dependencies = [
 [[package]]
 name = "openvm-algebra-transpiler"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-algebra-guest 1.4.2 (git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth)",
  "openvm-instructions",
@@ -1856,7 +1856,7 @@ dependencies = [
 [[package]]
 name = "openvm-bigint-circuit"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "cfg-if",
  "derive-new 0.6.0",
@@ -1879,7 +1879,7 @@ dependencies = [
 [[package]]
 name = "openvm-bigint-guest"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-platform 1.4.2 (git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth)",
  "strum_macros",
@@ -1888,7 +1888,7 @@ dependencies = [
 [[package]]
 name = "openvm-bigint-transpiler"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-bigint-guest",
  "openvm-instructions",
@@ -1903,7 +1903,7 @@ dependencies = [
 [[package]]
 name = "openvm-build"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "cargo_metadata",
  "eyre",
@@ -1915,7 +1915,7 @@ dependencies = [
 [[package]]
 name = "openvm-circuit"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "abi_stable",
  "backtrace",
@@ -1951,7 +1951,7 @@ dependencies = [
 [[package]]
 name = "openvm-circuit-derive"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "itertools 0.14.0",
  "proc-macro2",
@@ -1962,7 +1962,7 @@ dependencies = [
 [[package]]
 name = "openvm-circuit-primitives"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "derive-new 0.6.0",
  "itertools 0.14.0",
@@ -1978,7 +1978,7 @@ dependencies = [
 [[package]]
 name = "openvm-circuit-primitives-derive"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "itertools 0.14.0",
  "quote",
@@ -1988,7 +1988,7 @@ dependencies = [
 [[package]]
 name = "openvm-continuations"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "derivative",
  "openvm-circuit",
@@ -2022,7 +2022,7 @@ dependencies = [
 [[package]]
 name = "openvm-custom-insn"
 version = "0.1.0"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2032,7 +2032,7 @@ dependencies = [
 [[package]]
 name = "openvm-ecc-circuit"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "blstrs",
  "cfg-if",
@@ -2081,7 +2081,7 @@ dependencies = [
 [[package]]
 name = "openvm-ecc-guest"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "ecdsa",
  "elliptic-curve",
@@ -2110,7 +2110,7 @@ dependencies = [
 [[package]]
 name = "openvm-ecc-sw-macros"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-macros-common 1.4.2 (git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth)",
  "quote",
@@ -2120,7 +2120,7 @@ dependencies = [
 [[package]]
 name = "openvm-ecc-transpiler"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-ecc-guest 1.4.2 (git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth)",
  "openvm-instructions",
@@ -2134,7 +2134,7 @@ dependencies = [
 [[package]]
 name = "openvm-instructions"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "backtrace",
  "derive-new 0.6.0",
@@ -2151,7 +2151,7 @@ dependencies = [
 [[package]]
 name = "openvm-instructions-derive"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "quote",
  "syn 2.0.111",
@@ -2160,7 +2160,7 @@ dependencies = [
 [[package]]
 name = "openvm-keccak256-circuit"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "cfg-if",
  "derive-new 0.6.0",
@@ -2185,7 +2185,7 @@ dependencies = [
 [[package]]
 name = "openvm-keccak256-guest"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-platform 1.4.2 (git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth)",
 ]
@@ -2193,7 +2193,7 @@ dependencies = [
 [[package]]
 name = "openvm-keccak256-transpiler"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-instructions",
  "openvm-instructions-derive",
@@ -2238,7 +2238,7 @@ dependencies = [
 [[package]]
 name = "openvm-macros-common"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "syn 2.0.111",
 ]
@@ -2246,7 +2246,7 @@ dependencies = [
 [[package]]
 name = "openvm-mod-circuit-builder"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "itertools 0.14.0",
  "num-bigint 0.4.6",
@@ -2264,7 +2264,7 @@ dependencies = [
 [[package]]
 name = "openvm-native-circuit"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "cfg-if",
  "derive-new 0.6.0",
@@ -2292,7 +2292,7 @@ dependencies = [
 [[package]]
 name = "openvm-native-compiler"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "backtrace",
  "itertools 0.14.0",
@@ -2314,7 +2314,7 @@ dependencies = [
 [[package]]
 name = "openvm-native-compiler-derive"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "quote",
  "syn 2.0.111",
@@ -2323,7 +2323,7 @@ dependencies = [
 [[package]]
 name = "openvm-native-recursion"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "cfg-if",
  "itertools 0.14.0",
@@ -2347,7 +2347,7 @@ dependencies = [
 [[package]]
 name = "openvm-native-transpiler"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-instructions",
  "openvm-transpiler",
@@ -2357,7 +2357,7 @@ dependencies = [
 [[package]]
 name = "openvm-new-keccak256-circuit"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "derive-new 0.6.0",
  "derive_more 1.0.0",
@@ -2381,7 +2381,7 @@ dependencies = [
 [[package]]
 name = "openvm-new-keccak256-guest"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-platform 1.4.2 (git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth)",
 ]
@@ -2389,7 +2389,7 @@ dependencies = [
 [[package]]
 name = "openvm-new-keccak256-transpiler"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-instructions",
  "openvm-instructions-derive",
@@ -2427,7 +2427,7 @@ dependencies = [
 [[package]]
 name = "openvm-pairing"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "group 0.13.0",
  "halo2curves-axiom",
@@ -2452,7 +2452,7 @@ dependencies = [
 [[package]]
 name = "openvm-pairing-circuit"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "cfg-if",
  "derive-new 0.6.0",
@@ -2501,7 +2501,7 @@ dependencies = [
 [[package]]
 name = "openvm-pairing-guest"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "blstrs",
  "halo2curves-axiom",
@@ -2523,7 +2523,7 @@ dependencies = [
 [[package]]
 name = "openvm-pairing-transpiler"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-instructions",
  "openvm-pairing-guest 1.4.2 (git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth)",
@@ -2546,7 +2546,7 @@ dependencies = [
 [[package]]
 name = "openvm-platform"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "libm",
  "openvm-custom-insn 0.1.0 (git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth)",
@@ -2556,7 +2556,7 @@ dependencies = [
 [[package]]
 name = "openvm-poseidon2-air"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "derivative",
  "lazy_static",
@@ -2574,7 +2574,7 @@ dependencies = [
 [[package]]
 name = "openvm-rv32-adapters"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "derive-new 0.6.0",
  "itertools 0.14.0",
@@ -2591,7 +2591,7 @@ dependencies = [
 [[package]]
 name = "openvm-rv32im-circuit"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "cfg-if",
  "derive-new 0.6.0",
@@ -2624,7 +2624,7 @@ dependencies = [
 [[package]]
 name = "openvm-rv32im-guest"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-custom-insn 0.1.0 (git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth)",
  "p3-field",
@@ -2634,7 +2634,7 @@ dependencies = [
 [[package]]
 name = "openvm-rv32im-transpiler"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-instructions",
  "openvm-instructions-derive",
@@ -2650,7 +2650,7 @@ dependencies = [
 [[package]]
 name = "openvm-sdk"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "bitcode",
  "bon",
@@ -2706,7 +2706,7 @@ dependencies = [
 [[package]]
 name = "openvm-sha256-air"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-circuit-primitives",
  "openvm-stark-backend 1.2.2",
@@ -2717,7 +2717,7 @@ dependencies = [
 [[package]]
 name = "openvm-sha256-circuit"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "cfg-if",
  "derive-new 0.6.0",
@@ -2740,7 +2740,7 @@ dependencies = [
 [[package]]
 name = "openvm-sha256-guest"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-platform 1.4.2 (git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth)",
 ]
@@ -2748,7 +2748,7 @@ dependencies = [
 [[package]]
 name = "openvm-sha256-transpiler"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "openvm-instructions",
  "openvm-instructions-derive",
@@ -2888,7 +2888,7 @@ dependencies = [
 [[package]]
 name = "openvm-transpiler"
 version = "1.4.2"
-source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#5d9cbddb53a393152b04510d472825ed38ec6c8e"
+source = "git+https://github.com/openvm-org/openvm.git?branch=perf%2Fnew-keccak-run-reth#a19e476139c65e4c461ed75a4bd7de7884c2f937"
 dependencies = [
  "elf",
  "eyre",
