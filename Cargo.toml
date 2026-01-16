@@ -11,9 +11,9 @@ homepage = "https://axiom.xyz"
 license = "MIT"
 
 [dependencies]
-openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-keccakf-split" }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-keccakf-split" }
-openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-keccakf-split", features = [
+openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/opt-keccak-xor" }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/opt-keccak-xor" }
+openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/opt-keccak-xor", features = [
     "bls12_381",
 ] }
 
@@ -37,14 +37,14 @@ serde_yaml = { version = "0.9", default-features = false }
 [target.'cfg(not(target_os = "zkvm"))'.dev-dependencies]
 openvm-stark-sdk = { git = "https://github.com/openvm-org/stark-backend.git", tag = "v1.2.3", default-features = false }
 
-openvm = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-keccakf-split" }
-openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-keccakf-split" }
-openvm-build = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-keccakf-split" }
-openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-keccakf-split", features = [
+openvm = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/opt-keccak-xor" }
+openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/opt-keccak-xor" }
+openvm-build = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/opt-keccak-xor" }
+openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/opt-keccak-xor", features = [
     "parallel",
     "test-utils",
 ] }
-openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/new-keccakf-split", features = [
+openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "feat/opt-keccak-xor", features = [
     "halo2curves",
 ] }
 openvm-kzg = { path = ".", default-features = false, features = ["test-utils"] }
