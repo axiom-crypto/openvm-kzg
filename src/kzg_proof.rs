@@ -30,7 +30,11 @@ const G2_AFFINE_GENERATOR: Bls12_381G2Affine = Bls12_381G2Affine::new(
     Fp2::new(
         Fp::from_const_bytes(hex!("0128B808865493E189A2AC3BCCC93A922CD16051699A426DA7D3BD8CAA9BFDAD1A352EDAC6CDC98C116E7D7227D5E50C")),
         Fp::from_const_bytes(hex!("BE795FF05F07A9AAA11DEC5C270D373FAB992E57AB927426AF63A7857E283ECB998BC22BB0D2AC32CC34A72EA0C40606"))
-    )
+    ),
+    Fp2::new(
+        Fp::from_const_bytes(hex!("010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")),
+        Fp::from_const_bytes(hex!("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
+    ),
 );
 
 pub struct KzgProof {}
@@ -135,11 +139,16 @@ fn pairings_verify(
     use openvm_pairing::{bls12_381::Bls12_381, PairingCheck};
 
     let [p0, q0] = [p0, q0].map(|p| {
-        let (x, y) = p.into_coords();
+        let p = p.normalize();
+        let (x, y, _) = p.into_coords();
         AffinePoint::new(x, y)
     });
     let g1_points = [-p0, q0];
-    let g2_points = [p1, q1].map(Into::into);
+    let g2_points = [p1, q1].map(|p| {
+        let p = p.normalize();
+        let (x, y, _) = p.into_coords();
+        AffinePoint::new(x, y)
+    });
 
     Bls12_381::pairing_check(&g1_points, &g2_points).is_ok()
 }
