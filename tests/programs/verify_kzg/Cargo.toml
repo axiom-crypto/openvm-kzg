@@ -5,10 +5,10 @@ edition = "2021"
 resolver = "2"
 
 [dependencies]
-openvm = { git = "https://github.com/openvm-org/openvm.git", branch = "main" }
-openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "main" }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "main" }
-openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "main", features = [
+openvm = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.0.0-beta" }
+openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.0.0-beta" }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.0.0-beta" }
+openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.0.0-beta", features = [
     "bls12_381",
 ] }
 
