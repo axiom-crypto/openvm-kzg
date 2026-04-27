@@ -30,4 +30,6 @@ jobs:
       - uses: dtolnay/rust-toolchain@nightly-2026-01-18
         with:
           components: rust-src
-      - run: cargo check -Z build-std=core,alloc --target riscv64im-unknown-none-elf --no-default-features
+      - name: Checkout openvm
+        run: git clone --depth=1 --branch=develop-v2.1.0-rv64 https://github.com/openvm-org/openvm.git /tmp/openvm
+      - run: RUSTFLAGS="-Z unstable-options --cfg openvm_intrinsics" RUST_TARGET_PATH=/tmp/openvm/crates/toolchain/build cargo check -Z build-std=core,alloc --target riscv64im-openvm-none-elf --no-default-features
