@@ -27,7 +27,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@nightly-2026-01-18
         with:
-          targets: riscv32imac-unknown-none-elf
-      - run: cargo check --target riscv32imac-unknown-none-elf --no-default-features 
+          components: rust-src
+      - run: cargo check -Z build-std=core,alloc --target riscv64im-unknown-none-elf --no-default-features

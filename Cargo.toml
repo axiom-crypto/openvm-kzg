@@ -5,15 +5,15 @@ members = ["tests/programs/verify_kzg"]
 name = "openvm-kzg"
 version = "0.2.0-alpha"
 edition = "2021"
-rust-version = "1.86"
+rust-version = "1.91.1"
 authors = ["Axiom"]
 homepage = "https://axiom.xyz"
 license = "MIT"
 
 [dependencies]
-openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.0.0-rc.1" }
-openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.0.0-rc.1" }
-openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.0.0-rc.1", features = [
+openvm-algebra-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.1.0-rv64" }
+openvm-ecc-guest = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.1.0-rv64" }
+openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.1.0-rv64", features = [
     "bls12_381",
 ] }
 
@@ -34,17 +34,18 @@ serde-big-array = { version = "0.5.1", default-features = false }
 [dev-dependencies]
 serde_yaml = { version = "0.9", default-features = false }
 
-[target.'cfg(not(target_os = "zkvm"))'.dev-dependencies]
+[target.'cfg(not(target_arch = "riscv64"))'.dev-dependencies]
 openvm-stark-sdk = { git = "https://github.com/openvm-org/stark-backend.git", branch = "develop-v2", default-features = false }
 
-openvm = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.0.0-rc.1" }
-openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.0.0-rc.1" }
-openvm-build = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.0.0-rc.1" }
-openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.0.0-rc.1", features = [
+openvm = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.1.0-rv64" }
+openvm-sdk = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.1.0-rv64" }
+openvm-sdk-config = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.1.0-rv64" }
+openvm-build = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.1.0-rv64" }
+openvm-circuit = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.1.0-rv64", features = [
     "parallel",
     "test-utils",
 ] }
-openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.0.0-rc.1", features = [
+openvm-pairing = { git = "https://github.com/openvm-org/openvm.git", branch = "develop-v2.1.0-rv64", features = [
     "halo2curves",
 ] }
 openvm-kzg = { path = ".", default-features = false, features = ["test-utils"] }
@@ -60,9 +61,13 @@ bls12_381 = { version = "0.8.0", default-features = false, features = [
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 
 [features]
-default = ["use-intrinsics"]
+default = ["use-intrinsics", "std"]
+std = []
 test-utils = []
 use-intrinsics = []          # When enabled, uses OpenVM intrinsic functions
 
 [profile.dev]
 opt-level = 1
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(openvm_intrinsics)'] }

@@ -3,12 +3,12 @@ const TRUSTED_SETUP_FILE: &str = include_str!("src/trusted_setup.txt");
 include!("src/enums.rs");
 include!("src/consts.rs");
 
-#[cfg(any(target_os = "zkvm", doc))]
+#[cfg(doc)]
 fn main() {
-    // Binaries cannot be built in a RISC-V environment or when building docs
+    // Binaries cannot be built when building docs
 }
 
-#[cfg(not(any(target_os = "zkvm", doc)))]
+#[cfg(not(doc))]
 fn main() {
     use bls12_381::{G1Affine, G2Affine, Scalar};
     use std::{fs, io::Write, path::Path};
