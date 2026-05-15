@@ -36,7 +36,7 @@ pub fn get_roots_of_unity() -> &'static [Scalar] {
             )
         );
         // The minimum alignment required is 4
-        assert!(ALIGNED_BYTES.as_ptr() as usize % align_of::<Scalar>() == 0);
+        assert!((ALIGNED_BYTES.as_ptr() as usize).is_multiple_of(align_of::<Scalar>()));
         unsafe {
             slice::from_raw_parts::<Scalar>(
                 ALIGNED_BYTES.as_ptr() as *const Scalar,
@@ -54,7 +54,7 @@ pub fn get_g1_points() -> &'static [G1Affine] {
             concat!(env!("CARGO_MANIFEST_DIR"), "/assets/trusted_setup/g1.bin")
         );
         // The minimum alignment required is 4
-        assert!(ALIGNED_BYTES.as_ptr() as usize % align_of::<G1Affine>() == 0);
+        assert!((ALIGNED_BYTES.as_ptr() as usize).is_multiple_of(align_of::<G1Affine>()));
         unsafe {
             slice::from_raw_parts::<G1Affine>(
                 ALIGNED_BYTES.as_ptr() as *const G1Affine,
@@ -72,7 +72,7 @@ pub fn get_g2_points() -> &'static [G2Affine] {
             concat!(env!("CARGO_MANIFEST_DIR"), "/assets/trusted_setup/g2.bin")
         );
         // The minimum alignment required is 4
-        assert!(ALIGNED_BYTES.as_ptr() as usize % align_of::<G2Affine>() == 0);
+        assert!((ALIGNED_BYTES.as_ptr() as usize).is_multiple_of(align_of::<G2Affine>()));
         unsafe {
             slice::from_raw_parts::<G2Affine>(
                 ALIGNED_BYTES.as_ptr() as *const G2Affine,
