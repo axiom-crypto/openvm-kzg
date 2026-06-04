@@ -188,7 +188,7 @@ fn to_openvm_g2_affine(g2: G2Affine) -> Bls12_381G2Affine {
         Fp::from_be_bytes_unchecked(&y_c0),
         Fp::from_be_bytes_unchecked(&y_c1),
     ]);
-    Bls12_381G2Affine::from_xy_unchecked(ox, oy)
+    unsafe { Bls12_381G2Affine::from_xy_unchecked(ox, oy) }
 }
 
 /// Returns true if the field element is lexicographically larger than its negation.
@@ -257,7 +257,7 @@ fn to_openvm_g1_affine(g1: G1Affine) -> Bls12_381G1Affine {
     let g1_bytes = g1.to_uncompressed();
     let x = Fp::from_be_bytes_unchecked(&g1_bytes[0..48]);
     let y = Fp::from_be_bytes_unchecked(&g1_bytes[48..96]);
-    Bls12_381G1Affine::from_xy_unchecked(x, y)
+    unsafe { Bls12_381G1Affine::from_xy_unchecked(x, y) }
 }
 
 #[cfg(not(openvm_intrinsics))]
